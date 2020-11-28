@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -40,7 +40,6 @@ import net.sf.jasperreports.annotations.properties.PropertyScope;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
-import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 import net.sf.jasperreports.properties.PropertyConstants;
 
@@ -106,7 +105,7 @@ import net.sf.jasperreports.properties.PropertyConstants;
  * </ul>
  * </p>
  * <p>
- * Generally the full power of XPath expression is available. As an example, "/A/B[@id > 0"] will select all the
+ * Generally the full power of XPath expression is available. As an example, "/A/B[@id &gt; 0"] will select all the
  * nodes of type /A/B having the id greater than 0. 
  * You'll find a short XPath tutorial <a href="http://www.zvon.org/xxl/XPathTutorial/General/examples.html" target="_blank">here</a>.
  * 
@@ -118,7 +117,7 @@ import net.sf.jasperreports.properties.PropertyConstants;
  * </p>
  * @author Narcis Marcu (narcism@users.sourceforge.net)
  */
-public abstract class AbstractXmlDataSource<T extends AbstractXmlDataSource<?>> extends JRAbstractTextDataSource implements JRRewindableDataSource 
+public abstract class AbstractXmlDataSource<T extends AbstractXmlDataSource<?>> extends JRAbstractTextDataSource implements RandomAccessDataSource, HierarchicalDataSource<T> 
 {
 	/**
 	 * Property specifying the XPath expression for the dataset field.
@@ -216,6 +215,7 @@ public abstract class AbstractXmlDataSource<T extends AbstractXmlDataSource<?>> 
 	 * @throws JRException if the sub data source couldn't be created
 	 * @see JRXmlDataSource#JRXmlDataSource(Document, String)
 	 */
+	@Override
 	public abstract T subDataSource(String selectExpr) throws JRException;
 
 	/**
@@ -228,6 +228,7 @@ public abstract class AbstractXmlDataSource<T extends AbstractXmlDataSource<?>> 
 	 * @see JRXmlDataSource#subDataSource(String)
 	 * @see JRXmlDataSource#JRXmlDataSource(Document)
 	 */
+	@Override
 	public T subDataSource() throws JRException {
 		return subDataSource(".");
 	}

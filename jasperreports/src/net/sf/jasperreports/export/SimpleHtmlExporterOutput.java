@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -40,9 +40,6 @@ public class SimpleHtmlExporterOutput extends SimpleWriterExporterOutput impleme
 	 * 
 	 */
 	private HtmlResourceHandler imageHandler;
-	/**
-	 * @deprecated To be removed.
-	 */
 	private HtmlResourceHandler fontHandler;
 	private HtmlResourceHandler resourceHandler;
 
@@ -150,7 +147,7 @@ public class SimpleHtmlExporterOutput extends SimpleWriterExporterOutput impleme
 	}
 	
 	/**
-	 * @deprecated Replaced by {@link #getResourceHandler()} and {@link JsonExporterOutput#getFontHandler()}.
+	 *
 	 */
 	@Override
 	public HtmlResourceHandler getFontHandler() 
@@ -159,7 +156,7 @@ public class SimpleHtmlExporterOutput extends SimpleWriterExporterOutput impleme
 	}
 
 	/**
-	 * @deprecated Replaced by {@link #setResourceHandler(HtmlResourceHandler)}.
+	 *
 	 */
 	public void setFontHandler(HtmlResourceHandler fontHandler)
 	{

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -143,6 +143,7 @@ public class JRHorizontalFiller extends JRBaseFiller
 					scriptlet.callAfterReportInit();
 
 					printPage = newPage();
+					printPageContentsWidth = 0;
 					addPage(printPage);
 					setFirstColumn();
 					offsetY = topMargin;
@@ -245,6 +246,7 @@ public class JRHorizontalFiller extends JRBaseFiller
 		scriptlet.callAfterReportInit();
 
 		printPage = newPage();
+		printPageContentsWidth = 0;
 		addPage(printPage);
 		setFirstColumn();
 		offsetY = topMargin;
@@ -502,7 +504,7 @@ public class JRHorizontalFiller extends JRBaseFiller
 					--reattempts;
 				}
 
-				boolean fits = columnHeader.getHeight() <= columnFooterOffsetY - offsetY;
+				boolean fits = columnHeader.getHeight() <= columnFooterOffsetY - columnHeaderOffsetY;
 				for (int i = 0; !fits && i < reattempts; ++i)
 				{
 					fillPageFooter(evaluation);
@@ -518,7 +520,7 @@ public class JRHorizontalFiller extends JRBaseFiller
 
 					fillPageHeader(evaluation);
 
-					fits = columnHeader.getHeight() <= columnFooterOffsetY - offsetY;
+					fits = columnHeader.getHeight() <= columnFooterOffsetY - columnHeaderOffsetY;
 				}
 
 				if (!fits)
@@ -2210,16 +2212,17 @@ public class JRHorizontalFiller extends JRBaseFiller
 		}
 
 		printPage = newPage();
+		printPageContentsWidth = 0;
 
 		JRFillVariable pageNumberVar = calculator.getPageNumber();
 		if (isResetPageNumber)
 		{
-			pageNumberVar.setValue(Integer.valueOf(1));
+			pageNumberVar.setValue(1);
 		}
 		else
 		{
 			pageNumberVar.setValue(
-				Integer.valueOf(((Number)pageNumberVar.getValue()).intValue() + 1)
+				((Number)pageNumberVar.getValue()).intValue() + 1
 				);
 		}
 		pageNumberVar.setOldValue(pageNumberVar.getValue());
@@ -2243,7 +2246,7 @@ public class JRHorizontalFiller extends JRBaseFiller
 	private void setColumnNumberVariable()
 	{
 		JRFillVariable columnNumberVar = calculator.getColumnNumber();
-		columnNumberVar.setValue(Integer.valueOf(columnIndex + 1));
+		columnNumberVar.setValue(columnIndex + 1);
 		columnNumberVar.setOldValue(columnNumberVar.getValue());
 	}
 

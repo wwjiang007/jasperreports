@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,7 +30,6 @@ import net.sf.jasperreports.annotations.properties.PropertyScope;
 import net.sf.jasperreports.engine.type.FillEnum;
 import net.sf.jasperreports.engine.type.HorizontalImageAlignEnum;
 import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
-import net.sf.jasperreports.engine.type.LineSpacingEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
@@ -277,30 +276,6 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public ScaleImageEnum getOwnScaleImageValue();
 
 	/**
-	 * Gets the horizontal alignment of the element.
-	 * @return one of the alignment values defined in {@link net.sf.jasperreports.engine.type.HorizontalAlignEnum}
-	 * @deprecated Replaced by {@link #getHorizontalTextAlign()} and {@link #getHorizontalImageAlign()}.
-	 */
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getHorizontalAlignmentValue();
-
-	/**
-	 * @deprecated Replaced by {@link #getOwnHorizontalTextAlign()} and {@link #getOwnHorizontalImageAlign()}.
-	 */
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getOwnHorizontalAlignmentValue();
-
-	/**
-	 * Gets the vertical alignment of the element.
-	 * @return one of the alignment values defined in {@link net.sf.jasperreports.engine.type.VerticalAlignEnum}
-	 * @deprecated Replaced by {@link #getVerticalTextAlign()} and {@link #getVerticalImageAlign()}.
-	 */
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getVerticalAlignmentValue();
-
-	/**
-	 * @deprecated Replaced by {@link #getOwnVerticalTextAlign()} and {@link #getOwnVerticalImageAlign()}.
-	 */
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getOwnVerticalAlignmentValue();
-
-	/**
 	 * Gets the horizontal text alignment of the element.
 	 * @return one of the alignment values defined in {@link HorizontalTextAlignEnum}
 	 */
@@ -348,16 +323,6 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	 */
 	public RotationEnum getOwnRotationValue();
 	
-	/**
-	 * @deprecated Replaced by {@link JRParagraph#getLineSpacing()}.
-	 */
-	public LineSpacingEnum getLineSpacingValue();
-
-	/**
-	 * @deprecated Replaced by {@link JRParagraph#getOwnLineSpacing()}.
-	 */
-	public LineSpacingEnum getOwnLineSpacingValue();
-
 	/**
 	 * Returns the markup language used to format the text.
 	 */
@@ -424,16 +389,6 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	 *
 	 */
 	public Float getOwnFontsize();
-
-	/**
-	 * @deprecated Replaced by {@link #getFontsize()}.
-	 */
-	public Integer getFontSize();
-
-	/**
-	 * @deprecated Replaced by {@link #getOwnFontsize()}.
-	 */
-	public Integer getOwnFontSize();
 
 	/**
 	 *
@@ -506,7 +461,7 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setFill(FillEnum fill);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setRadius(Integer)}.
 	 */
 	public void setRadius(int radius);
 
@@ -519,16 +474,6 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	 *
 	 */
 	public void setScaleImage(ScaleImageEnum scaleImage);
-
-	/**
-	 * @deprecated Replaced by {@link #setHorizontalTextAlign(HorizontalTextAlignEnum)} and {@link #setHorizontalImageAlign(HorizontalImageAlignEnum)}.
-	 */
-	public void setHorizontalAlignment(net.sf.jasperreports.engine.type.HorizontalAlignEnum horizontalAlignment);
-
-	/**
-	 * @deprecated Replaced by {@link #setVerticalTextAlign(VerticalTextAlignEnum)} and {@link #setVerticalImageAlign(VerticalImageAlignEnum)}.
-	 */
-	public void setVerticalAlignment(net.sf.jasperreports.engine.type.VerticalAlignEnum verticalAlignment);
 
 	/**
 	 *
@@ -558,7 +503,7 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setFontName(String fontName);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setBold(Boolean)}.
 	 */
 	public void setBold(boolean bold);
 
@@ -568,7 +513,7 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setBold(Boolean bold);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setItalic(Boolean)}.
 	 */
 	public void setItalic(boolean italic);
 
@@ -578,7 +523,7 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setItalic(Boolean italic);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setPdfEmbedded(Boolean)}.
 	 */
 	public void setPdfEmbedded(boolean pdfEmbedded);
 
@@ -588,7 +533,7 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setPdfEmbedded(Boolean pdfEmbedded);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setStrikeThrough(Boolean)}.
 	 */
 	public void setStrikeThrough(boolean strikeThrough);
 
@@ -603,7 +548,7 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setMarkup(String markup);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setUnderline(Boolean)}.
 	 */
 	public void setUnderline(boolean underline);
 
@@ -613,17 +558,12 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	public void setUnderline(Boolean underline);
 
 	/**
-	 * @deprecated Replaced by {@link JRParagraph#setLineSpacing(LineSpacingEnum)}
-	 */
-	public void setLineSpacing(LineSpacingEnum lineSpacing);
-
-	/**
 	 *
 	 */
 	public void setPattern(String pattern);
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setBlankWhenNull(Boolean)}.
 	 */
 	public void setBlankWhenNull(boolean isBlankWhenNull);
 
@@ -646,16 +586,6 @@ public interface JRStyle extends JRStyleContainer, JRBoxContainer, JRPenContaine
 	 *
 	 */
 	public void setFontSize(Float fontSize);
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	public void setFontSize(int fontSize);
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	public void setFontSize(Integer fontSize);
 
 	/**
 	 *

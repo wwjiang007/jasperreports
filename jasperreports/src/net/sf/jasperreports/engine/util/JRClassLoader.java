@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -31,6 +31,7 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRRuntimeException;
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
@@ -99,6 +100,8 @@ public class JRClassLoader extends ClassLoader
 	
 	private ProtectionDomain protectionDomain;
 	
+	private ClassLoaderFilter classLoaderFilter;
+	
 	/**
 	 *
 	 */
@@ -107,12 +110,26 @@ public class JRClassLoader extends ClassLoader
 		super();
 	}
 
+	protected JRClassLoader(ClassLoaderFilter classLoaderFilter)
+	{
+		super();
+		
+		this.classLoaderFilter = classLoaderFilter;
+	}
+
 	/**
 	 *
 	 */
 	protected JRClassLoader(ClassLoader parent)
 	{
 		super(parent);
+	}
+
+	protected JRClassLoader(ClassLoader parent, ClassLoaderFilter classLoaderFilter)
+	{
+		super(parent);
+		
+		this.classLoaderFilter = classLoaderFilter;
 	}
 
 
@@ -245,6 +262,12 @@ public class JRClassLoader extends ClassLoader
 	 */
 	public static Class<?> loadClassFromBytes(String className, byte[] bytecodes)
 	{
+		return loadClassFromBytes(null, className, bytecodes);
+	}
+	
+	public static Class<?> loadClassFromBytes(ClassLoaderFilter classLoaderFilter, 
+			String className, byte[] bytecodes)
+	{
 		Class<?> clazz = null;
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -253,7 +276,7 @@ public class JRClassLoader extends ClassLoader
 			try
 			{
 				clazz = 
-					(new JRClassLoader(classLoader))
+					(new JRClassLoader(classLoader, classLoaderFilter))
 						.loadClass(className, bytecodes);
 			}
 			catch(NoClassDefFoundError e)
@@ -269,13 +292,13 @@ public class JRClassLoader extends ClassLoader
 			if (classLoader == null)
 			{
 				clazz = 
-					(new JRClassLoader())
+					(new JRClassLoader(classLoaderFilter))
 						.loadClass(className, bytecodes);
 			}
 			else
 			{
 				clazz = 
-					(new JRClassLoader(classLoader))
+					(new JRClassLoader(classLoader, classLoaderFilter))
 						.loadClass(className, bytecodes);
 			}
 		}
@@ -363,6 +386,16 @@ public class JRClassLoader extends ClassLoader
 		return clazz;
 	}
 
+	@Override
+	protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException, JRRuntimeException
+	{
+		if (classLoaderFilter != null)
+		{
+			classLoaderFilter.checkClassVisibility(name);
+		}
+		
+		return super.loadClass(name, resolve);
+	}
 
 	/**
 	 *
@@ -372,6 +405,16 @@ public class JRClassLoader extends ClassLoader
 		if (className == null)
 		{
 			return null;
+		}
+		
+		int ltPos = className.indexOf('<');
+		if (ltPos > 0)
+		{
+			int gtPos = className.lastIndexOf('>');
+			if (gtPos > ltPos)
+			{
+				className = className.substring(0, ltPos) + className.substring(gtPos);
+			}
 		}
 		
 		int arrayDimension = 0;

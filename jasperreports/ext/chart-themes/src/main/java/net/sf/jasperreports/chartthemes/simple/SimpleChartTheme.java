@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -450,11 +450,11 @@ public class SimpleChartTheme implements ChartTheme
 		
 		Boolean chartAntiAlias = chartSettings.getAntiAlias();
 		if (chartAntiAlias != null)
-			jfreeChart.setAntiAlias(chartAntiAlias.booleanValue());
+			jfreeChart.setAntiAlias(chartAntiAlias);
 		
 		Boolean textAntiAlias = chartSettings.getTextAntiAlias();
 		if (textAntiAlias != null)
-			jfreeChart.setTextAntiAlias(textAntiAlias.booleanValue());
+			jfreeChart.setTextAntiAlias((boolean)textAntiAlias);
 		
 		RectangleInsets padding = chartSettings.getPadding();
 		if (padding != null)
@@ -475,7 +475,7 @@ public class SimpleChartTheme implements ChartTheme
 			plot.setInsets(padding);
 
 		Boolean plotOutlineVisible = getPlotSettings().getOutlineVisible();
-		if (plotOutlineVisible == null || plotOutlineVisible.booleanValue()) 
+		if (plotOutlineVisible == null || plotOutlineVisible) 
 		{
 			Paint outlinePaint = getPlotSettings().getOutlinePaint() == null ? null : getPlotSettings().getOutlinePaint().getPaint();
 			if (outlinePaint != null)
@@ -522,7 +522,6 @@ public class SimpleChartTheme implements ChartTheme
 	 * 						<code>java.text.SimpleDateFormat</code> mask.
 	 * @param verticalTickLabels flag to draw tick labels at 90 degrees
 	 * @param lineColor color to use when drawing the axis line and any tick marks
-	 * @param isRangeAxis used to distinguish between range and domain axis type
 	 */
 	protected void configureAxis(
 			Axis axis,
@@ -556,8 +555,6 @@ public class SimpleChartTheme implements ChartTheme
 	 * 						<code>java.text.SimpleDateFormat</code> mask.
 	 * @param verticalTickLabels flag to draw tick labels at 90 degrees
 	 * @param lineColor color to use when drawing the axis line and any tick marks
-	 * @param isRangeAxis used to distinguish between range and domain axis type
-	 * @param timeUnit time unit used to create a DateAxis
 	 */
 	protected void configureAxis(
 			Axis axis,
@@ -576,14 +573,14 @@ public class SimpleChartTheme implements ChartTheme
 	{
 		Boolean axisVisible = axisSettings.getVisible();
 		
-		if (axisVisible == null || axisVisible.booleanValue())
+		if (axisVisible == null || axisVisible)
 		{
 			setAxisLine(axis, lineColor, axisSettings);
 
 //			Double defaultFixedDimension = getAxisSettings(isRangeAxis);
 //			if (defaultFixedDimension != null)
 //			{
-//				axis.setFixedDimension(defaultFixedDimension.doubleValue());
+//				axis.setFixedDimension(defaultFixedDimension);
 //			}
 			
 			setAxisLabel(axis, labelFont, labelColor, axisSettings);
@@ -592,7 +589,7 @@ public class SimpleChartTheme implements ChartTheme
 			setAxisBounds(axis, axisSettings, timePeriod, axisMinValue, axisMaxValue);
 			if (verticalTickLabels != null && axis instanceof ValueAxis)
 			{
-				((ValueAxis)axis).setVerticalTickLabels(verticalTickLabels.booleanValue());
+				((ValueAxis)axis).setVerticalTickLabels(verticalTickLabels);
 			}
 			
 		}
@@ -662,11 +659,11 @@ public class SimpleChartTheme implements ChartTheme
 
 		BarRenderer3D barRenderer3D =
 			new BarRenderer3D(
-				bar3DPlot.getXOffsetDouble() == null ? BarRenderer3D.DEFAULT_X_OFFSET : bar3DPlot.getXOffsetDouble().doubleValue(),
-				bar3DPlot.getYOffsetDouble() == null ? BarRenderer3D.DEFAULT_Y_OFFSET : bar3DPlot.getYOffsetDouble().doubleValue()
+				bar3DPlot.getXOffsetDouble() == null ? BarRenderer3D.DEFAULT_X_OFFSET : bar3DPlot.getXOffsetDouble(),
+				bar3DPlot.getYOffsetDouble() == null ? BarRenderer3D.DEFAULT_Y_OFFSET : bar3DPlot.getYOffsetDouble()
 				);
 
-		boolean isShowLabels = bar3DPlot.getShowLabels() == null ? false : bar3DPlot.getShowLabels().booleanValue();
+		boolean isShowLabels = bar3DPlot.getShowLabels() == null ? false : bar3DPlot.getShowLabels();
 		barRenderer3D.setBaseItemLabelsVisible( isShowLabels );
 		if (isShowLabels)
 		{
@@ -750,8 +747,8 @@ public class SimpleChartTheme implements ChartTheme
 		//plot.setNoDataMessage("No data to display");
 		
 		JRBarPlot barPlot = (JRBarPlot)getPlot();
-		boolean isShowTickMarks = barPlot.getShowTickMarks() == null ? true : barPlot.getShowTickMarks().booleanValue();
-		boolean isShowTickLabels = barPlot.getShowTickLabels() == null ? true : barPlot.getShowTickLabels().booleanValue();
+		boolean isShowTickMarks = barPlot.getShowTickMarks() == null ? true : barPlot.getShowTickMarks();
+		boolean isShowTickLabels = barPlot.getShowTickLabels() == null ? true : barPlot.getShowTickLabels();
 
 		categoryPlot.getDomainAxis().setTickMarksVisible(isShowTickMarks);
 		categoryPlot.getDomainAxis().setTickLabelsVisible(isShowTickLabels);
@@ -778,7 +775,7 @@ public class SimpleChartTheme implements ChartTheme
 
 
 		BarRenderer categoryRenderer = (BarRenderer)categoryPlot.getRenderer();
-		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels().booleanValue();
+		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels();
 		categoryRenderer.setBaseItemLabelsVisible( isShowLabels );
 		if (isShowLabels)
 		{
@@ -897,8 +894,6 @@ public class SimpleChartTheme implements ChartTheme
 
 	/**
 	 *
-	 * @param evaluation
-	 * @throws net.sf.jasperreports.engine.JRException
 	 */
 	protected JFreeChart createCandlestickChart() throws JRException
 	{
@@ -917,7 +912,7 @@ public class SimpleChartTheme implements ChartTheme
 		XYPlot xyPlot = (XYPlot) jfreeChart.getPlot();
 		JRCandlestickPlot candlestickPlot = (JRCandlestickPlot)getPlot();
 		CandlestickRenderer candlestickRenderer = (CandlestickRenderer) xyPlot.getRenderer();
-		boolean isShowVolume = candlestickPlot.getShowVolume() == null ? true : candlestickPlot.getShowVolume().booleanValue();
+		boolean isShowVolume = candlestickPlot.getShowVolume() == null ? true : candlestickPlot.getShowVolume();
 		candlestickRenderer.setDrawVolume(isShowVolume);
 
 		// Handle the axis formating for the category axis
@@ -945,8 +940,6 @@ public class SimpleChartTheme implements ChartTheme
 
 	/**
 	 *
-	 * @param evaluation
-	 * @throws JRException
 	 */
 	protected JFreeChart createHighLowChart() throws JRException
 	{
@@ -964,8 +957,8 @@ public class SimpleChartTheme implements ChartTheme
 		XYPlot xyPlot = (XYPlot) jfreeChart.getPlot();
 		JRHighLowPlot highLowPlot = (JRHighLowPlot)getPlot();
 		HighLowRenderer hlRenderer = (HighLowRenderer) xyPlot.getRenderer();
-		boolean isShowOpenTicks = highLowPlot.getShowOpenTicks() == null ? false : highLowPlot.getShowOpenTicks().booleanValue();
-		boolean isShowCloseTicks = highLowPlot.getShowCloseTicks() == null ? false : highLowPlot.getShowCloseTicks().booleanValue();
+		boolean isShowOpenTicks = highLowPlot.getShowOpenTicks() == null ? false : highLowPlot.getShowOpenTicks();
+		boolean isShowCloseTicks = highLowPlot.getShowCloseTicks() == null ? false : highLowPlot.getShowCloseTicks();
 		
 		hlRenderer.setDrawOpenTicks(isShowOpenTicks);
 		hlRenderer.setDrawCloseTicks(isShowCloseTicks);
@@ -1012,8 +1005,8 @@ public class SimpleChartTheme implements ChartTheme
 		JRLinePlot linePlot = (JRLinePlot)getPlot();
 
 		LineAndShapeRenderer lineRenderer = (LineAndShapeRenderer)categoryPlot.getRenderer();
-		boolean isShowShapes = linePlot.getShowShapes() == null ? true : linePlot.getShowShapes().booleanValue();
-		boolean isShowLines = linePlot.getShowLines() == null ? true : linePlot.getShowLines().booleanValue();
+		boolean isShowShapes = linePlot.getShowShapes() == null ? true : linePlot.getShowShapes();
+		boolean isShowLines = linePlot.getShowLines() == null ? true : linePlot.getShowLines();
 		
 		lineRenderer.setBaseShapesVisible( isShowShapes );//FIXMECHART check this
 		lineRenderer.setBaseLinesVisible( isShowLines );
@@ -1065,12 +1058,12 @@ public class SimpleChartTheme implements ChartTheme
 		//plot.setDirection(Rotation.CLOCKWISE);
 		//plot.setNoDataMessage("No data to display");
 		JRPie3DPlot jrPie3DPlot = (JRPie3DPlot)getPlot();
-		double depthFactor = jrPie3DPlot.getDepthFactorDouble() == null ? JRPie3DPlot.DEPTH_FACTOR_DEFAULT : jrPie3DPlot.getDepthFactorDouble().doubleValue();
-		boolean isCircular =  jrPie3DPlot.getCircular() == null ? false : jrPie3DPlot.getCircular().booleanValue();
+		double depthFactor = jrPie3DPlot.getDepthFactorDouble() == null ? JRPie3DPlot.DEPTH_FACTOR_DEFAULT : jrPie3DPlot.getDepthFactorDouble();
+		boolean isCircular =  jrPie3DPlot.getCircular() == null ? false : jrPie3DPlot.getCircular();
 		piePlot3D.setDepthFactor(depthFactor);
 		piePlot3D.setCircular(isCircular);
 
-		boolean isShowLabels = jrPie3DPlot.getShowLabels() == null ? true : jrPie3DPlot.getShowLabels().booleanValue();
+		boolean isShowLabels = jrPie3DPlot.getShowLabels() == null ? true : jrPie3DPlot.getShowLabels();
 		
 		if (isShowLabels)
 		{
@@ -1161,10 +1154,10 @@ public class SimpleChartTheme implements ChartTheme
 		//plot.setDirection(Rotation.CLOCKWISE);
 		//plot.setNoDataMessage("No data to display");
 		JRPiePlot jrPiePlot = (JRPiePlot)getPlot();
-		boolean isCircular = jrPiePlot.getCircular() == null ? true : jrPiePlot.getCircular().booleanValue();
+		boolean isCircular = jrPiePlot.getCircular() == null ? true : jrPiePlot.getCircular();
 		piePlot.setCircular(isCircular);
 
-		boolean isShowLabels = jrPiePlot.getShowLabels() == null ? true : jrPiePlot.getShowLabels().booleanValue();
+		boolean isShowLabels = jrPiePlot.getShowLabels() == null ? true : jrPiePlot.getShowLabels();
 		
 		if (isShowLabels)
 		{
@@ -1252,8 +1245,8 @@ public class SimpleChartTheme implements ChartTheme
 		XYLineAndShapeRenderer plotRenderer = (XYLineAndShapeRenderer) ((XYPlot)jfreeChart.getPlot()).getRenderer();
 
 		JRScatterPlot scatterPlot = (JRScatterPlot) getPlot();
-		boolean isShowLines = scatterPlot.getShowLines() == null ? true : scatterPlot.getShowLines().booleanValue();
-		boolean isShowShapes = scatterPlot.getShowShapes() == null ? true : scatterPlot.getShowShapes().booleanValue();
+		boolean isShowLines = scatterPlot.getShowLines() == null ? true : scatterPlot.getShowLines();
+		boolean isShowShapes = scatterPlot.getShowShapes() == null ? true : scatterPlot.getShowShapes();
 		
 		plotRenderer.setBaseLinesVisible(isShowLines);
 		plotRenderer.setBaseShapesVisible(isShowShapes);
@@ -1304,11 +1297,11 @@ public class SimpleChartTheme implements ChartTheme
 
 		StackedBarRenderer3D stackedBarRenderer3D =
 			new StackedBarRenderer3D(
-				bar3DPlot.getXOffsetDouble() == null ? StackedBarRenderer3D.DEFAULT_X_OFFSET : bar3DPlot.getXOffsetDouble().doubleValue(),
-				bar3DPlot.getYOffsetDouble() == null ? StackedBarRenderer3D.DEFAULT_Y_OFFSET : bar3DPlot.getYOffsetDouble().doubleValue()
+				bar3DPlot.getXOffsetDouble() == null ? StackedBarRenderer3D.DEFAULT_X_OFFSET : bar3DPlot.getXOffsetDouble(),
+				bar3DPlot.getYOffsetDouble() == null ? StackedBarRenderer3D.DEFAULT_Y_OFFSET : bar3DPlot.getYOffsetDouble()
 				);
 
-		boolean isShowLabels = bar3DPlot.getShowLabels() == null ? false : bar3DPlot.getShowLabels().booleanValue();
+		boolean isShowLabels = bar3DPlot.getShowLabels() == null ? false : bar3DPlot.getShowLabels();
 		stackedBarRenderer3D.setBaseItemLabelsVisible(isShowLabels);
 		if(isShowLabels)
 		{
@@ -1398,9 +1391,9 @@ public class SimpleChartTheme implements ChartTheme
 		CategoryPlot categoryPlot = (CategoryPlot)jfreeChart.getPlot();
 		JRBarPlot barPlot = (JRBarPlot)getPlot();
 		//plot.setNoDataMessage("No data to display");
-		boolean isShowTickMarks = barPlot.getShowTickMarks() == null ? true : barPlot.getShowTickMarks().booleanValue();
-		boolean isShowTickLabels = barPlot.getShowTickLabels() == null ? true : barPlot.getShowTickLabels().booleanValue();
-		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels().booleanValue();
+		boolean isShowTickMarks = barPlot.getShowTickMarks() == null ? true : barPlot.getShowTickMarks();
+		boolean isShowTickLabels = barPlot.getShowTickLabels() == null ? true : barPlot.getShowTickLabels();
+		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels();
 		
 		categoryPlot.getDomainAxis().setTickMarksVisible(isShowTickMarks);
 		categoryPlot.getDomainAxis().setTickLabelsVisible(isShowTickLabels);
@@ -1637,7 +1630,7 @@ public class SimpleChartTheme implements ChartTheme
 		itemRenderer.setShadowVisible(false);
 
 		JRBarPlot barPlot = (JRBarPlot)getPlot();
-		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels().booleanValue();
+		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels();
 		
 		itemRenderer.setBaseItemLabelsVisible( isShowLabels );
 
@@ -1702,8 +1695,8 @@ public class SimpleChartTheme implements ChartTheme
 				);
 
 		XYLineAndShapeRenderer lineRenderer = (XYLineAndShapeRenderer) jfreeChart.getXYPlot().getRenderer();
-		boolean isShowShapes = linePlot.getShowShapes() == null ? true : linePlot.getShowShapes().booleanValue();
-		boolean isShowLines = linePlot.getShowLines() == null ? true : linePlot.getShowLines().booleanValue();
+		boolean isShowShapes = linePlot.getShowShapes() == null ? true : linePlot.getShowShapes();
+		boolean isShowLines = linePlot.getShowLines() == null ? true : linePlot.getShowLines();
 		lineRenderer.setBaseShapesVisible(isShowShapes);
 		lineRenderer.setBaseLinesVisible(isShowLines);
 
@@ -1733,8 +1726,8 @@ public class SimpleChartTheme implements ChartTheme
 		
 		XYLineAndShapeRenderer lineRenderer = (XYLineAndShapeRenderer)xyPlot.getRenderer();
 		
-		boolean isShowShapes = timeSeriesPlot.getShowShapes() == null ? true : timeSeriesPlot.getShowShapes().booleanValue();
-		boolean isShowLines = timeSeriesPlot.getShowLines() == null ? true : timeSeriesPlot.getShowLines().booleanValue();
+		boolean isShowShapes = timeSeriesPlot.getShowShapes() == null ? true : timeSeriesPlot.getShowShapes();
+		boolean isShowLines = timeSeriesPlot.getShowLines() == null ? true : timeSeriesPlot.getShowLines();
 		lineRenderer.setBaseLinesVisible(isShowLines);
 		lineRenderer.setBaseShapesVisible(isShowShapes);
 		
@@ -1784,9 +1777,9 @@ public class SimpleChartTheme implements ChartTheme
 		//plot.setNoDataMessage("No data to display");
 		
 		JRBarPlot barPlot = (JRBarPlot)getPlot();
-		boolean isShowTickMarks = barPlot.getShowTickMarks() == null ? true : barPlot.getShowTickMarks().booleanValue();
-		boolean isShowTickLabels = barPlot.getShowTickLabels() == null ? true : barPlot.getShowTickLabels().booleanValue();
-		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels().booleanValue();
+		boolean isShowTickMarks = barPlot.getShowTickMarks() == null ? true : barPlot.getShowTickMarks();
+		boolean isShowTickLabels = barPlot.getShowTickLabels() == null ? true : barPlot.getShowTickLabels();
+		boolean isShowLabels = barPlot.getShowLabels() == null ? false : barPlot.getShowLabels();
 		
 		//FIXMETHEME these are useless if the theme settings apply after regardless of these; check all
 		categoryPlot.getDomainAxis().setTickMarksVisible(isShowTickMarks);
@@ -1826,7 +1819,6 @@ public class SimpleChartTheme implements ChartTheme
 	 * Converts a JasperReport data range into one understood by JFreeChart.
 	 *
 	 * @param dataRange the JasperReport version of the range
-	 * @param evaluation current expression evaluation phase
 	 * @return the JFreeChart version of the range
 	 * @throws JRException thrown when the low value of the range is greater than the
 	 * 						high value
@@ -1846,7 +1838,6 @@ public class SimpleChartTheme implements ChartTheme
 	 * Converts a JasperReports meter interval to one that JFreeChart understands.
 	 *
 	 * @param interval the JasperReports definition of an interval
-	 * @param evaluation current evaluation time
 	 * @return the JFreeChart version of the same interval
 	 * @throws JRException thrown when the interval contains an invalid range
 	 */
@@ -1861,7 +1852,7 @@ public class SimpleChartTheme implements ChartTheme
 		Color color = interval.getBackgroundColor() != null ? interval.getBackgroundColor() : (Color)ChartThemesConstants.TRANSPARENT_PAINT;
 		float[] components = color.getRGBColorComponents(null);
 
-		float alpha = interval.getAlphaDouble() == null ? (float)JRMeterInterval.DEFAULT_TRANSPARENCY : interval.getAlphaDouble().floatValue();
+		float alpha = (float)(interval.getAlphaDouble() == null ? JRMeterInterval.DEFAULT_TRANSPARENCY : interval.getAlphaDouble());
 		Color alphaColor = new Color(components[0], components[1], components[2], alpha);
 
 		return new MeterInterval(label, range, alphaColor, null, alphaColor);
@@ -1869,10 +1860,7 @@ public class SimpleChartTheme implements ChartTheme
 
 	/**
 	 * Build and configure a meter chart.
-	 *
-	 * @param evaluation current expression evaluation phase
-	 * @throws JRException
-	*/
+	 */
 	protected JFreeChart createMeterChart() throws JRException 
 	{
 		JRMeterPlot jrPlot = (JRMeterPlot)getPlot();
@@ -1895,7 +1883,7 @@ public class SimpleChartTheme implements ChartTheme
 		chartPlot.setRange(convertRange(jrPlot.getDataRange()));
 
 		// Set the size of the meter
-		int meterAngle = jrPlot.getMeterAngleInteger() == null ? 180 : jrPlot.getMeterAngleInteger().intValue();
+		int meterAngle = jrPlot.getMeterAngleInteger() == null ? 180 : jrPlot.getMeterAngleInteger();
 		chartPlot.setMeterAngle(meterAngle);
 
 		// Set the units - this is just a string that will be shown next to the
@@ -1906,7 +1894,7 @@ public class SimpleChartTheme implements ChartTheme
 
 		// Set the spacing between ticks.  I hate the name "tickSize" since to me it
 		// implies I am changing the size of the tick, not the spacing between them.
-		double tickInterval = jrPlot.getTickIntervalDouble() == null ? 10.0 : jrPlot.getTickIntervalDouble().doubleValue();
+		double tickInterval = jrPlot.getTickIntervalDouble() == null ? 10.0 : jrPlot.getTickIntervalDouble();
 		chartPlot.setTickSize(tickInterval);
 
 		// Set all the colors we support
@@ -1986,9 +1974,6 @@ public class SimpleChartTheme implements ChartTheme
 	 * Build and run a thermometer chart.  JFreeChart thermometer charts have some
 	 * limitations.  They always have a maximum of three ranges, and the colors of those
 	 * ranges seems to be fixed.
-	 *
-	 * @param evaluation current expression evaluation phase
-	 * @throws JRException
 	 */
 	protected JFreeChart createThermometerChart() throws JRException 
 	{
@@ -2250,7 +2235,7 @@ public class SimpleChartTheme implements ChartTheme
 	{
 		if (chartAxis.getPositionByte() != null)
 		{
-			switch (chartAxis.getPositionByte().byteValue())
+			switch (chartAxis.getPositionByte())
 			{
 				case JRChartAxis.POSITION_RIGHT_OR_BOTTOM :
 					return AxisLocation.BOTTOM_OR_RIGHT;
@@ -2352,16 +2337,16 @@ public class SimpleChartTheme implements ChartTheme
 			Integer backgroundImageAlignment = chartSettings.getBackgroundImageAlignment();
 			if (backgroundImageAlignment != null)
 			{
-				jfreeChart.setBackgroundImageAlignment(backgroundImageAlignment.intValue());
+				jfreeChart.setBackgroundImageAlignment(backgroundImageAlignment);
 			}
 			Float backgroundImageAlpha = chartSettings.getBackgroundImageAlpha();
-//			if (getChart().getOwnMode() != null && getChart().getOwnMode().byteValue() == ModeEnum.TRANSPARENT)
+//			if (getChart().getOwnMode() != null && getChart().getOwnMode() == ModeEnum.TRANSPARENT)
 //			{
-//				backgroundImageAlpha = new Float(0);
+//				backgroundImageAlpha = 0f;
 //			}
 			if (backgroundImageAlpha != null)
 			{
-				jfreeChart.setBackgroundImageAlpha(backgroundImageAlpha.floatValue());
+				jfreeChart.setBackgroundImageAlpha(backgroundImageAlpha);
 			}
 		}
 	}
@@ -2370,7 +2355,7 @@ public class SimpleChartTheme implements ChartTheme
 	{
 		TitleSettings titleSettings =  getTitleSettings();
 		Boolean showTitle = titleSettings.getShowTitle();
-		if (showTitle == null || showTitle.booleanValue())
+		if (showTitle == null || showTitle)
 		{
 			TextTitle title = jfreeChart.getTitle();
 					
@@ -2408,7 +2393,7 @@ public class SimpleChartTheme implements ChartTheme
 		
 		Boolean subtitleVisibility = subtitleSettings.getShowTitle();
 
-		if (subtitleVisibility == null || subtitleVisibility.booleanValue())
+		if (subtitleVisibility == null || subtitleVisibility)
 		{
 			String subtitleText = evaluateTextExpression(getChart().getSubtitleExpression());
 			if (subtitleText != null)
@@ -2498,15 +2483,15 @@ public class SimpleChartTheme implements ChartTheme
 		ChartSettings chartSettings = getChartSettings();
 		JRLineBox lineBox = getChart().getLineBox();
 		if (
-			lineBox.getLeftPen().getLineWidth().floatValue() == 0
-			&& lineBox.getBottomPen().getLineWidth().floatValue() == 0
-			&& lineBox.getRightPen().getLineWidth().floatValue() == 0
-			&& lineBox.getTopPen().getLineWidth().floatValue() == 0
+			lineBox.getLeftPen().getLineWidth() == 0
+			&& lineBox.getBottomPen().getLineWidth() == 0
+			&& lineBox.getRightPen().getLineWidth() == 0
+			&& lineBox.getTopPen().getLineWidth() == 0
 			)
 		{
 			boolean isVisible = chartSettings.getBorderVisible() == null 
 				? true 
-				: chartSettings.getBorderVisible().booleanValue();
+				: chartSettings.getBorderVisible();
 			if (isVisible)
 			{
 				Stroke stroke = chartSettings.getBorderStroke();
@@ -2543,7 +2528,7 @@ public class SimpleChartTheme implements ChartTheme
 			backgroundAlpha = plotSettings.getBackgroundAlpha();
 		}
 		if (backgroundAlpha != null)
-			plot.setBackgroundAlpha(backgroundAlpha.floatValue());
+			plot.setBackgroundAlpha(backgroundAlpha);
 		
 		Float foregroundAlpha = jrPlot.getForegroundAlphaFloat();
 		if (foregroundAlpha == null)
@@ -2551,7 +2536,7 @@ public class SimpleChartTheme implements ChartTheme
 			foregroundAlpha = plotSettings.getForegroundAlpha();
 		}
 		if (foregroundAlpha != null)
-			plot.setForegroundAlpha(foregroundAlpha.floatValue());
+			plot.setForegroundAlpha(foregroundAlpha);
 		
 		Image backgroundImage = plotSettings.getBackgroundImage() == null ? null : plotSettings.getBackgroundImage().getImage(getChartContext().getJasperReportsContext());
 		if (backgroundImage != null)
@@ -2560,12 +2545,12 @@ public class SimpleChartTheme implements ChartTheme
 			Integer backgroundImageAlignment = plotSettings.getBackgroundImageAlignment();
 			if (backgroundImageAlignment != null)
 			{
-				plot.setBackgroundImageAlignment(backgroundImageAlignment.intValue());
+				plot.setBackgroundImageAlignment(backgroundImageAlignment);
 			}
 			Float backgroundImageAlpha = plotSettings.getBackgroundImageAlpha();
 			if (backgroundImageAlpha != null)
 			{
-				plot.setBackgroundImageAlpha(backgroundImageAlpha.floatValue());
+				plot.setBackgroundImageAlpha(backgroundImageAlpha);
 			}
 		}
 	}
@@ -2577,11 +2562,11 @@ public class SimpleChartTheme implements ChartTheme
 		// Handle rotation of the category labels.
 		CategoryAxis axis = p.getDomainAxis();
 		boolean hasRotation = jrPlot.getLabelRotationDouble() != null || themeLabelRotation != null;
-		if(hasRotation)
+		if (hasRotation)
 		{
 			double labelRotation = jrPlot.getLabelRotationDouble() != null  
-					? jrPlot.getLabelRotationDouble().doubleValue() 
-					: themeLabelRotation.doubleValue();
+					? jrPlot.getLabelRotationDouble() 
+					: themeLabelRotation;
 			
 			if (labelRotation == 90)
 			{
@@ -2646,7 +2631,7 @@ public class SimpleChartTheme implements ChartTheme
 		}
 		
 		Boolean domainGridlineVisible = plotSettings.getDomainGridlineVisible();
-		if (domainGridlineVisible == null || domainGridlineVisible.booleanValue())
+		if (domainGridlineVisible == null || domainGridlineVisible)
 		{
 			PaintProvider domainGridlinePaint = plotSettings.getDomainGridlinePaint();
 			if (domainGridlinePaint != null)
@@ -2661,7 +2646,7 @@ public class SimpleChartTheme implements ChartTheme
 			
 		}
 		Boolean rangeGridlineVisible = plotSettings.getRangeGridlineVisible();
-		if (rangeGridlineVisible == null || rangeGridlineVisible.booleanValue())
+		if (rangeGridlineVisible == null || rangeGridlineVisible)
 		{
 			PaintProvider rangeGridlinePaint = plotSettings.getRangeGridlinePaint();
 			if (rangeGridlinePaint != null)
@@ -2714,7 +2699,7 @@ public class SimpleChartTheme implements ChartTheme
 		}
 		
 		Boolean domainGridlineVisible = plotSettings.getDomainGridlineVisible();
-		if (domainGridlineVisible == null || domainGridlineVisible.booleanValue())
+		if (domainGridlineVisible == null || domainGridlineVisible)
 		{
 			PaintProvider domainGridlinePaint = plotSettings.getDomainGridlinePaint();
 			if (domainGridlinePaint != null)
@@ -2729,7 +2714,7 @@ public class SimpleChartTheme implements ChartTheme
 			
 		}
 		Boolean rangeGridlineVisible = plotSettings.getRangeGridlineVisible();
-		if (rangeGridlineVisible == null || rangeGridlineVisible.booleanValue())
+		if (rangeGridlineVisible == null || rangeGridlineVisible)
 		{
 			PaintProvider rangeGridlinePaint = plotSettings.getRangeGridlinePaint();
 			if (rangeGridlinePaint != null)
@@ -2773,7 +2758,7 @@ public class SimpleChartTheme implements ChartTheme
 	protected void setAxisLine(Axis axis, Paint lineColor, AxisSettings axisSettings)
 	{
 		Boolean axisLineVisible = axisSettings.getLineVisible();
-		if (axisLineVisible == null || axisLineVisible.booleanValue())
+		if (axisLineVisible == null || axisLineVisible)
 		{
 			Paint linePaint = lineColor;
 			if (linePaint == null && axisSettings.getLinePaint() != null)
@@ -2798,14 +2783,14 @@ public class SimpleChartTheme implements ChartTheme
 	{
 		Boolean axisLabelVisible = axisSettings.getLabelVisible();
 		
-		if (axisLabelVisible == null || axisLabelVisible.booleanValue())
+		if (axisLabelVisible == null || axisLabelVisible)
 		{
 //			if (axis.getLabel() == null)
 //				axis.setLabel(axisSettings.getLabel());
 
 			Double labelAngle = axisSettings.getLabelAngle();
 			if (labelAngle != null)
-				axis.setLabelAngle(labelAngle.doubleValue());
+				axis.setLabelAngle(labelAngle);
 
 			JRBaseFont font = new JRBaseFont();
 			FontUtil.copyNonNullOwnProperties(axisSettings.getLabelFont(), font);
@@ -2832,7 +2817,7 @@ public class SimpleChartTheme implements ChartTheme
 
 	protected void setAxisTickLabels(Axis axis, JRFont tickLabelFont, Paint tickLabelColor, String tickLabelMask, AxisSettings axisSettings)
 	{
-		boolean axisTickLabelsVisible = axisSettings.getTickLabelsVisible() == null || axisSettings.getTickLabelsVisible().booleanValue();//FIXMETHEME axis visibility should be dealt with above;
+		boolean axisTickLabelsVisible = axisSettings.getTickLabelsVisible() == null || axisSettings.getTickLabelsVisible();//FIXMETHEME axis visibility should be dealt with above;
 		
 		axis.setTickLabelsVisible(axisTickLabelsVisible);
 
@@ -2911,7 +2896,7 @@ public class SimpleChartTheme implements ChartTheme
 	
 	protected void setAxisTickMarks(Axis axis, Paint lineColor, AxisSettings axisSettings)
 	{
-		boolean axisTickMarksVisible = axisSettings.getTickMarksVisible() == null || axisSettings.getTickMarksVisible().booleanValue();
+		boolean axisTickMarksVisible = axisSettings.getTickMarksVisible() == null || axisSettings.getTickMarksVisible();
 		
 		axis.setTickMarksVisible(axisTickMarksVisible);
 		
@@ -2919,11 +2904,11 @@ public class SimpleChartTheme implements ChartTheme
 		{
 			Float axisTickMarksInsideLength = axisSettings.getTickMarksInsideLength();
 			if (axisTickMarksInsideLength != null)
-				axis.setTickMarkInsideLength(axisTickMarksInsideLength.floatValue());
+				axis.setTickMarkInsideLength(axisTickMarksInsideLength);
 			
 			Float axisTickMarksOutsideLength = axisSettings.getTickMarksOutsideLength();
 			if (axisTickMarksOutsideLength != null)
-				axis.setTickMarkInsideLength(axisTickMarksOutsideLength.floatValue());
+				axis.setTickMarkInsideLength(axisTickMarksOutsideLength);
 			
 			Paint tickMarkPaint = axisSettings.getTickMarksPaint() != null && axisSettings.getTickMarksPaint().getPaint() != null
 				? axisSettings.getTickMarksPaint().getPaint()
@@ -3048,11 +3033,11 @@ public class SimpleChartTheme implements ChartTheme
 				{
 					if (numberAxis.getNumberFormatOverride() != null)
 					{
-						numberAxis.setTickUnit(new NumberTickUnit(axisRange / tickCount.intValue(), numberAxis.getNumberFormatOverride()));
+						numberAxis.setTickUnit(new NumberTickUnit(axisRange / tickCount, numberAxis.getNumberFormatOverride()));
 					}
 					else
 					{
-						numberAxis.setTickUnit(new NumberTickUnit(axisRange / tickCount.intValue(), NumberFormat.getNumberInstance(getLocale())));
+						numberAxis.setTickUnit(new NumberTickUnit(axisRange / tickCount, NumberFormat.getNumberInstance(getLocale())));
 					}
 				}
 				else
@@ -3090,7 +3075,7 @@ public class SimpleChartTheme implements ChartTheme
 					: getLegendSettings().getShowLegend()
 				:getChart().getShowLegend();
 
-		return showLegend.booleanValue();
+		return showLegend;
 	}
 
 	protected Paint[] getPaintSequence(PlotSettings plotSettings, JRChartPlot jrPlot)

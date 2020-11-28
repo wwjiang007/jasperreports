@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -97,6 +97,8 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 	
 	public static final String PROPERTY_BOOKMARK_LEVEL = "bookmarkLevel";
 	
+	public static final String PROPERTY_BOOKMARK_LEVEL_EXPRESSION = "bookmarkLevelExpression";
+	
 	public static final String PROPERTY_EVALUATION_GROUP = "evaluationGroup";
 	
 	public static final String PROPERTY_EVALUATION_TIME = "evaluationTime";
@@ -154,6 +156,7 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 	protected JRExpression titleExpression;
 	protected JRExpression subtitleExpression;
 	protected JRExpression anchorNameExpression;
+	protected JRExpression bookmarkLevelExpression;
 	protected JRExpression hyperlinkReferenceExpression;
 	protected JRExpression hyperlinkWhenExpression;
 	protected JRExpression hyperlinkAnchorExpression;
@@ -442,14 +445,6 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 	}
 		
 	/**
-	 * @deprecated Replaced by {@link #setHyperlinkType(HyperlinkTypeEnum)}.
-	 */
-	public void setHyperlinkType(byte hyperlinkType)
-	{
-		setHyperlinkType(HyperlinkTypeEnum.getByValue(hyperlinkType));
-	}
-		
-	/**
 	 * Sets the link type as a built-in hyperlink type.
 	 * 
 	 * @param hyperlinkType the built-in hyperlink type
@@ -464,14 +459,6 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 	public byte getHyperlinkTarget()
 	{
 		return JRHyperlinkHelper.getHyperlinkTarget(this);
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setHyperlinkTarget(HyperlinkTargetEnum)}.
-	 */
-	public void setHyperlinkTarget(byte hyperlinkTarget)
-	{
-		setHyperlinkTarget(HyperlinkTargetEnum.getByValue(hyperlinkTarget));
 	}
 		
 	/**
@@ -528,6 +515,22 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 		Object old = this.anchorNameExpression;
 		this.anchorNameExpression = anchorNameExpression;
 		getEventSupport().firePropertyChange(PROPERTY_ANCHOR_NAME_EXPRESSION, old, this.anchorNameExpression);
+	}
+
+	@Override
+	public JRExpression getBookmarkLevelExpression()
+	{
+		return bookmarkLevelExpression;
+	}
+
+	/**
+	 *
+	 */
+	public void setBookmarkLevelExpression(JRExpression bookmarkLevelExpression)
+	{
+		Object old = this.bookmarkLevelExpression;
+		this.bookmarkLevelExpression = bookmarkLevelExpression;
+		getEventSupport().firePropertyChange(PROPERTY_BOOKMARK_LEVEL_EXPRESSION, old, this.bookmarkLevelExpression);
 	}
 
 	@Override
@@ -948,6 +951,7 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 		clone.titleExpression = JRCloneUtils.nullSafeClone(titleExpression);
 		clone.subtitleExpression = JRCloneUtils.nullSafeClone(subtitleExpression);
 		clone.anchorNameExpression = JRCloneUtils.nullSafeClone(anchorNameExpression);
+		clone.bookmarkLevelExpression = JRCloneUtils.nullSafeClone(bookmarkLevelExpression);
 		clone.hyperlinkReferenceExpression = JRCloneUtils.nullSafeClone(hyperlinkReferenceExpression);
 		clone.hyperlinkWhenExpression = JRCloneUtils.nullSafeClone(hyperlinkWhenExpression);
 		clone.hyperlinkAnchorExpression = JRCloneUtils.nullSafeClone(hyperlinkAnchorExpression);
@@ -1018,7 +1022,7 @@ public class JRDesignChart extends JRDesignElement implements JRChart
 			{
 				legendPositionValue = EdgeEnum.getByValue(legendPosition);
 				titlePositionValue = EdgeEnum.getByValue(titlePosition);
-				showLegend = Boolean.valueOf(isShowLegend);
+				showLegend = isShowLegend;
 			}
 			else
 			{

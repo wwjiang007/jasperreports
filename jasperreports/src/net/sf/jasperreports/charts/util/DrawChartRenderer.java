@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,8 +30,6 @@ import java.util.List;
 
 import org.jfree.chart.JFreeChart;
 
-import net.sf.jasperreports.engine.ImageMapRenderable;
-import net.sf.jasperreports.engine.JRAbstractSvgRenderer;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintImageAreaHyperlink;
@@ -45,7 +43,7 @@ import net.sf.jasperreports.renderers.Graphics2DRenderable;
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @deprecated Replaced by {@link DrawChartRendererImpl}.
  */
-public class DrawChartRenderer extends JRAbstractSvgRenderer implements ImageMapRenderable, Graphics2DRenderable, DimensionRenderable
+public class DrawChartRenderer extends net.sf.jasperreports.engine.JRAbstractSvgRenderer implements net.sf.jasperreports.engine.ImageMapRenderable, Graphics2DRenderable, DimensionRenderable
 {
 	private static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 

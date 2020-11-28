@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -698,7 +698,7 @@ public class JasperPrint implements Serializable, JRPropertiesHolder, JRChangeEv
 		if (!originsMap.containsKey(origin))
 		{
 			originsList.add(origin);
-			originsMap.put(origin, Integer.valueOf(originsList.size() - 1));
+			originsMap.put(origin, originsList.size() - 1);
 			
 			if (hasEventSupport())
 			{
@@ -716,9 +716,9 @@ public class JasperPrint implements Serializable, JRPropertiesHolder, JRChangeEv
 		{
 			originsList.remove(origin);
 			originsMap = new HashMap<JROrigin, Integer>();
-			for(int i = 0; i < originsList.size(); i++)
+			for (int i = 0; i < originsList.size(); i++)
 			{
-				originsMap.put(originsList.get(i), Integer.valueOf(i));
+				originsMap.put(originsList.get(i), i);
 			}
 			
 			if (hasEventSupport())

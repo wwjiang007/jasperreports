@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -39,6 +39,7 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPart;
 import net.sf.jasperreports.engine.JRPrintElement;
 import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JRStyle;
@@ -65,7 +66,6 @@ import net.sf.jasperreports.engine.fill.JRHorizontalFiller;
 import net.sf.jasperreports.engine.fill.JRVerticalFiller;
 import net.sf.jasperreports.engine.fill.JasperReportSource;
 import net.sf.jasperreports.engine.fill.PartReportFiller;
-import net.sf.jasperreports.engine.fill.SimpleJasperReportSource;
 import net.sf.jasperreports.engine.part.BasePartFillComponent;
 import net.sf.jasperreports.engine.part.FillingPrintPart;
 import net.sf.jasperreports.engine.part.PartPrintOutput;
@@ -73,11 +73,6 @@ import net.sf.jasperreports.engine.type.SectionTypeEnum;
 import net.sf.jasperreports.engine.util.BookmarksFlatDataSource;
 import net.sf.jasperreports.parts.PartFillerParent;
 import net.sf.jasperreports.properties.PropertyConstants;
-import net.sf.jasperreports.repo.RepositoryContext;
-import net.sf.jasperreports.repo.RepositoryResourceContext;
-import net.sf.jasperreports.repo.RepositoryUtil;
-import net.sf.jasperreports.repo.ResourceInfo;
-import net.sf.jasperreports.repo.SimpleRepositoryResourceContext;
 
 /**
  * @author Lucian Chirita (lucianc@users.sourceforge.net)
@@ -165,35 +160,8 @@ public class SubreportFillPart extends BasePartFillComponent
 	private JasperReportSource evaluateReportSource(byte evaluation) throws JRException
 	{
 		reportSource = fillContext.evaluate(subreportPart.getExpression(), evaluation);
-		String reportLocation = null;
-		
-		String contextLocation = null;
-		Object source = reportSource;
-		RepositoryContext currentRepositoryContext = fillContext.getFiller().getRepositoryContext();
-		if (reportSource instanceof String)
-		{
-			reportLocation = (String) reportSource;
-			RepositoryUtil repository = RepositoryUtil.getInstance(currentRepositoryContext);
-			ResourceInfo resourceInfo = repository.getResourceInfo(reportLocation);
-			if (resourceInfo != null)
-			{
-				source = reportLocation = resourceInfo.getRepositoryResourceLocation();
-				contextLocation = resourceInfo.getRepositoryContextLocation();
-				if (log.isDebugEnabled())
-				{
-					log.debug("part source " + source + " resolved to " + reportLocation
-							+ ", context " + contextLocation);
-				}				
-			}
-		}
-		
-		JasperReport jasperReport = JRFillSubreport.loadReport(source, fillContext.getFiller());//FIXMEBOOK cache
-		
-		RepositoryResourceContext currentContext = currentRepositoryContext.getResourceContext();
-		RepositoryResourceContext reportContext = SimpleRepositoryResourceContext.of(contextLocation,
-				currentContext == null ? null : currentContext.getDerivedContextFallback());
-		JasperReportSource reportSource = SimpleJasperReportSource.from(jasperReport, reportLocation, reportContext);
-		return reportSource;
+		return JRFillSubreport.getReportSource(reportSource, subreportPart.getUsingCache(), 
+				fillContext.getFiller());
 	}
 	
 	private JasperReport getReport()
@@ -333,6 +301,12 @@ public class SubreportFillPart extends BasePartFillComponent
 		}
 
 		@Override
+		public JRPropertiesHolder getParentProperties() 
+		{
+			return null; // we avoid parts inheriting properties from master
+		}
+
+		@Override
 		public DatasetExpressionEvaluator getCachedEvaluator()
 		{
 			//FIXMEBOOK
@@ -454,6 +428,12 @@ public class SubreportFillPart extends BasePartFillComponent
 		public PartReportFiller getFiller()
 		{
 			return fillContext.getFiller();
+		}
+
+		@Override
+		public JRPropertiesHolder getParentProperties() 
+		{
+			return null; // we avoid parts inheriting properties from master
 		}
 
 		@Override

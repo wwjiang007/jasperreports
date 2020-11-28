@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -62,6 +62,18 @@ public class ElementsBlockList implements ElementStore, Serializable
 		size = block.size();
 	}
 
+	@Override
+	public void updatePage(JRVirtualPrintPage page)
+	{
+		for (ElementsBlock block : blocks)
+		{
+			if (block != null)
+			{
+				block.updatePage(page);
+			}
+		}
+	}
+
 	public void addBlock(ElementsBlock block)
 	{
 		incrementBlocks();
@@ -101,7 +113,7 @@ public class ElementsBlockList implements ElementStore, Serializable
 
 	public ElementsBlock[] getBlocks()
 	{
-		return blocks;
+		return Arrays.copyOf(blocks, blockCount);
 	}
 
 	@Override

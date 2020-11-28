@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -305,6 +305,9 @@ public final class JRXmlConstants
 	public static final String ATTRIBUTE_customizerClass = "customizerClass";
 	public static final String ATTRIBUTE_renderType = "renderType";
 	public static final String ATTRIBUTE_theme = "theme";
+	
+	public static final String ELEMENT_bookmarkLevelExpression = "bookmarkLevelExpression";
+
 
 	/**
 	 * JRChartAxisFormatFactory associated constants
@@ -770,11 +773,13 @@ public final class JRXmlConstants
 	public static final String ELEMENT_textField = "textField";
 
 	public static final String ATTRIBUTE_isStretchWithOverflow = "isStretchWithOverflow";
+	public static final String ATTRIBUTE_textAdjust = "textAdjust";
 
 	/**
 	 * JRVariableFactory  associated constants
 	 */
 	public static final String ELEMENT_variable = "variable";
+	public static final String ELEMENT_variableDescription = "variableDescription";
 	public static final String ELEMENT_variableExpression = "variableExpression";
 	public static final String ELEMENT_initialValueExpression = "initialValueExpression";
 

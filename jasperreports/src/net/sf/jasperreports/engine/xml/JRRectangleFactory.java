@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,10 +23,10 @@
  */
 package net.sf.jasperreports.engine.xml;
 
+import org.xml.sax.Attributes;
+
 import net.sf.jasperreports.engine.design.JRDesignRectangle;
 import net.sf.jasperreports.engine.design.JasperDesign;
-
-import org.xml.sax.Attributes;
 
 
 /**
@@ -45,7 +45,7 @@ public class JRRectangleFactory extends JRBaseFactory
 		String radius = atts.getValue(JRXmlConstants.ATTRIBUTE_radius);
 		if (radius != null && radius.length() > 0)
 		{
-			rectangle.setRadius(Integer.parseInt(radius));
+			rectangle.setRadius(Integer.valueOf(radius));
 		}
 
 		return rectangle;

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -24,6 +24,7 @@
 package net.sf.jasperreports.engine.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * {@link BigDecimalHandler} implementation used on Java 1.4.
@@ -41,7 +42,7 @@ public class Java14BigDecimalHandler implements BigDecimalHandler
 	@Override
 	public BigDecimal divide(BigDecimal dividend, BigDecimal divisor)
 	{
-		return dividend.divide(divisor, BigDecimal.ROUND_HALF_UP);
+		return dividend.divide(divisor, RoundingMode.HALF_UP);
 	}
 
 }

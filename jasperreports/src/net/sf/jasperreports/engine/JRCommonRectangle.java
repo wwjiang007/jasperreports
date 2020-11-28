@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,10 +48,13 @@ public interface JRCommonRectangle extends JRStyleContainer
 	public Integer getOwnRadius();
 
 	/**
-	 * Sets the corner radius for rectangles with round corners.
+	 * @deprecated Replaced by {@link #setRadius(Integer)}.
 	 */
 	public void setRadius(int radius);
 
+	/**
+	 * Sets the corner radius for rectangles with round corners.
+	 */
 	public void setRadius(Integer radius);
 
 	

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.jasperreports.engine.JRRuntimeException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,8 +40,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import net.sf.jasperreports.engine.JRRuntimeException;
 
 /**
  * @author Lucian Chirita (lucianc@users.sourceforge.net)
@@ -115,7 +115,7 @@ public class RequirejsTemplateConfigContributor implements RequirejsConfigContri
 			}
 			else
 			{
-				dest.set(field, sourceValue);
+				dest.put(field, sourceValue);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -71,7 +71,7 @@ public class ObjectUtils
 		 */
 		public void add(boolean value)
 		{
-			addToHash(Boolean.valueOf(value).hashCode());
+			addToHash(((Boolean)value).hashCode());
 		}
 		
 		/**
@@ -388,7 +388,7 @@ public class ObjectUtils
 			}
 			
 			String value1 = p1.getProperty(name1);
-			String value2 = p1.getProperty(name1);
+			String value2 = p2.getProperty(name1);
 			if (!equals(value1, value2))
 			{
 				return false;

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -286,7 +286,7 @@ public class JRDesignDataset extends JRBaseDataset
 		variable.setSystemDefined(true);
 		expression = new JRDesignExpression();
 		//expression.setValueClass(Integer.class);
-		//expression.setText("($V{COLUMN_NUMBER} != null)?(Integer.valueOf($V{COLUMN_NUMBER}.intValue() + 1)):(Integer.valueOf(1))");
+		//expression.setText("$V{COLUMN_NUMBER} == null ? 1 : ($V{COLUMN_NUMBER} + 1)");
 		expression.setText("new java.lang.Integer(1)");
 		variable.setInitialValueExpression(expression);
 		return variable;
@@ -303,7 +303,7 @@ public class JRDesignDataset extends JRBaseDataset
 		variable.setSystemDefined(true);
 		JRDesignExpression expression = new JRDesignExpression();
 		//expression.setValueClass(Integer.class);
-		//expression.setText("($V{PAGE_NUMBER} != null)?(Integer.valueOf($V{PAGE_NUMBER}.intValue() + 1)):(Integer.valueOf(1))");
+		//expression.setText("$V{PAGE_NUMBER} == null ? 1 : ($V{PAGE_NUMBER} + 1)");
 		expression.setText("new java.lang.Integer(1)");
 		variable.setInitialValueExpression(expression);
 		return variable;

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -46,7 +46,11 @@ public enum FilterTypeTextOperatorsEnum implements NamedEnum
 	
 	ENDS_WITH("Ends With"),
 	
-	DOES_NOT_END_WITH("Does not End With");
+	DOES_NOT_END_WITH("Does not End With"),
+
+	IS_NULL("Is Null"),
+
+	IS_NOT_NULL("Is not Null");
 
 	/**
 	 *

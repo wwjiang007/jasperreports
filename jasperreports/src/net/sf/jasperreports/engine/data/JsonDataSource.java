@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,11 +23,9 @@
  */
 package net.sf.jasperreports.engine.data;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +44,6 @@ import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
-import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.query.JsonQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JsonUtil;
@@ -60,7 +57,7 @@ import net.sf.jasperreports.repo.SimpleRepositoryContext;
  * 
  * @author Narcis Marcu (narcism@users.sourceforge.net)
  */
-public class JsonDataSource extends JRAbstractTextDataSource implements JsonData {
+public class JsonDataSource extends JRAbstractTextDataSource implements JsonData<JsonDataSource>, RandomAccessDataSource {
 
 	public static final String EXCEPTION_MESSAGE_KEY_JSON_FIELD_VALUE_NOT_RETRIEVED = "data.json.field.value.not.retrieved";
 	public static final String EXCEPTION_MESSAGE_KEY_INVALID_ATTRIBUTE_SELECTION = "data.json.invalid.attribute.selection";
@@ -83,7 +80,10 @@ public class JsonDataSource extends JRAbstractTextDataSource implements JsonData
 
 	private Map<String, String> fieldExpressions = new HashMap<String, String>();
 
+	private JsonNode dataNode;
 	private Iterator<JsonNode> jsonNodesIterator;
+	
+	private int currentNodeIndex;
 
 	// the current node
 	private JsonNode currentJsonNode;
@@ -168,9 +168,11 @@ public class JsonDataSource extends JRAbstractTextDataSource implements JsonData
 					(Object[])null);
 		}
 
+		currentNodeIndex = -1;
 		currentJsonNode = null;
 		JsonNode result = getJsonData(jsonTree, selectExpression);
 		if (result != null && result.isObject()) {
+			dataNode = result;
 			final List<JsonNode> list = new ArrayList<JsonNode>();
 			list.add(result);
 			jsonNodesIterator = new Iterator<JsonNode>() {
@@ -192,6 +194,7 @@ public class JsonDataSource extends JRAbstractTextDataSource implements JsonData
 				}
 			};
 		} else if (result != null && result.isArray()) {
+			dataNode = result;
 			jsonNodesIterator = result.elements();
 		}
 	}
@@ -206,8 +209,55 @@ public class JsonDataSource extends JRAbstractTextDataSource implements JsonData
 		if(jsonNodesIterator == null || !jsonNodesIterator.hasNext()) {
 			return false;
 		}
+		++currentNodeIndex;
 		currentJsonNode = jsonNodesIterator.next();
 		return true;
+	}
+
+	@Override
+	public int recordCount() {
+		int count;
+		if (dataNode != null) {
+			if (dataNode.isObject()) {
+				count = 1;
+			} else if (dataNode.isArray()) {
+				count = dataNode.size();
+			} else {
+				//shouldn't happen
+				throw new IllegalStateException();
+			}
+		} else {
+			count = 0;
+		}
+		return count;
+	}
+
+	@Override
+	public int currentIndex() {
+		return currentNodeIndex;
+	}
+
+	@Override
+	public void moveToRecord(int index) throws NoRecordAtIndexException {
+		if (dataNode != null) {
+			if (dataNode.isObject()) {
+				if (index == 0) {
+					currentNodeIndex = 0;
+					currentJsonNode = dataNode;
+				} else {
+					throw new NoRecordAtIndexException(index);
+				}
+			} else if (dataNode.isArray()) {
+				if (index >= 0 && index < dataNode.size()) {
+					currentNodeIndex = index;
+					currentJsonNode = dataNode.get(index);
+				} else {
+					throw new NoRecordAtIndexException(index);
+				}
+			}
+		} else {
+			throw new NoRecordAtIndexException(index);
+		}
 	}
 
 	/*
@@ -491,14 +541,10 @@ public class JsonDataSource extends JRAbstractTextDataSource implements JsonData
 					(Object[])null);
 		}
 
-		try {
-			byte[] jsonNodeBytes = currentJsonNode.toString().getBytes("UTF-8");
-			JsonDataSource subDataSource = new JsonDataSource(new ByteArrayInputStream(jsonNodeBytes), selectExpression);
-			subDataSource.setTextAttributes(this);
-			return subDataSource;
-		} catch(UnsupportedEncodingException e) {
-			throw new JRRuntimeException(e);
-		}
+		JsonDataSource subDataSource = new JsonDataSource(currentJsonNode, selectExpression);
+		subDataSource.setTextAttributes(this);
+
+		return subDataSource;
 	}
 
 

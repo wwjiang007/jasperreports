@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,24 +23,34 @@
  */
 package net.sf.jasperreports.customvisualization.export;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.sf.jasperreports.customvisualization.CVPrintElement;
-import net.sf.jasperreports.customvisualization.CVUtils;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRGenericPrintElement;
-import net.sf.jasperreports.engine.JRRuntimeException;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.export.*;
-import net.sf.jasperreports.repo.RepositoryUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.sf.jasperreports.customvisualization.CVConstants;
+import net.sf.jasperreports.customvisualization.CVPrintElement;
+import net.sf.jasperreports.customvisualization.CVUtils;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRGenericPrintElement;
+import net.sf.jasperreports.engine.JRPrintImage;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
+import net.sf.jasperreports.engine.JRRuntimeException;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.export.FileHtmlResourceHandler;
+import net.sf.jasperreports.engine.export.GenericElementHtmlHandler;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.HtmlResourceHandler;
+import net.sf.jasperreports.engine.export.JRHtmlExporterContext;
+import net.sf.jasperreports.engine.export.tabulator.TableCell;
+import net.sf.jasperreports.repo.RepositoryContext;
+import net.sf.jasperreports.repo.RepositoryUtil;
+import net.sf.jasperreports.web.util.VelocityUtil;
 
 /**
  * 
@@ -54,7 +64,7 @@ public class CVElementHtmlHandler extends CVElementAbstractGenericHandler implem
 
 	private final String[] scriptResourceLocations = new String[] {
 			"net/sf/jasperreports/customvisualization/resources/require/require.js",
-			"net/sf/jasperreports/customvisualization/resources/require/cv-component.js"
+			"net/sf/jasperreports/customvisualization/resources/require/cv-component_static.js"
 	};
 
 
@@ -64,17 +74,33 @@ public class CVElementHtmlHandler extends CVElementAbstractGenericHandler implem
 	}
 
 	@Override
+	public void exportElement(JRHtmlExporterContext exporterContext, JRGenericPrintElement element, TableCell cell) 
+	{
+		try 
+		{
+			RepositoryContext repositoryContext = exporterContext.getRepository().getRepositoryContext();
+			JRPrintImage chartImage = CVElementImageProvider.getInstance().getImage(repositoryContext, element);
+			((HtmlExporter)exporterContext.getExporterRef()).writeImage(chartImage, cell);
+		}
+		catch (Exception e) 
+		{
+			throw new JRRuntimeException(e);
+		}
+	}
+	
+	@Override
 	public String getHtmlFragment(
 		JRHtmlExporterContext context, 
 		JRGenericPrintElement element
 		)
 	{
-		if (context == null)
+		JRPropertiesUtil properties = JRPropertiesUtil.getInstance(context.getJasperReportsContext());
+		boolean generateImage = properties.getBooleanProperty(CVConstants.PROPERTY_HTML_GENERATE_IMAGE);
+		if (!generateImage)
 		{
-			return "No JasperReports Context found";
+			return getHtmlFragment(context.getJasperReportsContext(), context, element);
 		}
-
-		return getHtmlFragment(context.getJasperReportsContext(), context, element);
+		return null; // let exportElement() method kick-in
 	}
 
 	public String getHtmlFragment(
@@ -142,9 +168,10 @@ public class CVElementHtmlHandler extends CVElementAbstractGenericHandler implem
 			velocityContext.put("module", element.getParameterValue(CVPrintElement.MODULE));
 		}
 
+		velocityContext.put("elementId", CVUtils.getElementId(element));
 		velocityContext.put("configuration", configuration);
 
-		return CVUtils.fillVelocityTemplate(jrContext, COMPONENT_TEMPLATE, velocityContext);
+		return VelocityUtil.processTemplate(COMPONENT_TEMPLATE, velocityContext);
 	}
 
 	protected String getResourceURL(String scriptResourceLocation, HtmlResourceHandler htmlResourceHandler, RepositoryUtil repositoryUtil)

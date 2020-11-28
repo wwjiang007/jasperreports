@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -87,11 +87,11 @@ public class LocalVirtualizationSerializer extends VirtualizationSerializer
 			Integer idx = classLoadersIndexes.get(classLoader);
 			if (idx == null)
 			{
-				idx = Integer.valueOf(classLoadersList.size());
+				idx = classLoadersList.size();
 				classLoadersIndexes.put(classLoader, idx);
 				classLoadersList.add(classLoader);
 			}
-			loaderIdx = idx.intValue();
+			loaderIdx = idx;
 		}
 		return loaderIdx;
 	}

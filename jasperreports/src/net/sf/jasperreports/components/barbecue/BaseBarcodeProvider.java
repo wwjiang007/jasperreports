@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -41,11 +41,11 @@ public abstract class BaseBarcodeProvider implements BarcodeProvider
 		barcode.setDrawingText(barcodeInfo.isDrawText());
 		if (barcodeInfo.getBarWidth() != null)
 		{
-			barcode.setBarWidth(barcodeInfo.getBarWidth().intValue());
+			barcode.setBarWidth(barcodeInfo.getBarWidth());
 		}
 		if (barcodeInfo.getBarHeight() != null)
 		{
-			barcode.setBarHeight(barcodeInfo.getBarHeight().intValue());
+			barcode.setBarHeight(barcodeInfo.getBarHeight());
 		}
 		return barcode;
 	}

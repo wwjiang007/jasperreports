@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,13 +32,12 @@ import org.apache.commons.logging.LogFactory;
 
 import net.sf.jasperreports.data.AbstractDataAdapterService;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRClassLoader;
 
 /**
- * @author Veaceslov Chicu (schicu@users.sourceforge.net)
+ * @author Veaceslav Chicu (schicu@users.sourceforge.net)
  */
 public class SpringHibernateDataAdapterService extends
 		AbstractDataAdapterService {
@@ -52,14 +51,6 @@ public class SpringHibernateDataAdapterService extends
 	public SpringHibernateDataAdapterService(ParameterContributorContext paramContribContext, SpringHibernateDataAdapter jsonDataAdapter) 
 	{
 		super(paramContribContext, jsonDataAdapter);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #SpringHibernateDataAdapterService(ParameterContributorContext, SpringHibernateDataAdapter)}.
-	 */
-	public SpringHibernateDataAdapterService(JasperReportsContext jasperReportsContext, SpringHibernateDataAdapter jsonDataAdapter) 
-	{
-		super(jasperReportsContext, jsonDataAdapter);
 	}
 
 	public SpringHibernateDataAdapter getHibernateDataAdapter() {

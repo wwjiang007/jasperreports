@@ -83,25 +83,25 @@
 							<font size="12"/>
 						</valueDisplay>
 						<dataRange>
-							<lowExpression><![CDATA[new Double(0.0)]]></lowExpression>
-							<highExpression><![CDATA[new Double(17500.0)]]></highExpression>
+							<lowExpression><![CDATA[0.0d]]></lowExpression>
+							<highExpression><![CDATA[17500.0d]]></highExpression>
 						</dataRange>
 						<lowRange>
 							<dataRange>
-								<lowExpression><![CDATA[new Double(0.0)]]></lowExpression>
-								<highExpression><![CDATA[new Double(2000.0)]]></highExpression>
+								<lowExpression><![CDATA[0.0d]]></lowExpression>
+								<highExpression><![CDATA[2000.0d]]></highExpression>
 							</dataRange>
 						</lowRange>
 						<mediumRange>
 							<dataRange>
-								<lowExpression><![CDATA[new Double(2000.0)]]></lowExpression>
-								<highExpression><![CDATA[new Double(12000.0)]]></highExpression>
+								<lowExpression><![CDATA[2000.0d]]></lowExpression>
+								<highExpression><![CDATA[12000.0d]]></highExpression>
 							</dataRange>
 						</mediumRange>
 						<highRange>
 							<dataRange>
-								<lowExpression><![CDATA[new Double(12000.0)]]></lowExpression>
-								<highExpression><![CDATA[new Double(17500)]]></highExpression>
+								<lowExpression><![CDATA[12000.0d]]></lowExpression>
+								<highExpression><![CDATA[17500d]]></highExpression>
 							</dataRange>
 						</highRange>
 					</thermometerPlot>
@@ -230,7 +230,7 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{OrderID}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="40" y="0" width="110" height="11" uuid="4b65bb0b-ca0a-4d90-a882-96d8a1763f15"/>
 				<textFieldExpression><![CDATA[$F{ShipName} + ", " + $F{ShipCity}]]></textFieldExpression>
 			</textField>

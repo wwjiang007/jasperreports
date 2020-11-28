@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -145,7 +145,7 @@ public class AsynchronousFillHandle extends BaseFillHandle
 			
 			if (priority != null)
 			{
-				fillThread.setPriority(priority.intValue());
+				fillThread.setPriority(priority);
 			}
 			
 			fillThread.start();
@@ -293,7 +293,7 @@ public class AsynchronousFillHandle extends BaseFillHandle
 	{
 		synchronized (lock)
 		{
-			this.priority = Integer.valueOf(priority);
+			this.priority = priority;
 			if (fillThread != null)
 			{
 				fillThread.setPriority(priority);

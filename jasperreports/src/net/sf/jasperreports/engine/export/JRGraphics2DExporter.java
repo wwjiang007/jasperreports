@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -45,6 +45,7 @@ import net.sf.jasperreports.engine.JRAbstractExporter;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRGenericElementType;
 import net.sf.jasperreports.engine.JRPrintPage;
+import net.sf.jasperreports.engine.JRPrintText;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
@@ -141,11 +142,6 @@ import net.sf.jasperreports.renderers.RenderersCache;
 public class JRGraphics2DExporter extends JRAbstractExporter<Graphics2DReportConfiguration, Graphics2DExporterConfiguration, Graphics2DExporterOutput, JRGraphics2DExporterContext>
 {
 	private static final float DEFAULT_ZOOM = 1f;
-
-	/**
-	 * @deprecated Replaced by {@link Graphics2DReportConfiguration#MINIMIZE_PRINTER_JOB_SIZE}.
-	 */
-	public static final String MINIMIZE_PRINTER_JOB_SIZE = Graphics2DReportConfiguration.MINIMIZE_PRINTER_JOB_SIZE;
 
 	private static final String GRAPHICS2D_EXPORTER_PROPERTIES_PREFIX = JRPropertiesUtil.PROPERTY_PREFIX + "export.graphics2d.";
 
@@ -255,13 +251,27 @@ public class JRGraphics2DExporter extends JRAbstractExporter<Graphics2DReportCon
 		
 		Boolean isMinimizePrinterJobSize = configuration.isMinimizePrinterJobSize();
 		Boolean isIgnoreMissingFont = configuration.isIgnoreMissingFont();
+		boolean defaultIndentFirstLine = 
+			propertiesUtil.getBooleanProperty(
+				jasperPrint, 
+				JRPrintText.PROPERTY_AWT_INDENT_FIRST_LINE, 
+				true
+				);
+		boolean defaultJustifyLastLine = 
+			propertiesUtil.getBooleanProperty(
+				jasperPrint, 
+				JRPrintText.PROPERTY_AWT_JUSTIFY_LAST_LINE, 
+				false
+				);
 		
 		drawVisitor = 
 			new PrintDrawVisitor(
 				exporterContext,
 				getRenderersCache(),
 				isMinimizePrinterJobSize == null ? Boolean.TRUE : isMinimizePrinterJobSize,
-				isIgnoreMissingFont == null ? Boolean.FALSE : isIgnoreMissingFont
+				isIgnoreMissingFont == null ? Boolean.FALSE : isIgnoreMissingFont,
+				defaultIndentFirstLine,
+				defaultJustifyLastLine
 				);
 		
 		whitePageBackground = configuration.isWhitePageBackground();
@@ -394,7 +404,7 @@ public class JRGraphics2DExporter extends JRAbstractExporter<Graphics2DReportCon
 		Float zoomRatio = getCurrentItemConfiguration().getZoomRatio();
 		if (zoomRatio != null)
 		{
-			zoom = zoomRatio.floatValue();
+			zoom = zoomRatio;
 			if (zoom <= 0)
 			{
 				throw 

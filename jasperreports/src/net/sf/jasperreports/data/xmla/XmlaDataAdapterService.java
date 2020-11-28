@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -40,7 +40,6 @@ import org.olap4j.OlapDatabaseMetaData;
 
 import net.sf.jasperreports.data.AbstractDataAdapterService;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.olap.xmla.JRXmlaQueryExecuterFactory;
 import net.sf.jasperreports.olap.xmla.Olap4jXmlaQueryExecuter;
@@ -62,14 +61,6 @@ public class XmlaDataAdapterService extends AbstractDataAdapterService
 	public XmlaDataAdapterService(ParameterContributorContext paramContribContext, XmlaDataAdapter dataAdapter) 
 	{
 		super(paramContribContext, dataAdapter);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #XmlaDataAdapterService(ParameterContributorContext, XmlaDataAdapter)}.
-	 */
-	public XmlaDataAdapterService(JasperReportsContext jasperReportsContext, XmlaDataAdapter dataAdapter) 
-	{
-		super(jasperReportsContext, dataAdapter);
 	}
 
 	public XmlaDataAdapter getXmlaDataAdapter()

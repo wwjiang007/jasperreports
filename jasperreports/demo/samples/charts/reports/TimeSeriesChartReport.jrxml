@@ -127,7 +127,7 @@
 						<timeSeries>
 							<seriesExpression><![CDATA["Double Freight"]]></seriesExpression>
 							<timePeriodExpression><![CDATA[$F{OrderDate}]]></timePeriodExpression>
-							<valueExpression><![CDATA[new Double($V{FreightSumMonthGroup}.doubleValue() * 2d)]]></valueExpression>
+							<valueExpression><![CDATA[$V{FreightSumMonthGroup} * 2d]]></valueExpression>
 							<labelExpression><![CDATA[]]></labelExpression>
 						</timeSeries>
 						<timeSeries>
@@ -139,7 +139,7 @@
 						<timeSeries>
 							<seriesExpression><![CDATA["Half-Freight"]]></seriesExpression>
 							<timePeriodExpression><![CDATA[$F{OrderDate}]]></timePeriodExpression>
-							<valueExpression><![CDATA[new Double($V{FreightSumMonthGroup}.doubleValue() / 2d)]]></valueExpression>
+							<valueExpression><![CDATA[$V{FreightSumMonthGroup} / 2d]]></valueExpression>
 							<labelExpression><![CDATA[]]></labelExpression>
 						</timeSeries>
 					</timeSeriesDataset>
@@ -184,7 +184,7 @@
 		</groupFooter>
 	</group>
 	<group name="MonthGroup">
-		<groupExpression><![CDATA[Integer.valueOf($F{OrderDate}.getMonth())]]></groupExpression>
+		<groupExpression><![CDATA[$F{OrderDate}.getMonth()]]></groupExpression>
 	</group>
 	<title>
 		<band height="50">
@@ -234,7 +234,7 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{OrderID}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="40" y="0" width="110" height="11" uuid="0b92e515-745b-4333-9961-a93a605aeced"/>
 				<textFieldExpression><![CDATA[$F{ShipName} + ", " + $F{ShipCity}]]></textFieldExpression>
 			</textField>

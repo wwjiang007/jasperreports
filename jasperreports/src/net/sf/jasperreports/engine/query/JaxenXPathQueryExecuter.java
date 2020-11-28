@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -65,18 +65,30 @@ public class JaxenXPathQueryExecuter extends JRAbstractQueryExecuter
 	private final DocumentBuilderFactory documentBuilderFactory;
 	
 	private Map<String, String> namespacesMap;
+
+	/**
+	 *
+	 */
+	public JaxenXPathQueryExecuter(
+		JasperReportsContext jasperReportsContext,
+		JRDataset dataset,
+		Map<String,? extends JRValueParameter> parametersMap
+		)
+	{
+		this(SimpleQueryExecutionContext.of(jasperReportsContext), dataset, parametersMap);
+	}
 	
 	/**
 	 * 
 	 */
 	public JaxenXPathQueryExecuter(
-		JasperReportsContext jasperReportsContext,
+		QueryExecutionContext context,
 		JRDataset dataset, 
 		Map<String,? extends JRValueParameter> parametersMap
 		)
 	{
-		super(jasperReportsContext, dataset, parametersMap);
-				
+		super(context, dataset, parametersMap);
+		
 		document = (Document) getParameterValue(JaxenXPathQueryExecuterFactory.PARAMETER_XML_DATA_DOCUMENT);
 		documentBuilderFactory = (DocumentBuilderFactory) getParameterValue(
 				JaxenXPathQueryExecuterFactory.PARAMETER_DOCUMENT_BUILDER_FACTORY, true);

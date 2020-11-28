@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -37,6 +37,7 @@ import net.sf.jasperreports.engine.JRBreak;
 import net.sf.jasperreports.engine.JRElement;
 import net.sf.jasperreports.engine.JRElementGroup;
 import net.sf.jasperreports.engine.JRPrintElement;
+import net.sf.jasperreports.engine.JRPrintText;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
@@ -73,7 +74,9 @@ public class DrawVisitor extends UniformElementVisitor
 				jasperReportsContext,
 				new RenderersCache(jasperReportsContext),
 				propUtil.getBooleanProperty(report, Graphics2DReportConfiguration.MINIMIZE_PRINTER_JOB_SIZE, true),
-				propUtil.getBooleanProperty(report, JRStyledText.PROPERTY_AWT_IGNORE_MISSING_FONT, false)
+				propUtil.getBooleanProperty(report, JRStyledText.PROPERTY_AWT_IGNORE_MISSING_FONT, false),
+				propUtil.getBooleanProperty(report, JRPrintText.PROPERTY_AWT_INDENT_FIRST_LINE, true),
+				propUtil.getBooleanProperty(report, JRPrintText.PROPERTY_AWT_JUSTIFY_LAST_LINE, false)
 				);
 		
 		setGraphics2D(grx);
@@ -90,14 +93,6 @@ public class DrawVisitor extends UniformElementVisitor
 	public void setGraphics2D(Graphics2D grx)
 	{
 		drawVisitor.setGraphics2D(grx);
-	}
-
-	/**
-	 * @deprecated To be removed.
-	 */
-	public void setTextRenderer(JRReport report)
-	{
-		drawVisitor.setTextRenderer(report);
 	}
 
 	@Override

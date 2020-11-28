@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -33,6 +33,7 @@ import net.sf.jasperreports.engine.export.JRExporterGridCell;
 import net.sf.jasperreports.engine.export.ooxml.GenericElementDocxHandler;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporterContext;
+import net.sf.jasperreports.repo.RepositoryContext;
 
 /**
  * @author Giulio Toffoli
@@ -67,9 +68,9 @@ public class CVElementDocxHandler implements GenericElementDocxHandler
 
 		try
 		{
-			JRPrintImage chartImage = 
-				CVElementImageProvider.getDefaultProvider()
-					.getImage(exporterContext.getJasperReportsContext(), element);
+			RepositoryContext repositoryContext = exporterContext.getRepository().getRepositoryContext();
+			JRPrintImage chartImage =
+					CVElementImageProvider.getInstance().getImage(repositoryContext, element);
 						
 			JRDocxExporter exporter = (JRDocxExporter) exporterContext.getExporterRef();
 	  		exporter.exportImage(exporterContext.getTableHelper(), chartImage, gridCell);

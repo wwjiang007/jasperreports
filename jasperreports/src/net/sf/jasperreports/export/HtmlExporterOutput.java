@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -37,7 +37,10 @@ public interface HtmlExporterOutput extends WriterExporterOutput
 	public HtmlResourceHandler getImageHandler(); 
 
 	/**
-	 * @deprecated Replaced by {@link #getResourceHandler()} and {@link JsonExporterOutput#getFontHandler()}.
+	 * This handler is needed when generating static, non-interactive HTML output, in server environments
+	 * where the JsonExporter is not involved in bringing in the Web font information and the font CSS still 
+	 * needs to be generated dynamically and comes from a server URL that is different from the one used 
+	 * for static resources.
 	 */
 	public HtmlResourceHandler getFontHandler(); 
 

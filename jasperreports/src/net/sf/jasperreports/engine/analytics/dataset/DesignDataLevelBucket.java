@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,7 +27,6 @@ import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.design.events.JRChangeEventsSupport;
 import net.sf.jasperreports.engine.design.events.JRPropertyChangeSupport;
-import net.sf.jasperreports.engine.type.SortOrderEnum;
 
 /**
  * @author Lucian Chirita (lucianc@users.sourceforge.net)
@@ -101,25 +100,6 @@ public class DesignDataLevelBucket extends BaseDataLevelBucket implements JRChan
 		getEventSupport().firePropertyChange(PROPERTY_LABEL_EXPRESSION, old, this.labelExpression);
 	}
 
-	
-	/**
-	 * Sets the sorting type.
-	 * 
-	 * @param orderValue one of
-	 * <ul>
-	 * 	<li>{@link SortOrderEnum#ASCENDING SortOrderEnum.ASCENDING}</li>
-	 * 	<li>{@link SortOrderEnum#DESCENDING SortOrderEnum.DESCENDING}</li>
-	 * </ul>
-	 * @see DataLevelBucket#getOrder()
-	 * 
-	 * @deprecated replaced by {@link #setOrder(BucketOrder)}
-	 */
-	@Deprecated
-	public void setOrder(SortOrderEnum orderValue)
-	{
-		BucketOrder order = BucketOrder.fromSortOrderEnum(orderValue);
-		setOrder(order);
-	}
 	
 	/**
 	 * Sets the sorting type.

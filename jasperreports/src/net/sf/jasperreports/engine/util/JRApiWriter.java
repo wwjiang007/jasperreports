@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -164,6 +165,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.query.JRJdbcQueryExecuterFactory;
 import net.sf.jasperreports.engine.type.BreakTypeEnum;
 import net.sf.jasperreports.engine.type.CalculationEnum;
+import net.sf.jasperreports.engine.type.DatasetResetTypeEnum;
 import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
 import net.sf.jasperreports.engine.type.FooterPositionEnum;
 import net.sf.jasperreports.engine.type.HyperlinkTargetEnum;
@@ -179,6 +181,7 @@ import net.sf.jasperreports.engine.type.SortFieldTypeEnum;
 import net.sf.jasperreports.engine.type.SortOrderEnum;
 import net.sf.jasperreports.engine.type.StretchTypeEnum;
 import net.sf.jasperreports.engine.type.TabStopAlignEnum;
+import net.sf.jasperreports.engine.type.TextAdjustEnum;
 import net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
 import net.sf.jasperreports.export.WriterExporterOutput;
@@ -199,11 +202,6 @@ public class JRApiWriter
 	 *
 	 */
 	private JasperReportsContext jasperReportsContext;
-
-	/**
-	 * @deprecated To be removed.
-	 */
-	private JRReport report;
 
 	/**
 	 *
@@ -232,15 +230,6 @@ public class JRApiWriter
 	}
 
 	
-	/**
-	 * @deprecated To be removed.
-	 */
-	protected JRApiWriter(JRReport report)
-	{
-		this.report = report;
-	}
-
-
 	/**
 	 *
 	 */
@@ -740,6 +729,7 @@ public class JRApiWriter
 			
 			write( "JRDesignVariable " + variableName + " = new JRDesignVariable();\n");
 			write( variableName + ".setName(\"{0}\");\n", JRStringUtil.escapeJavaStringLiteral(variable.getName()));
+			write( variableName + ".setDescription(\"{0}\");\n", JRStringUtil.escapeJavaStringLiteral(variable.getDescription()));
 			write( variableName + ".setValueClassName(\"{0}\");\n", variable.getValueClassName());
 			write( variableName + ".setResetType({0});\n", variable.getResetTypeValue(), ResetTypeEnum.REPORT);
 			write( variableName + ".setResetGroup({0});\n", resetGroupName);
@@ -1090,6 +1080,7 @@ public class JRApiWriter
 		{
 			write( "JRDesignImage " + imageName + " = new JRDesignImage(jasperDesign);\n");
 			write( imageName + ".setScaleImage({0});\n", image.getOwnScaleImageValue());
+			write( imageName + ".setRotation({0});\n", image.getOwnRotation());
 			write( imageName + ".setHorizontalImageAlign({0});\n", image.getOwnHorizontalImageAlign());
 			write( imageName + ".setVerticalImageAlign({0});\n", image.getOwnVerticalImageAlign());
 			write( imageName + ".setUsingCache({0});\n", image.getUsingCache());
@@ -1114,6 +1105,7 @@ public class JRApiWriter
 			
 			writeExpression( image.getExpression(), imageName, "Expression");
 			writeExpression( image.getAnchorNameExpression(), imageName, "AnchorNameExpression");
+			writeExpression( image.getBookmarkLevelExpression(), imageName, "BookmarkLevelExpression");
 			writeExpression( image.getHyperlinkReferenceExpression(), imageName, "HyperlinkReferenceExpression");
 			writeExpression( image.getHyperlinkWhenExpression(), imageName, "HyperlinkWhenExpression");
 			writeExpression( image.getHyperlinkAnchorExpression(), imageName, "HyperlinkAnchorExpression");
@@ -1257,7 +1249,7 @@ public class JRApiWriter
 		{
 			write( "JRDesignTextField " + textFieldName + " = new JRDesignTextField(jasperDesign);\n");
 			write( textFieldName + ".setBold({0});\n", textField.isOwnBold());
-			write( textFieldName + ".setStretchWithOverflow({0});\n", textField.isStretchWithOverflow(), false);
+			write( textFieldName + ".setTextAdjust({0});\n", textField.getTextAdjust(), TextAdjustEnum.CUT_TEXT);
 			write( textFieldName + ".setEvaluationTime({0});\n", textField.getEvaluationTimeValue(), EvaluationTimeEnum.NOW);
 			write( textFieldName + ".setEvaluationGroup({0});\n", getGroupName(textField.getEvaluationGroup()));
 
@@ -1281,6 +1273,8 @@ public class JRApiWriter
 			writeExpression( textField.getExpression(), textFieldName, "Expression");
 	
 			writeExpression( textField.getPatternExpression(), textFieldName, "PatternExpression");
+			
+			writeExpression( textField.getBookmarkLevelExpression(), textFieldName, "BookmarkLevelExpression");
 			
 			writeExpression( textField.getAnchorNameExpression(), textFieldName, "AnchorNameExpression");
 	
@@ -1435,7 +1429,7 @@ public class JRApiWriter
 				write( chartName + ".setLegendFont(new JRBaseFont());\n");
 				writeFont( chart.getLegendFont(), chartName + ".getLegendFont()");
 			}
-	
+			writeExpression( chart.getBookmarkLevelExpression(), chartName, "BookmarkLevelExpression");
 			writeExpression( chart.getAnchorNameExpression(), chartName, "AnchorNameExpression");
 			writeExpression( chart.getHyperlinkReferenceExpression(), chartName, "HyperlinkReferenceExpression");
 			writeExpression( chart.getHyperlinkWhenExpression(), chartName, "HyperlinkWhenExpression");//FIXMENOW can we reuse hyperlink write method?
@@ -1475,9 +1469,9 @@ public class JRApiWriter
 	{
 		if(dataset != null)
 		{
-			write( datasetName + ".setResetType({0});\n", dataset.getResetTypeValue(), ResetTypeEnum.REPORT);
+			write( datasetName + ".setResetType({0});\n", dataset.getDatasetResetType(), DatasetResetTypeEnum.REPORT);
 	
-			if (dataset.getResetTypeValue() == ResetTypeEnum.GROUP)
+			if (dataset.getDatasetResetType() == DatasetResetTypeEnum.GROUP)
 			{
 				String resetGroupName = getGroupName(  dataset.getResetGroup());
 				write( datasetName + ".setResetGroup(" + resetGroupName + ");\n");
@@ -1824,7 +1818,7 @@ public class JRApiWriter
 		{
 			String datasetName = parentName + datasetNameSuffix;
 			write( "JRDesignPieDataset " + datasetName + " = new JRDesignPieDataset(" + parentName + ".getDataset());\n");
-			write( datasetName + ".setMaxCount(Integer.valueOf({0, number, #}));\n", dataset.getMaxCount());
+			write( datasetName + ".setMaxCount({0, number, #});\n", dataset.getMaxCount());
 			write( datasetName + ".setMinPercentage({0});\n", dataset.getMinPercentage());
 	
 			writeElementDataset( dataset, datasetName);
@@ -2864,7 +2858,7 @@ public class JRApiWriter
 				
 				write( "JRDesignMeterPlot " + plotName + " = (JRDesignMeterPlot)" + chartName + ".getPlot();\n");
 				write( plotName + ".setShape({0});\n", plot.getShapeValue());
-				write( plotName + ".setMeterAngle(Integer.valueOf({0, number, #}));\n", plot.getMeterAngleInteger());
+				write( plotName + ".setMeterAngle({0, number, #});\n", plot.getMeterAngleInteger());
 				
 				write( plotName + ".setUnits(\"{0}\");\n", JRStringUtil.escapeJavaStringLiteral(plot.getUnits()));
 				write( plotName + ".setTickInterval({0});\n", plot.getTickIntervalDouble());
@@ -3908,11 +3902,11 @@ public class JRApiWriter
 	{
 		if (box != null)
 		{
-			write( boxHolder + ".setPadding(Integer.valueOf({0, number, #}));\n", box.getOwnPadding());
-			write( boxHolder + ".setTopPadding(Integer.valueOf({0, number, #}));\n", box.getOwnTopPadding());
-			write( boxHolder + ".setLeftPadding(Integer.valueOf({0, number, #}));\n", box.getOwnLeftPadding());
-			write( boxHolder + ".setBottomPadding(Integer.valueOf({0, number, #}));\n", box.getOwnBottomPadding());
-			write( boxHolder + ".setRightPadding(Integer.valueOf({0, number, #}));\n", box.getOwnRightPadding());
+			write( boxHolder + ".setPadding({0, number, #});\n", box.getOwnPadding());
+			write( boxHolder + ".setTopPadding({0, number, #});\n", box.getOwnTopPadding());
+			write( boxHolder + ".setLeftPadding({0, number, #});\n", box.getOwnLeftPadding());
+			write( boxHolder + ".setBottomPadding({0, number, #});\n", box.getOwnBottomPadding());
+			write( boxHolder + ".setRightPadding({0, number, #});\n", box.getOwnRightPadding());
 
 			writePen( box.getPen(), boxHolder + ".getPen()");
 			writePen( box.getTopPen(), boxHolder + ".getTopPen()");
@@ -3940,7 +3934,7 @@ public class JRApiWriter
 			write( paragraphName + ".setRightIndent({0});\n", paragraph.getOwnRightIndent());
 			write( paragraphName + ".setSpacingBefore({0});\n", paragraph.getOwnSpacingBefore());
 			write( paragraphName + ".setSpacingAfter({0});\n", paragraph.getOwnSpacingAfter());
-			write( paragraphName + ".setTabStopWidth(Integer.valueOf({0, number, #}));\n", paragraph.getOwnTabStopWidth());//FIXMENOW is this pattern needed?
+			write( paragraphName + ".setTabStopWidth({0, number, #});\n", paragraph.getOwnTabStopWidth());//FIXMENOW is this pattern needed?
 
 			TabStop[] tabStops = paragraph.getTabStops();
 			if (tabStops != null && tabStops.length > 0)
@@ -4072,7 +4066,7 @@ public class JRApiWriter
 	 */
 	protected void write(String pattern, int value)
 	{
-		write(MessageFormat.format(pattern, new Object[]{Integer.valueOf(value)}));
+		write(MessageFormat.format(pattern, new Object[]{value}));
 	}
 
 	
@@ -4083,7 +4077,7 @@ public class JRApiWriter
 	{
 		if (value != defaultValue)
 		{
-			write(MessageFormat.format(pattern, new Object[]{Integer.valueOf(value)}));
+			write(MessageFormat.format(pattern, new Object[]{value}));
 		}
 	}
 
@@ -4106,7 +4100,7 @@ public class JRApiWriter
 		{
 			String strFloat = 
 				MessageFormat.format(
-					"new Float({0})", 
+					"{0}f", 
 					new Object[]{NumberFormat.getInstance(Locale.ENGLISH).format(value).replaceAll(",", "")}
 					);
 			write(MessageFormat.format(pattern, new Object[]{strFloat}));
@@ -4132,7 +4126,7 @@ public class JRApiWriter
 		{
 			String strDouble = 
 				MessageFormat.format(
-					"new Double({0})", 
+					"{0}d", 
 					new Object[]{NumberFormat.getInstance(Locale.ENGLISH).format(value).replaceAll(",", "")}
 					);
 			write(MessageFormat.format(pattern, new Object[]{strDouble}));
@@ -4147,7 +4141,7 @@ public class JRApiWriter
 	{
 		if (value != defaultValue)
 		{
-			write(MessageFormat.format(pattern, new Object[]{value ? Boolean.TRUE : Boolean.FALSE}));
+			write(MessageFormat.format(pattern, new Object[]{value}));
 		}
 	}
 
@@ -4159,7 +4153,7 @@ public class JRApiWriter
 	{
 		if (value != defaultValue)
 		{
-			write(MessageFormat.format(pattern, new Object[]{new Byte(value)}));
+			write(MessageFormat.format(pattern, new Object[]{value}));
 		}
 	}
 
@@ -4207,7 +4201,7 @@ public class JRApiWriter
 	{
 		return key == null 
 			? null 
-			: (key.booleanValue() ? "Boolean.TRUE" : "Boolean.FALSE");
+			: (key ? "Boolean.TRUE" : "Boolean.FALSE");
 	}
 	
 	/**
@@ -4260,11 +4254,12 @@ public class JRApiWriter
 		try
 		{
 			Class<?> reportCreatorClass = Class.forName(reportCreatorClassName);
-			ReportCreator reportCreator = (ReportCreator)reportCreatorClass.newInstance();
+			ReportCreator reportCreator = (ReportCreator)reportCreatorClass.getDeclaredConstructor().newInstance();
 			JasperDesign jasperDesign = reportCreator.create();
 			new JRXmlWriter(DefaultJasperReportsContext.getInstance()).write(jasperDesign, destFileName, "UTF-8");
 		}
-		catch (Exception e)
+		catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException 
+			| IllegalAccessException | InstantiationException | JRException e)
 		{
 			if (log.isErrorEnabled())
 			{

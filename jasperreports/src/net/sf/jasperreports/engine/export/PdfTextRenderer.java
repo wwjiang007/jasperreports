@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -24,6 +24,7 @@
 package net.sf.jasperreports.engine.export;
 
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfWriter;
 
@@ -38,11 +39,33 @@ import net.sf.jasperreports.engine.type.RunDirectionEnum;
 public class PdfTextRenderer extends AbstractPdfTextRenderer
 {
 	/**
+	 * @deprecated Replaced by {@link #PdfTextRenderer(JasperReportsContext, boolean, boolean, boolean)}.
+	 */
+	public PdfTextRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont
+		)
+	{
+		this(jasperReportsContext, ignoreMissingFont, true, false);
+	}
+	
+	
+	/**
 	 * 
 	 */
-	public PdfTextRenderer(JasperReportsContext jasperReportsContext, boolean ignoreMissingFont)
+	public PdfTextRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont,
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine
+		)
 	{
-		super(jasperReportsContext, ignoreMissingFont);
+		super(
+			jasperReportsContext, 
+			ignoreMissingFont, 
+			defaultIndentFirstLine,
+			defaultJustifyLastLine
+			);
 	}
 	
 	
@@ -51,7 +74,7 @@ public class PdfTextRenderer extends AbstractPdfTextRenderer
 	{
 		TabSegment segment = segments.get(segmentIndex);
 		
-		float advance = segment.layout.getAdvance();
+		float advance = segment.layout.getVisibleAdvance();//getAdvance();
 		
 		ColumnText colText = new ColumnText(pdfContentByte);
 		colText.setSimpleColumn(
@@ -64,7 +87,7 @@ public class PdfTextRenderer extends AbstractPdfTextRenderer
 				//- text.getLeadingOffset()
 				+ lineHeight
 				- drawPosY,
-			x + drawPosX  + segment.layout.getAdvance() + rightOffsetFactor * advance,// + leftPadding
+			x + drawPosX + advance + rightOffsetFactor * advance,// + leftPadding
 			pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- topPadding
@@ -73,7 +96,8 @@ public class PdfTextRenderer extends AbstractPdfTextRenderer
 				-400//+ lineHeight//FIXMETAB
 				- drawPosY,
 			0,//text.getLineSpacingFactor(),// * text.getFont().getSize(),
-			horizontalAlignment
+			horizontalAlignment == Element.ALIGN_JUSTIFIED && (!segment.isLastLine || (isLastParagraph && justifyLastLine)) 
+				? Element.ALIGN_JUSTIFIED_ALL : horizontalAlignment
 			);
 
 		//colText.setLeading(0, text.getLineSpacingFactor());// * text.getFont().getSize());

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -106,11 +106,11 @@ public class JRStyledTextUtil
 				{
 					truncatedText = JRStyledTextParser.getInstance().write(
 							printText.getFullStyledText(allSelector), 
-							0, printText.getTextTruncateIndex().intValue());
+							0, printText.getTextTruncateIndex());
 				}
 				else
 				{
-					truncatedText = originalText.substring(0, printText.getTextTruncateIndex().intValue());
+					truncatedText = originalText.substring(0, printText.getTextTruncateIndex());
 				}
 			}
 			

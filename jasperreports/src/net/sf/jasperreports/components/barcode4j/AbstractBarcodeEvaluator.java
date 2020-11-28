@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -22,6 +22,8 @@
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
 package net.sf.jasperreports.components.barcode4j;
+
+import java.awt.Dimension;
 
 import org.krysalis.barcode4j.BaselineAlignment;
 import org.krysalis.barcode4j.ChecksumMode;
@@ -92,24 +94,38 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 
 	protected void evaluateBarcodeRenderable(BarcodeComponent barcodeComponent)
 	{
-		BarcodeImageProducer imageProducer = 
-			BarcodeUtils.getInstance(jasperReportsContext).getProducer(
-				componentElement);
-		renderable = imageProducer.createImage(
-				jasperReportsContext,
-				componentElement, 
-				barcodeBean, message);
+		if (message == null)
+		{
+			renderable = null;
+		}
+		else
+		{
+			BarcodeImageProducer imageProducer = 
+				BarcodeUtils.getInstance(jasperReportsContext).getProducer(
+					componentElement);
+			renderable = imageProducer.createImage(
+					jasperReportsContext,
+					componentElement, 
+					barcodeBean, message);
+		}
 	}
 	
 	protected void evaluateBarcodeRenderable(QRCodeBean qrCodeBean)
 	{
-		QRCodeImageProducer imageProducer = 
-			BarcodeUtils.getInstance(jasperReportsContext).getQRCodeProducer(
-				componentElement);
-		renderable = imageProducer.createImage(
-				jasperReportsContext,
-				componentElement, 
-				qrCodeBean, message);
+		if (message == null)
+		{
+			renderable = null;
+		}
+		else
+		{
+			QRCodeImageProducer imageProducer = 
+				BarcodeUtils.getInstance(jasperReportsContext).getQRCodeProducer(
+					componentElement);
+			renderable = imageProducer.createImage(
+					jasperReportsContext,
+					componentElement, 
+					qrCodeBean, message);
+		}
 	}
 	
 	protected void setBaseAttributes(Barcode4jComponent barcodeComponent)
@@ -134,7 +150,7 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		Double moduleWidth = barcodeComponent.getModuleWidth();
 		if (moduleWidth != null)
 		{
-			barcodeBean.setModuleWidth(UnitConv.pt2mm(moduleWidth.doubleValue()));
+			barcodeBean.setModuleWidth(UnitConv.pt2mm(moduleWidth));
 		}
 		
 		TextPositionEnum textPlacement = barcodeComponent.getTextPositionValue();
@@ -148,13 +164,13 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		if (quietZone != null)
 		{
 			barcodeBean.doQuietZone(true);
-			barcodeBean.setQuietZone(UnitConv.pt2mm(quietZone.doubleValue()));
+			barcodeBean.setQuietZone(UnitConv.pt2mm(quietZone));
 		}
 		
 		Double vQuietZone = barcodeComponent.getVerticalQuietZone();
 		if (vQuietZone != null)
 		{
-			barcodeBean.setVerticalQuietZone(UnitConv.pt2mm(vQuietZone.doubleValue()));
+			barcodeBean.setVerticalQuietZone(UnitConv.pt2mm(vQuietZone));
 		}
 
 		// FIXME DataMatrix?
@@ -189,7 +205,7 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		setBaseAttributes(codabar);
 		if (codabar.getWideFactor() != null)
 		{
-			codabarBean.setWideFactor(codabar.getWideFactor().doubleValue());
+			codabarBean.setWideFactor(codabar.getWideFactor());
 		}
 		evaluateBarcodeRenderable(codabar);
 	}
@@ -218,6 +234,49 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		{
 			dataMatrixBean.setShape(SymbolShapeHint.byName(dataMatrix.getShape()));
 		}
+		
+		Dimension minSymbolDimension = null; 
+		if(dataMatrix.getMinSymbolWidth() != null)
+		{
+			if(dataMatrix.getMinSymbolHeight() != null)
+			{
+				minSymbolDimension = new Dimension(dataMatrix.getMinSymbolWidth(), dataMatrix.getMinSymbolHeight());
+			}
+			else
+			{
+				minSymbolDimension = new Dimension(dataMatrix.getMinSymbolWidth(), dataMatrix.getMinSymbolWidth());
+			}
+		}
+		else if(dataMatrix.getMinSymbolHeight() != null)
+		{
+			minSymbolDimension = new Dimension(dataMatrix.getMinSymbolHeight(), dataMatrix.getMinSymbolHeight());
+		}
+		if(minSymbolDimension != null)
+		{
+			dataMatrixBean.setMinSize(minSymbolDimension);
+		}	
+		
+		Dimension maxSymbolDimension = null; 
+		if(dataMatrix.getMaxSymbolWidth() != null)
+		{
+			if(dataMatrix.getMaxSymbolHeight() != null)
+			{
+				maxSymbolDimension = new Dimension(dataMatrix.getMaxSymbolWidth(), dataMatrix.getMaxSymbolHeight());
+			}
+			else
+			{
+				maxSymbolDimension = new Dimension(dataMatrix.getMaxSymbolWidth(), dataMatrix.getMaxSymbolWidth());
+			}
+		}
+		else if(dataMatrix.getMaxSymbolHeight() != null)
+		{
+			maxSymbolDimension = new Dimension(dataMatrix.getMaxSymbolHeight(), dataMatrix.getMaxSymbolHeight());
+		}
+		if(maxSymbolDimension != null)
+		{
+			dataMatrixBean.setMaxSize(maxSymbolDimension);
+		}	
+		
 		evaluateBarcodeRenderable(dataMatrix);
 	}
 
@@ -252,23 +311,23 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		}
 		if (code39.isDisplayChecksum() != null)
 		{
-			code39Bean.setDisplayChecksum(code39.isDisplayChecksum().booleanValue());
+			code39Bean.setDisplayChecksum(code39.isDisplayChecksum());
 		}
 		if (code39.isDisplayStartStop() != null)
 		{
-			code39Bean.setDisplayStartStop(code39.isDisplayStartStop().booleanValue());
+			code39Bean.setDisplayStartStop(code39.isDisplayStartStop());
 		}
 		if (code39.isExtendedCharSetEnabled() != null)
 		{
-			code39Bean.setExtendedCharSetEnabled(code39.isExtendedCharSetEnabled().booleanValue());
+			code39Bean.setExtendedCharSetEnabled(code39.isExtendedCharSetEnabled());
 		}
 		if (code39.getIntercharGapWidth() != null)
 		{
-			code39Bean.setIntercharGapWidth(code39.getIntercharGapWidth().doubleValue());
+			code39Bean.setIntercharGapWidth(code39.getIntercharGapWidth());
 		}
 		if (code39.getWideFactor() != null)
 		{
-			code39Bean.setWideFactor(code39.getWideFactor().doubleValue());
+			code39Bean.setWideFactor(code39.getWideFactor());
 		}
 		evaluateBarcodeRenderable(code39);
 	}
@@ -290,11 +349,11 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		}
 		if (interleaved2Of5.isDisplayChecksum() != null)
 		{
-			interleaved2Of5Bean.setDisplayChecksum(interleaved2Of5.isDisplayChecksum().booleanValue());
+			interleaved2Of5Bean.setDisplayChecksum(interleaved2Of5.isDisplayChecksum());
 		}
 		if (interleaved2Of5.getWideFactor() != null)
 		{
-			interleaved2Of5Bean.setWideFactor(interleaved2Of5.getWideFactor().doubleValue());
+			interleaved2Of5Bean.setWideFactor(interleaved2Of5.getWideFactor());
 		}
 		evaluateBarcodeRenderable(interleaved2Of5);
 	}
@@ -388,19 +447,19 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		if (barcodeComponent.getAscenderHeight() != null)
 		{
 			barcodeBean.setAscenderHeight(
-					UnitConv.pt2mm(barcodeComponent.getAscenderHeight().doubleValue()));
+					UnitConv.pt2mm(barcodeComponent.getAscenderHeight()));
 		}
 		
 		if (barcodeComponent.getIntercharGapWidth() != null)
 		{
 			barcodeBean.setIntercharGapWidth(
-					UnitConv.pt2mm(barcodeComponent.getIntercharGapWidth().doubleValue()));
+					UnitConv.pt2mm(barcodeComponent.getIntercharGapWidth()));
 		}
 		
 		if (barcodeComponent.getTrackHeight() != null)
 		{
 			barcodeBean.setTrackHeight(
-					UnitConv.pt2mm(barcodeComponent.getTrackHeight().doubleValue()));
+					UnitConv.pt2mm(barcodeComponent.getTrackHeight()));
 		}
 	}
 
@@ -433,7 +492,7 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		if (postnet.getShortBarHeight() != null)
 		{
 			postnetBean.setShortBarHeight(
-					UnitConv.pt2mm(postnet.getShortBarHeight().doubleValue()));
+					UnitConv.pt2mm(postnet.getShortBarHeight()));
 		}
 		
 		if (postnet.getBaselinePosition() != null)
@@ -451,13 +510,13 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		if (postnet.getDisplayChecksum() != null)
 		{
 			postnetBean.setDisplayChecksum(
-					postnet.getDisplayChecksum().booleanValue());
+					postnet.getDisplayChecksum());
 		}
 		
 		if (postnet.getIntercharGapWidth() != null)
 		{
 			postnetBean.setIntercharGapWidth(
-					UnitConv.pt2mm(postnet.getIntercharGapWidth().doubleValue()));
+					UnitConv.pt2mm(postnet.getIntercharGapWidth()));
 		}
 		evaluateBarcodeRenderable(postnet);
 	}
@@ -475,29 +534,29 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 		
 		if (pdf417.getMinColumns() != null)
 		{
-			pdf417Bean.setMinCols(pdf417.getMinColumns().intValue());
+			pdf417Bean.setMinCols(pdf417.getMinColumns());
 		}
 		if (pdf417.getMaxColumns() != null)
 		{
-			pdf417Bean.setMaxCols(pdf417.getMaxColumns().intValue());
+			pdf417Bean.setMaxCols(pdf417.getMaxColumns());
 		}
 		if (pdf417.getMinRows() != null)
 		{
-			pdf417Bean.setMinRows(pdf417.getMinRows().intValue());
+			pdf417Bean.setMinRows(pdf417.getMinRows());
 		}
 		if (pdf417.getMaxRows() != null)
 		{
-			pdf417Bean.setMaxRows(pdf417.getMaxRows().intValue());
+			pdf417Bean.setMaxRows(pdf417.getMaxRows());
 		}
 		if (pdf417.getWidthToHeightRatio() != null)
 		{
 			pdf417Bean.setWidthToHeightRatio(
-					pdf417.getWidthToHeightRatio().doubleValue());
+					pdf417.getWidthToHeightRatio());
 		}
 		if (pdf417.getErrorCorrectionLevel() != null)
 		{
 			pdf417Bean.setErrorCorrectionLevel(
-					pdf417.getErrorCorrectionLevel().intValue());
+					pdf417.getErrorCorrectionLevel());
 		}
 		evaluateBarcodeRenderable(pdf417);
 	}
@@ -513,6 +572,7 @@ public abstract class AbstractBarcodeEvaluator implements BarcodeVisitor
 
 		qrCodeBean.setMargin(qrCode.getMargin());
 		qrCodeBean.setErrorCorrectionLevel(qrCode.getErrorCorrectionLevel());
+		qrCodeBean.setQrVersion(qrCode.getQrVersion());
 		evaluateBarcodeRenderable(qrCodeBean);
 	}
 

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -35,7 +35,6 @@ import net.sf.jasperreports.data.DataFileStream;
 import net.sf.jasperreports.data.DataFileUtils;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.data.AbstractXlsDataSource;
 import net.sf.jasperreports.engine.query.AbstractXlsQueryExecuterFactory;
@@ -54,14 +53,6 @@ public abstract class AbstractXlsDataAdapterService extends AbstractDataAdapterS
 	public AbstractXlsDataAdapterService(ParameterContributorContext paramContribContext, XlsDataAdapter xlsDataAdapter)
 	{
 		super(paramContribContext, xlsDataAdapter);
-	}
-	
-	/**
-	 * @deprecated Replaced by {@link #AbstractXlsDataAdapterService(ParameterContributorContext, XlsDataAdapter)}.
-	 */
-	public AbstractXlsDataAdapterService(JasperReportsContext jasperReportsContext, XlsDataAdapter xlsDataAdapter)
-	{
-		super(jasperReportsContext, xlsDataAdapter);
 	}
 	
 	public XlsDataAdapter getXlsDataAdapter()
@@ -133,7 +124,7 @@ public abstract class AbstractXlsDataAdapterService extends AbstractDataAdapterS
 					parameters.put(AbstractXlsQueryExecuterFactory.XLS_NUMBER_FORMAT, df);
 				}
 				
-				parameters.put( AbstractXlsQueryExecuterFactory.XLS_USE_FIRST_ROW_AS_HEADER, new Boolean(xlsDataAdapter.isUseFirstRowAsHeader()));
+				parameters.put( AbstractXlsQueryExecuterFactory.XLS_USE_FIRST_ROW_AS_HEADER, xlsDataAdapter.isUseFirstRowAsHeader());
 
 				if (sheetSelection != null && sheetSelection.length() > 0)
 				{

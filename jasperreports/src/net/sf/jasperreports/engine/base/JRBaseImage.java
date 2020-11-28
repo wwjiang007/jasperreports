@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -43,6 +43,7 @@ import net.sf.jasperreports.engine.type.HyperlinkTargetEnum;
 import net.sf.jasperreports.engine.type.HyperlinkTypeEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.OnErrorTypeEnum;
+import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.VerticalImageAlignEnum;
 import net.sf.jasperreports.engine.util.JRCloneUtils;
@@ -76,6 +77,7 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 	 *
 	 */
 	protected ScaleImageEnum scaleImageValue;
+	protected RotationEnum rotation;
 	protected HorizontalImageAlignEnum horizontalImageAlign;
 	protected VerticalImageAlignEnum verticalImageAlign;
 	protected Boolean isUsingCache;
@@ -97,6 +99,7 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 	protected JRGroup evaluationGroup;
 	protected JRExpression expression;
 	protected JRExpression anchorNameExpression;
+	protected JRExpression bookmarkLevelExpression;
 	protected JRExpression hyperlinkReferenceExpression;
 	protected JRExpression hyperlinkWhenExpression;
 	protected JRExpression hyperlinkAnchorExpression;
@@ -131,6 +134,7 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 		super(image, factory);
 		
 		scaleImageValue = image.getOwnScaleImageValue();
+		rotation = image.getOwnRotation();
 		horizontalImageAlign = image.getOwnHorizontalImageAlign();
 		verticalImageAlign = image.getOwnVerticalImageAlign();
 		isUsingCache = image.getUsingCache();
@@ -146,6 +150,7 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 		evaluationGroup = factory.getGroup(image.getEvaluationGroup());
 		expression = factory.getExpression(image.getExpression());
 		anchorNameExpression = factory.getExpression(image.getAnchorNameExpression());
+		bookmarkLevelExpression = factory.getExpression(image.getBookmarkLevelExpression());
 		hyperlinkReferenceExpression = factory.getExpression(image.getHyperlinkReferenceExpression());
 		hyperlinkWhenExpression = factory.getExpression(image.getHyperlinkWhenExpression());
 		hyperlinkAnchorExpression = factory.getExpression(image.getHyperlinkAnchorExpression());
@@ -181,61 +186,26 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 		getEventSupport().firePropertyChange(JRBaseStyle.PROPERTY_SCALE_IMAGE, old, this.scaleImageValue);
 	}
 
-
-	/**
-	 * @deprecated Replaced by {@link #getHorizontalImageAlign()}.
-	 */
 	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getHorizontalAlignmentValue()
+	public RotationEnum getRotation()
 	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getHorizontalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnHorizontalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getOwnHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getOwnHorizontalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setHorizontalImageAlign(HorizontalImageAlignEnum)}.
-	 */
-	@Override
-	public void setHorizontalAlignment(net.sf.jasperreports.engine.type.HorizontalAlignEnum horizontalAlignmentValue)
-	{
-		setHorizontalImageAlign(net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalImageAlignEnum(horizontalAlignmentValue));
+		return getStyleResolver().getRotation(this);
 	}
 
-	/**
-	 * @deprecated Replaced by {@link #getVerticalImageAlign()}.
-	 */
 	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getVerticalAlignmentValue()
+	public RotationEnum getOwnRotation()
 	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getVerticalImageAlign());
+		return this.rotation;
 	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnVerticalImageAlign()}.
-	 */
+
 	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getOwnVerticalAlignmentValue()
+	public void setRotation(RotationEnum rotation)
 	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getOwnVerticalImageAlign());
+		Object old = this.rotation;
+		this.rotation = rotation;
+		getEventSupport().firePropertyChange(JRBaseStyle.PROPERTY_ROTATION, old, this.rotation);
 	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setVerticalImageAlign(VerticalImageAlignEnum)}.
-	 */
-	@Override
-	public void setVerticalAlignment(net.sf.jasperreports.engine.type.VerticalAlignEnum verticalAlignmentValue)
-	{
-		setVerticalImageAlign(net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalImageAlignEnum(verticalAlignmentValue));
-	}
-		
+
 	@Override
 	public HorizontalImageAlignEnum getHorizontalImageAlign()
 	{
@@ -276,42 +246,19 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 		getEventSupport().firePropertyChange(JRBaseStyle.PROPERTY_VERTICAL_IMAGE_ALIGNMENT, old, this.verticalImageAlign);
 	}
 
-	/**
-	 * @deprecated Replaced by {@link #getUsingCache()}.
-	 */
-	@Override
-	public boolean isUsingCache()
-	{
-		if (isUsingCache == null)
-		{
-			if (getExpression() != null)
-			{
-				return String.class.getName().equals(getExpression().getValueClassName());
-			}
-			return true;
-		}
-		return isUsingCache.booleanValue();
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getUsingCache()}.
-	 */
-	@Override
-	public Boolean isOwnUsingCache()
-	{
-		return isUsingCache;
-	}
-
 	@Override
 	public Boolean getUsingCache()
 	{
 		return isUsingCache;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setUsingCache(Boolean)}.
+	 */
 	@Override
 	public void setUsingCache(boolean isUsingCache)
 	{
-		setUsingCache(isUsingCache ? Boolean.TRUE : Boolean.FALSE);
+		setUsingCache((Boolean)isUsingCache);
 	}
 
 	@Override
@@ -399,6 +346,13 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 	{
 		return anchorNameExpression;
 	}
+	
+	@Override
+	public JRExpression getBookmarkLevelExpression()
+	{
+		return bookmarkLevelExpression;
+	}
+	
 
 	@Override
 	public JRExpression getHyperlinkReferenceExpression()
@@ -486,6 +440,7 @@ public class JRBaseImage extends JRBaseGraphicElement implements JRImage
 		clone.hyperlinkParameters = JRCloneUtils.cloneArray(hyperlinkParameters);
 		clone.expression = JRCloneUtils.nullSafeClone(expression);
 		clone.anchorNameExpression = JRCloneUtils.nullSafeClone(anchorNameExpression);
+		clone.bookmarkLevelExpression = JRCloneUtils.nullSafeClone(bookmarkLevelExpression);
 		clone.hyperlinkReferenceExpression = JRCloneUtils.nullSafeClone(hyperlinkReferenceExpression);
 		clone.hyperlinkWhenExpression = JRCloneUtils.nullSafeClone(hyperlinkWhenExpression);
 		clone.hyperlinkAnchorExpression = JRCloneUtils.nullSafeClone(hyperlinkAnchorExpression);

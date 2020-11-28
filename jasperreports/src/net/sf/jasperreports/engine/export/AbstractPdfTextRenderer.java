@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,11 +48,34 @@ public abstract class AbstractPdfTextRenderer extends AbstractTextRenderer
 
 	
 	/**
+	 * @deprecated Replaced by {@link #AbstractPdfTextRenderer(JasperReportsContext, boolean, boolean, boolean)}.
+	 */
+	public AbstractPdfTextRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont
+		)
+	{
+		this(jasperReportsContext, ignoreMissingFont, true, false);
+	}
+	
+	
+	/**
 	 * 
 	 */
-	public AbstractPdfTextRenderer(JasperReportsContext jasperReportsContext, boolean ignoreMissingFont)
+	public AbstractPdfTextRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont,
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine
+		)
 	{
-		super(jasperReportsContext, false, ignoreMissingFont);
+		super(
+			jasperReportsContext, 
+			false, 
+			ignoreMissingFont, 
+			defaultIndentFirstLine, 
+			defaultJustifyLastLine
+			);
 	}
 	
 	
@@ -62,7 +85,8 @@ public abstract class AbstractPdfTextRenderer extends AbstractTextRenderer
 	public void initialize(
 		JRPdfExporter pdfExporter, 
 		PdfContentByte pdfContentByte,
-		JRPrintText text, JRStyledText styledText, 
+		JRPrintText text, 
+		JRStyledText styledText, 
 		int offsetX,
 		int offsetY
 		)
@@ -79,7 +103,7 @@ public abstract class AbstractPdfTextRenderer extends AbstractTextRenderer
 		{
 			case JUSTIFIED :
 			{
-				horizontalAlignment = Element.ALIGN_JUSTIFIED_ALL;
+				horizontalAlignment = Element.ALIGN_JUSTIFIED;
 				leftOffsetFactor = 0f;
 				rightOffsetFactor = 0f;
 				break;

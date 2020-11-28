@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,7 +32,7 @@ import net.sf.jasperreports.properties.PropertyConstants;
 /**
  * Contains the main settings for the QRCode component
  * 
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class QRCodeComponent extends BarcodeComponent
 {
@@ -43,6 +43,7 @@ public class QRCodeComponent extends BarcodeComponent
 
 	public static final String PROPERTY_MARGIN = "margin";
 	public static final String PROPERTY_ERROR_CORRECTION_LEVEL = "errorCorrectionLevel";
+	public static final String PROPERTY_QR_VERSION = "qrVersion";
 
 	public static final String PROPERTY_DEFAULT_ENCODING = "UTF-8";
 	
@@ -65,6 +66,7 @@ public class QRCodeComponent extends BarcodeComponent
 			JRPropertiesUtil.PROPERTY_PREFIX + "components.qrcode.character.encoding";
 		
 	private Integer margin;
+	private Integer qrVersion;
 	private ErrorCorrectionLevelEnum errorCorrectionLevel;
 	
 	@Override
@@ -96,6 +98,18 @@ public class QRCodeComponent extends BarcodeComponent
 		this.errorCorrectionLevel = errorCorrectionLevel;
 		getEventSupport().firePropertyChange(PROPERTY_ERROR_CORRECTION_LEVEL, 
 				old, this.errorCorrectionLevel);
+	}
+
+	public Integer getQrVersion() 
+	{
+		return qrVersion;
+	}
+
+	public void setQrVersion(Integer qrVersion) 
+	{
+		Object old = this.qrVersion;
+		this.qrVersion = qrVersion;
+		getEventSupport().firePropertyChange(PROPERTY_QR_VERSION, old, this.qrVersion);
 	}
 
 	@Override

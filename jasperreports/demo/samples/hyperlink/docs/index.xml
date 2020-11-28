@@ -160,7 +160,7 @@ Hyperlink parameter expressions are evaluated along with the hyperlink, and the 
 are kept in the generated hyperlink object as parameter values.
 <br/>
 When exporting the report to other formats such as HTML or PDF, the user can obtain a 
-factory of hyperlink handlers using the <api href="net/sf/jasperreports/export/ExporterConfiguration.html#getHyperlinkProducerFactory()">getHyperlinkProducerFactory()</api> exporter 
+factory of hyperlink handlers using the <api href="net/sf/jasperreports/export/ExporterConfiguration.html#getHyperlinkProducerFactory--">getHyperlinkProducerFactory()</api> exporter 
 setting. A factory is an implementation of 
 <api href="net/sf/jasperreports/engine/export/JRHyperlinkProducerFactory.html">JRHyperlinkProducerFactory</api>, which is 
 responsible for creating a hyperlink handler for a custom hyperlink type. This hyperlink 
@@ -194,7 +194,9 @@ Some of the document formats, such as PDF, have built-in support for tables of c
 and bookmarks. To allow you to make use of this, JasperReports lets you transform 
 anchors into document bookmarks. To be used as bookmarks, anchors should have an 
 indentation level set. To do this, set a positive integer value for the <code>bookmarkLevel</code> 
-attribute available for all hyperlink elements in JasperReports.
+attribute available for all hyperlink elements in JasperReports. In case you need to set the bookmark level 
+dynamically, you could use the element's <code>&lt;bookmarkLevelExpression/&gt;</code> instead. It will 
+override the <code>bookmarkLevel</code> attribute.
 <br/>
 <br/>
 <b>Creating a Local Anchor Example</b>
@@ -227,7 +229,7 @@ The hyperlink created using the <code>&lt;hyperlinkAnchorExpression&gt;</code> t
 <textField hyperlinkType="LocalPage">
   <reportElement x="5" y="65" width="300" height="15" forecolor="#008000"/>
   <textFieldExpression class="java.lang.String">"  >> Click here to go to the second page."</textFieldExpression>
-  <hyperlinkPageExpression>Integer.valueOf(2)</hyperlinkPageExpression>
+  <hyperlinkPageExpression>2</hyperlinkPageExpression>
 </textField>
 ]]></pre>
 The hyperlink created using the <code>&lt;hyperlinkPageExpression&gt;</code> tag points to the second page of the current document.
@@ -262,7 +264,7 @@ The hyperlink created using the <code>&lt;hyperlinkReferenceExpression&gt;</code
   <reportElement x="5" y="125" width="350" height="15"/>
   <textFieldExpression class="java.lang.String">"  >> Click here to go to another PDF file (in fact, we use the same file)."</textFieldExpression>
   <hyperlinkReferenceExpression>"./HyperlinkReport.pdf"</hyperlinkReferenceExpression>
-  <hyperlinkPageExpression>Integer.valueOf(2)</hyperlinkPageExpression>
+  <hyperlinkPageExpression>2</hyperlinkPageExpression>
 </textField>
 ]]></pre>
 The hyperlink created using the <code>&lt;hyperlinkReferenceExpression&gt;</code> and <code>&lt;hyperlinkPageExpression&gt;</code> tags points to the second page of the HyperlinkReport.pdf document, saved in the current directory.

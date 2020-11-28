@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -34,6 +34,7 @@ import net.sf.jasperreports.engine.export.JRGridLayout;
 import net.sf.jasperreports.engine.export.oasis.GenericElementOdsHandler;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporterContext;
+import net.sf.jasperreports.repo.RepositoryContext;
 
 /**
  *
@@ -74,9 +75,10 @@ public class CVElementOdsHandler implements GenericElementOdsHandler
 
 		try
 		{
+			RepositoryContext repositoryContext = exporterContext.getRepository().getRepositoryContext();
 			JRPrintImage chartImage = 
-				CVElementImageProvider.getDefaultProvider()
-					.getImage(exporterContext.getJasperReportsContext(), element);
+				CVElementImageProvider.getInstance().getImage(repositoryContext, element);
+
 			JROdsExporter exporter = (JROdsExporter) exporterContext.getExporterRef();
 			exporter.exportImage(chartImage, gridCell, colIndex, rowIndex, emptyCols, yCutsRow, layout);
 		}

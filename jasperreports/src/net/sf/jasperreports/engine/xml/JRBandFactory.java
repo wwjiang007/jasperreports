@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -57,7 +57,7 @@ public class JRBandFactory extends JRBaseFactory
 				log.warn("The 'isSplitAllowed' attribute is deprecated. Use the 'splitType' attribute instead.");
 			}
 				
-			if (Boolean.valueOf(isSplitAllowed).booleanValue())
+			if (Boolean.valueOf(isSplitAllowed))
 			{
 				band.setSplitType(SplitTypeEnum.STRETCH);
 			}

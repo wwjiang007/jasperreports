@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -81,14 +81,11 @@ public class DesignListContents extends JRDesignElementGroup implements
 	}
 
 	/**
-	 * Sets the width of the list contents.
-	 * 
-	 * @param width the list contents width
-	 * @see #getWidth()
+	 * @deprecated Replaced by {@link #setWidth(Integer)}.
 	 */
 	public void setWidth(int width)
 	{
-		setWidth(Integer.valueOf(width));
+		setWidth((Integer)width);
 	}
 
 }

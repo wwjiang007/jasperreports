@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -291,19 +291,19 @@ public class JROlapDataSource implements JRDataSource, MappingMetadata
 			if (valueClass.equals(String.class)) {
 				return fieldValue;
 			} else if (valueClass.equals(Boolean.class)) {
-				return fieldValue.equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
+				return fieldValue.equalsIgnoreCase("true");
 			} else if (valueClass.equals(Byte.class)) {
-				return new Byte(fieldValue);
+				return Byte.valueOf(fieldValue);
 			} else if (valueClass.equals(Integer.class)) {
 				return Integer.valueOf(fieldValue);
 			} else if (valueClass.equals(Long.class)) {
-				return new Long(fieldValue);
+				return Long.valueOf(fieldValue);
 			} else if (valueClass.equals(Short.class)) {
-				return new Short(fieldValue);
+				return Short.valueOf(fieldValue);
 			} else if (valueClass.equals(Double.class)) {
-				return new Double(fieldValue);
+				return Double.valueOf(fieldValue);
 			} else if (valueClass.equals(Float.class)) {
-				return new Float(fieldValue);
+				return Float.valueOf(fieldValue);
 			} else if (valueClass.equals(java.math.BigDecimal.class)) {
 				return new java.math.BigDecimal(fieldValue);
 			} else if (valueClass.equals(java.util.Date.class)) {
@@ -313,7 +313,7 @@ public class JROlapDataSource implements JRDataSource, MappingMetadata
 			} else if (valueClass.equals(java.sql.Time.class)) {
 				return new java.sql.Time(dateFormat.parse(fieldValue).getTime());
 			} else if (valueClass.equals(java.lang.Number.class)) {
-				return new Double(fieldValue);
+				return Double.valueOf(fieldValue);
 			} else {
 				throw 
 					new JRException(

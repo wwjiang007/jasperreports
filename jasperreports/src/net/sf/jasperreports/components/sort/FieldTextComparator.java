@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -85,6 +85,12 @@ public class FieldTextComparator extends AbstractFieldComparator<String> {
 					break;
 				case STARTS_WITH:
 					result = validComparison ? lcCompareTo.startsWith(lcCompareStart) : false;
+					break;
+				case IS_NULL:
+					result = !validComparison;
+					break;
+				case IS_NOT_NULL:
+					result = validComparison;
 					break;
 			}
 		}

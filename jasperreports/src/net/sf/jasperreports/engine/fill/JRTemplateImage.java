@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -26,7 +26,6 @@ package net.sf.jasperreports.engine.fill;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRChart;
 import net.sf.jasperreports.engine.JRCommonImage;
 import net.sf.jasperreports.engine.JRConstants;
@@ -45,6 +44,7 @@ import net.sf.jasperreports.engine.type.HyperlinkTargetEnum;
 import net.sf.jasperreports.engine.type.HyperlinkTypeEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.OnErrorTypeEnum;
+import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.ScaleImageEnum;
 import net.sf.jasperreports.engine.type.VerticalImageAlignEnum;
 import net.sf.jasperreports.engine.util.ObjectUtils;
@@ -56,7 +56,7 @@ import net.sf.jasperreports.engine.util.ObjectUtils;
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @see JRTemplatePrintImage
  */
-public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlignment, JRImageAlignment, JRCommonImage
+public class JRTemplateImage extends JRTemplateGraphicElement implements JRImageAlignment, JRCommonImage
 {
 
 
@@ -69,6 +69,7 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 	 *
 	 */
 	private ScaleImageEnum scaleImageValue;
+	private RotationEnum rotation;
 	private Boolean isUsingCache = Boolean.TRUE;
 	private HorizontalImageAlignEnum horizontalImageAlign;
 	private VerticalImageAlignEnum verticalImageAlign;
@@ -128,7 +129,8 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 		
 		lineBox = image.getLineBox().clone(this);
 
-		setScaleImage(image.getScaleImageValue());
+		setScaleImage(image.getScaleImageValue());//FIXME NOW should these be Own getters like in text templates?
+		setRotation(image.getOwnRotation());
 		setUsingCache(image.getUsingCache());
 		setHorizontalImageAlign(image.getHorizontalImageAlign());
 		setVerticalImageAlign(image.getVerticalImageAlign());
@@ -147,7 +149,7 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 		
 		linePen = new JRBasePen(this);
 		
-		getLinePen().setLineWidth(0f);
+		getLinePen().setLineWidth((Float)0f);
 		setFill(FillEnum.SOLID);
 		
 		copyLineBox(chart.getLineBox());
@@ -197,12 +199,30 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 		this.scaleImageValue = scaleImageValue;
 	}
 
+	@Override
+	public RotationEnum getRotation()
+	{
+		return getStyleResolver().getRotation(this);
+	}
+
+	@Override
+	public RotationEnum getOwnRotation()
+	{
+		return this.rotation;
+	}
+
+	@Override
+	public void setRotation(RotationEnum rotation)
+	{
+		this.rotation = rotation;
+	}
+
 	/**
 	 *
 	 */
 	public boolean isUsingCache()
 	{
-		return isUsingCache == null ? true : isUsingCache.booleanValue();
+		return isUsingCache == null ? true : isUsingCache;
 	}
 
 	/**
@@ -210,7 +230,7 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 	 */
 	public void setUsingCache(boolean isUsingCache)
 	{
-		this.isUsingCache = (isUsingCache ? Boolean.TRUE : Boolean.FALSE);
+		this.isUsingCache = isUsingCache;
 	}
 
 	/**
@@ -219,60 +239,6 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 	public void setUsingCache(Boolean isUsingCache)
 	{
 		this.isUsingCache = isUsingCache;
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getHorizontalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getHorizontalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnHorizontalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getOwnHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getOwnHorizontalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setHorizontalImageAlign(HorizontalImageAlignEnum)}.
-	 */
-	@Override
-	public void setHorizontalAlignment(net.sf.jasperreports.engine.type.HorizontalAlignEnum horizontalAlignmentValue)
-	{
-		setHorizontalImageAlign(net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalImageAlignEnum(horizontalAlignmentValue));
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getVerticalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getVerticalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getVerticalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnVerticalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getOwnVerticalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getOwnVerticalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setVerticalImageAlign(VerticalImageAlignEnum)}.
-	 */
-	@Override
-	public void setVerticalAlignment(net.sf.jasperreports.engine.type.VerticalAlignEnum verticalAlignmentValue)
-	{
-		setVerticalImageAlign(net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalImageAlignEnum(verticalAlignmentValue));
 	}
 
 	@Override
@@ -536,6 +502,7 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 		ObjectUtils.HashCode hash = ObjectUtils.hash();
 		addGraphicHash(hash);
 		hash.add(scaleImageValue);
+		hash.add(rotation);
 		hash.add(isUsingCache);
 		hash.add(horizontalImageAlign);
 		hash.add(verticalImageAlign);
@@ -563,6 +530,7 @@ public class JRTemplateImage extends JRTemplateGraphicElement implements JRAlign
 		JRTemplateImage template = (JRTemplateImage) object;
 		return graphicIdentical(template)
 				&& ObjectUtils.equals(scaleImageValue, template.scaleImageValue)
+				&& ObjectUtils.equals(rotation, template.rotation)
 				&& ObjectUtils.equals(isUsingCache, template.isUsingCache)
 				&& ObjectUtils.equals(horizontalImageAlign, template.horizontalImageAlign)
 				&& ObjectUtils.equals(verticalImageAlign, template.verticalImageAlign)

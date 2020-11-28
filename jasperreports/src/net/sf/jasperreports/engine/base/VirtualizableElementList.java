@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -172,6 +172,11 @@ public class VirtualizableElementList extends AbstractList<JRPrintElement> imple
 	public JRVirtualizationContext getVirtualizationContext()
 	{
 		return virtualizationContext;
+	}
+
+	public void updatePage(JRVirtualPrintPage page)
+	{
+		store.updatePage(page);
 	}
 	
 	//FIXME implement faster bulk methods such as addAll

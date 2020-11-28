@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,17 +27,15 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import net.sf.jasperreports.engine.ImageMapRenderable;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRImageRenderer;
 import net.sf.jasperreports.engine.JRPrintImageAreaHyperlink;
 
 /**
  * @author Sanda Zaharia (shertage@users.sourceforge.net)
  * @deprecated Replaced by {@link SimpleDataRenderer}.
  */
-public class JRSimpleImageMapRenderer extends JRImageRenderer implements ImageMapRenderable
+public class JRSimpleImageMapRenderer extends net.sf.jasperreports.engine.JRImageRenderer implements net.sf.jasperreports.engine.ImageMapRenderable
 {
 	private static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 	

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -43,8 +43,6 @@ import net.sf.jasperreports.renderers.DimensionRenderable;
 import net.sf.jasperreports.renderers.Graphics2DRenderable;
 import net.sf.jasperreports.renderers.RenderersCache;
 import net.sf.jasperreports.renderers.ResourceRenderer;
-import net.sf.jasperreports.renderers.WrappingDataToGraphics2DRenderer;
-import net.sf.jasperreports.renderers.WrappingDeprecatedRenderable;
 import net.sf.jasperreports.renderers.WrappingRenderToImageDataRenderer;
 import net.sf.jasperreports.renderers.util.RendererUtil;
 import net.sf.jasperreports.repo.RepositoryUtil;
@@ -510,7 +508,7 @@ public class RenderableUtil
 					if (renderable instanceof DataRenderable)
 					{
 						dataRenderable = (DataRenderable)renderable;
-						grxRenderable = new WrappingDataToGraphics2DRenderer((DataRenderable)renderable);
+						grxRenderable = new net.sf.jasperreports.renderers.WrappingDataToGraphics2DRenderer((DataRenderable)renderable);
 					}
 					else
 					{
@@ -535,7 +533,7 @@ public class RenderableUtil
 				}
 				
 				deprecatedRenderable = 
-					new WrappingDeprecatedRenderable(
+					new net.sf.jasperreports.renderers.WrappingDeprecatedRenderable(
 						renderable.getId(),
 						grxRenderable, 
 						dataRenderable, 

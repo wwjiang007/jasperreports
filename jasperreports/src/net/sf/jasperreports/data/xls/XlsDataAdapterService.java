@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -28,7 +28,6 @@ import java.util.Map;
 
 import net.sf.jasperreports.data.excel.ExcelFormatEnum;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.data.AbstractXlsDataSource;
 import net.sf.jasperreports.engine.data.XlsDataSource;
@@ -46,14 +45,6 @@ public class XlsDataAdapterService extends AbstractXlsDataAdapterService
 	public XlsDataAdapterService(ParameterContributorContext paramContribContext, XlsDataAdapter xlsDataAdapter)
 	{
 		super(paramContribContext, xlsDataAdapter);
-	}
-	
-	/**
-	 * @deprecated Replaced by {@link #XlsDataAdapterService(ParameterContributorContext, XlsDataAdapter)}.
-	 */
-	public XlsDataAdapterService(JasperReportsContext jasperReportsContext, XlsDataAdapter xlsDataAdapter)
-	{
-		super(jasperReportsContext, xlsDataAdapter);
 	}
 	
 	@Override

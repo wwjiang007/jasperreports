@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -664,58 +663,6 @@ public class JRXmlWriteHelper
 		if (value != null && value.getRGB() != defaultValue.getRGB())
 		{
 			addAttribute(name, value);
-		}
-	}
-	
-	/**
-	 * @deprecated To be removed. 
-	 */
-	public void addAttribute(String name, byte value, Map<?,?> xmlValues)
-	{
-		String xmlValue = (String) xmlValues.get(new Byte(value));
-		writeAttribute(name, xmlValue);
-	}
-	
-	/**
-	 * @deprecated To be removed. 
-	 */
-	public void addAttribute(String name, int value, Map<?,?> xmlValues)
-	{
-		String xmlValue = (String) xmlValues.get(Integer.valueOf(value));
-		writeAttribute(name, xmlValue);
-	}
-	
-	/**
-	 * @deprecated To be removed. 
-	 */
-	public void addAttribute(String name, byte value, Map<?,?> xmlValues, byte defaultValue)
-	{
-		if (value != defaultValue)
-		{
-			addAttribute(name, value, xmlValues);
-		}
-	}
-	
-	/**
-	 * @deprecated To be removed. 
-	 */
-	public void addAttribute(String name, Object value, Map<?,?> xmlValues)
-	{
-		if (value != null)
-		{
-			String xmlValue = (String) xmlValues.get(value);
-			writeAttribute(name, xmlValue);
-		}
-	}
-	
-	/**
-	 * @deprecated To be removed. 
-	 */
-	public void addAttribute(String name, Object value, Map<?,?> xmlValues, Object defaultValue)
-	{
-		if (!value.equals(defaultValue))
-		{
-			addAttribute(name, value, xmlValues);
 		}
 	}
 	

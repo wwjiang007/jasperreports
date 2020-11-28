@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +23,7 @@
  */
 package net.sf.jasperreports.engine.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -244,7 +245,7 @@ public class DefaultFormatFactory implements FormatFactory
 			try
 			{
 				Class<?> formatFactoryClass = JRClassLoader.loadClassForName(formatFactoryClassName);	
-				formatFactory = (FormatFactory) formatFactoryClass.newInstance();
+				formatFactory = (FormatFactory) formatFactoryClass.getDeclaredConstructor().newInstance();
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -254,7 +255,8 @@ public class DefaultFormatFactory implements FormatFactory
 						new Object[]{formatFactoryClassName},
 						e);
 			}
-			catch (Exception e)
+			catch (NoSuchMethodException | InvocationTargetException 
+				| IllegalAccessException | InstantiationException e)
 			{
 				throw 
 					new JRRuntimeException(

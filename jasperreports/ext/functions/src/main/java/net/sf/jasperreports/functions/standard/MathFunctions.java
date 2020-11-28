@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -176,8 +176,8 @@ public final class MathFunctions
 		@FunctionParameter("bottomRange"),
 		@FunctionParameter("topRange")})
 	public static Integer RANDBETWEEN(Integer bottomRange, Integer topRange){
-		int min=bottomRange.intValue();
-		int max=topRange.intValue();
+		int min=bottomRange;
+		int max=topRange;
 		return min + (int)(Math.random() * ((max - min) + 1));
 	}	
 	

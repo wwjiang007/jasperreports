@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -47,7 +47,7 @@ import net.sf.jasperreports.engine.util.JRCloneUtils;
 
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class StandardChartSettings implements ChartSettings, JRChangeEventsSupport
 {
@@ -85,6 +85,8 @@ public class StandardChartSettings implements ChartSettings, JRChangeEventsSuppo
 	public static final String PROPERTY_BACKCOLOR = "backcolor";
 	
 	public static final String PROPERTY_ANCHOR_NAME_EXPRESSION = "anchorNameExpression";
+	
+	public static final String PROPERTY_BOOKMARK_LEVEL_EXPRESSION = "bookmarkLevelExpression";
 	
 	public static final String PROPERTY_EVALUATION_GROUP = "evaluationGroup";
 	
@@ -159,6 +161,7 @@ public class StandardChartSettings implements ChartSettings, JRChangeEventsSuppo
 	protected JRExpression titleExpression;
 	protected JRExpression subtitleExpression;
 	protected JRExpression anchorNameExpression;
+	protected JRExpression bookmarkLevelExpression;
 	protected JRExpression hyperlinkReferenceExpression;
 	protected JRExpression hyperlinkWhenExpression;
 	protected JRExpression hyperlinkAnchorExpression;
@@ -204,6 +207,7 @@ public class StandardChartSettings implements ChartSettings, JRChangeEventsSuppo
 
 		subtitleExpression = factory.getExpression(chart.getSubtitleExpression());
 		anchorNameExpression = factory.getExpression(chart.getAnchorNameExpression());
+		bookmarkLevelExpression = factory.getExpression(chart.getBookmarkLevelExpression());
 		hyperlinkReferenceExpression = factory.getExpression(chart.getHyperlinkReferenceExpression());
 		hyperlinkWhenExpression = factory.getExpression(chart.getHyperlinkWhenExpression());
 		hyperlinkAnchorExpression = factory.getExpression(chart.getHyperlinkAnchorExpression());
@@ -399,6 +403,12 @@ public class StandardChartSettings implements ChartSettings, JRChangeEventsSuppo
 	{
 		return this.anchorNameExpression;
 	}
+	
+	@Override
+	public JRExpression getBookmarkLevelExpression()
+	{
+		return this.bookmarkLevelExpression;
+	}
 
 	@Override
 	public JRExpression getHyperlinkReferenceExpression()
@@ -571,6 +581,16 @@ public class StandardChartSettings implements ChartSettings, JRChangeEventsSuppo
 		this.anchorNameExpression = anchorNameExpression;
 		getEventSupport().firePropertyChange(PROPERTY_ANCHOR_NAME_EXPRESSION, old, this.anchorNameExpression);
 	}
+	
+	
+	/**
+	 * @param bookmarkLevelExpression the bookmarkLevelExpression to set
+	 */
+	public void setBookmarkLevelExpression(JRExpression bookmarkLevelExpression) {
+		Object old = this.bookmarkLevelExpression;
+		this.bookmarkLevelExpression = bookmarkLevelExpression;
+		getEventSupport().firePropertyChange(PROPERTY_BOOKMARK_LEVEL_EXPRESSION, old, this.bookmarkLevelExpression);
+	}
 
 
 	/**
@@ -654,6 +674,7 @@ public class StandardChartSettings implements ChartSettings, JRChangeEventsSuppo
 		clone.titleExpression = JRCloneUtils.nullSafeClone(titleExpression);
 		clone.subtitleExpression = JRCloneUtils.nullSafeClone(subtitleExpression);
 		clone.anchorNameExpression = JRCloneUtils.nullSafeClone(anchorNameExpression);
+		clone.bookmarkLevelExpression = JRCloneUtils.nullSafeClone(bookmarkLevelExpression);
 		clone.hyperlinkReferenceExpression = JRCloneUtils.nullSafeClone(hyperlinkReferenceExpression);
 		clone.hyperlinkWhenExpression = JRCloneUtils.nullSafeClone(hyperlinkWhenExpression);
 		clone.hyperlinkAnchorExpression = JRCloneUtils.nullSafeClone(hyperlinkAnchorExpression);

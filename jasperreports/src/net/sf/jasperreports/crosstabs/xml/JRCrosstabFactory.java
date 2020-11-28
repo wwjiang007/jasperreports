@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -66,13 +66,13 @@ public class JRCrosstabFactory extends JRBaseFactory
 		String repeatColHeadersAttr = atts.getValue(ATTRIBUTE_isRepeatColumnHeaders);
 		if (repeatColHeadersAttr != null && repeatColHeadersAttr.length() > 0)
 		{
-			crosstab.setRepeatColumnHeaders(Boolean.valueOf(repeatColHeadersAttr).booleanValue());
+			crosstab.setRepeatColumnHeaders(Boolean.valueOf(repeatColHeadersAttr));
 		}
 		
 		String repeatRowHeadersAttr = atts.getValue(ATTRIBUTE_isRepeatRowHeaders);
 		if (repeatRowHeadersAttr != null && repeatColHeadersAttr.length() > 0)
 		{
-			crosstab.setRepeatRowHeaders(Boolean.valueOf(repeatRowHeadersAttr).booleanValue());
+			crosstab.setRepeatRowHeaders(Boolean.valueOf(repeatRowHeadersAttr));
 		}
 		
 		String runDirectionAttr = atts.getValue(JRXmlConstants.ATTRIBUTE_runDirection);

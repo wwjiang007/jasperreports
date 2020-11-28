@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -47,4 +47,9 @@ public interface JRPrintElementContainer extends JRPrintElementListContainer
 	 * @param height the height
 	 */
 	public void setHeight(int height);
+	
+	default void setContentsWidth(int width)
+	{
+		//NOOP
+	}
 }

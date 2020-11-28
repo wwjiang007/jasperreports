@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,22 +23,18 @@
  */
 package net.sf.jasperreports.subreports;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+import org.testng.annotations.DataProvider;
 
-import org.testng.annotations.Test;
-
-import net.sf.jasperreports.AbstractTest;
-import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.AbstractXmlTest;
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  */
-public class SubreportsTest extends AbstractTest
+public class SubreportsTest extends AbstractXmlTest
 {
-	@Test
-	public void testReports() throws JRException, NoSuchAlgorithmException, IOException
+	@DataProvider
+	public Object[][] testArgs()
 	{
-		testReports("net/sf/jasperreports/subreports/columns/repo", "SubreportColumnsReport", 3);
+		return runReportArgs("net/sf/jasperreports/subreports/columns/repo", "SubreportColumnsReport", 3);
 	}
 }

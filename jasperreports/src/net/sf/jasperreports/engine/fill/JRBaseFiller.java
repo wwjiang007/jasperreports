@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -196,6 +196,7 @@ public abstract class JRBaseFiller extends BaseReportFiller implements JRDefault
 	protected JRFillBand noData;
 
 	protected JRPrintPage printPage;
+	protected int printPageContentsWidth;
 
 	/**
 	 * List of {@link JRFillBand JRFillBand} objects containing all bands of the
@@ -533,9 +534,14 @@ public abstract class JRBaseFiller extends BaseReportFiller implements JRDefault
 	/**
 	 *
 	 */
-	protected JRPrintPage getCurrentPage()
+	public JRPrintPage getCurrentPage()
 	{
 		return printPage;
+	}
+	
+	protected int getCurrentPageContentsWidth()
+	{
+		return printPageContentsWidth;
 	}
 
 	/**
@@ -1333,6 +1339,12 @@ public abstract class JRBaseFiller extends BaseReportFiller implements JRDefault
 				recordUsedWidth(element);
 			}
 		}
+		
+		int contentsWidth = band.getContentsWidth();
+		if (offsetX + contentsWidth + rightMargin > printPageContentsWidth)
+		{
+			printPageContentsWidth = offsetX + contentsWidth + rightMargin;
+		}
 	}
 	
 	protected void recordUsedWidth(JRPrintElement element)
@@ -1349,6 +1361,8 @@ public abstract class JRBaseFiller extends BaseReportFiller implements JRDefault
 			{
 				log.debug("Fill " + fillerId + ": adding page " + (jasperPrint.getPages().size() + 1));
 			}
+
+			addLastPageBookmarks();
 			
 			// notify that the previous page was generated
 			int pageCount = jasperPrint.getPages().size();
@@ -1356,8 +1370,6 @@ public abstract class JRBaseFiller extends BaseReportFiller implements JRDefault
 			{
 				fillListener.pageGenerated(jasperPrint, pageCount - 1);
 			}
-
-			addLastPageBookmarks();
 
 			jasperPrint.addPage(page);
 			fillContext.setPrintPage(page);

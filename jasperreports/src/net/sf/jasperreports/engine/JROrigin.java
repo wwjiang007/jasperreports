@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -131,9 +131,9 @@ public class JROrigin implements JRCloneable, Serializable
 			hash = 31 * hash + (reportName == null ? 0 : reportName.hashCode());
 			hash = 31 * hash + (groupName == null ? 0 : groupName.hashCode());
 			hash = 31 * hash + bandTypeValue.hashCode();
-			hashCode = new Integer(hash);
+			hashCode = hash;
 		}
-		return hashCode.intValue();
+		return hashCode;
 	}
 
 

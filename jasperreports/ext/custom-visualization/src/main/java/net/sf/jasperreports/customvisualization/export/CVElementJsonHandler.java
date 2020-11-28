@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,8 +23,16 @@
  */
 package net.sf.jasperreports.customvisualization.export;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import net.sf.jasperreports.customvisualization.CVPrintElement;
+import net.sf.jasperreports.customvisualization.CVUtils;
 import net.sf.jasperreports.customvisualization.Processor;
 import net.sf.jasperreports.engine.JRGenericPrintElement;
 import net.sf.jasperreports.engine.JRRuntimeException;
@@ -34,11 +42,6 @@ import net.sf.jasperreports.engine.export.JsonExporter;
 import net.sf.jasperreports.engine.export.JsonExporterContext;
 import net.sf.jasperreports.engine.fill.JRTemplateGenericPrintElement;
 import net.sf.jasperreports.web.util.VelocityUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -88,7 +91,7 @@ public class CVElementJsonHandler extends CVElementAbstractGenericHandler implem
 			{
 				JsonExporter exporter = ((JsonExporter)context.getExporterRef());
 				HtmlResourceHandler htmlResourceHandler = exporter.getExporterOutput() != null ?
-						exporter.getExporterOutput().getFontHandler() : null;
+						exporter.getExporterOutput().getResourceHandler() : null;
 
 				Map<String, Object> jsonConfiguration = createConfigurationForJSON(configuration, htmlResourceHandler);
 				String instanceData = mapper.writeValueAsString(jsonConfiguration);
@@ -104,7 +107,7 @@ public class CVElementJsonHandler extends CVElementAbstractGenericHandler implem
 		configuration.put("module", element.getParameterValue(CVPrintElement.MODULE));
 
 		Map<String, Object> velocityContext = new HashMap<String, Object>();
-		velocityContext.put("elementId", "element" + element.hashCode());
+		velocityContext.put("elementId", CVUtils.getElementId(element));
 		velocityContext.put("configuration", configuration);
 
 		return VelocityUtil.processTemplate(CV_ELEMENT_JSON_TEMPLATE, velocityContext);
@@ -145,7 +148,7 @@ public class CVElementJsonHandler extends CVElementAbstractGenericHandler implem
 				configuration.put("property." + prop, element.getPropertiesMap().getProperty(prop));
 			}
 
-			jsonConfiguration.put("id", "element" + element.hashCode());
+			jsonConfiguration.put("id", CVUtils.getElementId(element));
 
 			if (element.getParameterValue(CVPrintElement.SCRIPT_URI) != null)
 			{

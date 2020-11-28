@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,13 +23,36 @@
  */
 package net.sf.jasperreports.customvisualization.fill;
 
+import static net.sf.jasperreports.web.util.AbstractWebResourceHandler.PROPERTIES_WEB_RESOURCE_PATTERN_PREFIX;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.sf.jasperreports.components.items.ItemData;
 import net.sf.jasperreports.components.items.ItemProperty;
 import net.sf.jasperreports.customvisualization.CVComponent;
 import net.sf.jasperreports.customvisualization.CVConstants;
 import net.sf.jasperreports.customvisualization.CVPrintElement;
+import net.sf.jasperreports.customvisualization.CVUtils;
 import net.sf.jasperreports.customvisualization.Processor;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRComponentElement;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPrintElement;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
+import net.sf.jasperreports.engine.JRRuntimeException;
+import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.component.BaseFillComponent;
 import net.sf.jasperreports.engine.component.FillContext;
 import net.sf.jasperreports.engine.component.FillContextProvider;
@@ -44,17 +67,6 @@ import net.sf.jasperreports.repo.RepositoryContext;
 import net.sf.jasperreports.repo.RepositoryUtil;
 import net.sf.jasperreports.repo.ResourceInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import static net.sf.jasperreports.web.util.AbstractWebResourceHandler.PROPERTIES_WEB_RESOURCE_PATTERN_PREFIX;
 
 public class CVFillComponent extends BaseFillComponent implements Serializable, FillContextProvider
 {
@@ -106,9 +118,9 @@ public class CVFillComponent extends BaseFillComponent implements Serializable, 
 			try
 			{
 				Class<?> myClass = JRClassLoader.loadClassForName(processingClass);
-				processor = (Processor) myClass.newInstance();
+				processor = (Processor) myClass.getDeclaredConstructor().newInstance();
 			}
-			catch (Exception e)
+			catch (ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException e)
 			{
 				throw new JRRuntimeException("Could not create processor instance.", e);
 			}
@@ -180,40 +192,41 @@ public class CVFillComponent extends BaseFillComponent implements Serializable, 
 		return FillPrepareResult.PRINT_NO_STRETCH;
 	}
 
-	@Override
-	public JRPrintElement fill()
+	protected JRTemplateGenericPrintElement createGenericPrintElement()
 	{
 		JRComponentElement element = fillContext.getComponentElement();
-		JRTemplateGenericElement template = 
-			new JRTemplateGenericElement(
-				fillContext.getElementOrigin(),
-				fillContext.getDefaultStyleProvider(),
-				CVPrintElement.CV_ELEMENT_TYPE
+		JRTemplateGenericElement template =
+				new JRTemplateGenericElement(
+						fillContext.getElementOrigin(),
+						fillContext.getDefaultStyleProvider(),
+						fillContext.getComponentElement(),
+						CVPrintElement.CV_ELEMENT_TYPE
 				);
 		template = deduplicate(template);
 
-		JRTemplateGenericPrintElement printElement = 
-			new JRTemplateGenericPrintElement(
-				template,
-				printElementOriginator
+		JRTemplateGenericPrintElement printElement =
+				new JRTemplateGenericPrintElement(
+						template,
+						printElementOriginator
 				);
 		printElement.setUUID(element.getUUID());
 		printElement.setX(element.getX());
 		printElement.setY(fillContext.getElementPrintY());
 		printElement.setWidth(element.getWidth());
 		printElement.setHeight(element.getHeight());
-				
+
 		if (element.hasProperties() )
 		{
 			if (
-				element.getPropertiesMap().getProperty("cv.keepTemporaryFiles") != null
-				&& element.getPropertiesMap().getProperty("cv.keepTemporaryFiles").equals("true")
-				)
+					element.getPropertiesMap().getProperty("cv.keepTemporaryFiles") != null
+							&& element.getPropertiesMap().getProperty("cv.keepTemporaryFiles").equals("true")
+			)
 			{
 				printElement.getPropertiesMap().setProperty("cv.keepTemporaryFiles", "true");
 			}
-			
+
 			// We also want to transfer to the component all the properties starting with CV_PREFIX
+			//FIXME transfer standard print properties?
 			for (String ownPropName : element.getPropertiesMap().getOwnPropertyNames())
 			{
 				if (ownPropName.startsWith(CVConstants.CV_PREFIX ))
@@ -222,6 +235,21 @@ public class CVFillComponent extends BaseFillComponent implements Serializable, 
 				}
 			}
 		}
+
+		String elementId = CVUtils.generateElementId();
+		printElement.setParameterValue(CVPrintElement.PARAMETER_ELEMENT_ID, elementId);
+		if (log.isDebugEnabled())
+		{
+			log.debug("generating element " + elementId);
+		}
+
+		return printElement;
+	}
+
+	@Override
+	public JRPrintElement fill()
+	{
+		JRTemplateGenericPrintElement printElement = createGenericPrintElement();
 
 		if (isEvaluateNow())
 		{

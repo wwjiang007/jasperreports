@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -41,7 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.util.BufferRecyclers;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -78,7 +78,6 @@ import net.sf.jasperreports.export.JsonExporterConfiguration;
 import net.sf.jasperreports.export.JsonMetadataReportConfiguration;
 import net.sf.jasperreports.export.WriterExporterOutput;
 import net.sf.jasperreports.properties.PropertyConstants;
-import net.sf.jasperreports.repo.RepositoryUtil;
 
 
 /**
@@ -416,7 +415,7 @@ public class JsonMetadataExporter extends JRAbstractExporter<JsonMetadataReportC
 				InputStream is = null;
 				try
 				{
-					is = RepositoryUtil.getInstance(getJasperReportsContext()).getInputStreamFromLocation(jsonSchemaResource);
+					is = getRepository().getInputStreamFromLocation(jsonSchemaResource);
 					jsonSchema = new Scanner(is, "UTF-8").useDelimiter("\\A").next();
 				}
 				finally
@@ -1101,7 +1100,7 @@ public class JsonMetadataExporter extends JRAbstractExporter<JsonMetadataReportC
 				writer.write("\"");
 			} else {
 				writer.write("\"");
-				writer.write(BufferRecyclers.getJsonStringEncoder().quoteAsString(value.toString()));
+				writer.write(JsonStringEncoder.getInstance().quoteAsString(value.toString()));
 				writer.write("\"");
 			}
 		} else {

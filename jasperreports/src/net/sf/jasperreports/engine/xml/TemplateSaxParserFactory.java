@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -26,7 +26,7 @@ package net.sf.jasperreports.engine.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 
 import net.sf.jasperreports.engine.JasperReportsContext;
 
@@ -35,7 +35,7 @@ import net.sf.jasperreports.engine.JasperReportsContext;
  */
 public class TemplateSaxParserFactory extends BaseSaxParserFactory
 {
-	private final static ThreadLocal<ReferenceMap> GRAMMAR_POOL_CACHE = new ThreadLocal<ReferenceMap>();
+	private final static ThreadLocal<ReferenceMap<Object, Object>> GRAMMAR_POOL_CACHE = new ThreadLocal<ReferenceMap<Object, Object>>();
 
 	public TemplateSaxParserFactory(JasperReportsContext jasperReportsContext) 
 	{
@@ -58,7 +58,7 @@ public class TemplateSaxParserFactory extends BaseSaxParserFactory
 	}
 
 	@Override
-	protected ThreadLocal<ReferenceMap> getGrammarPoolCache()
+	protected ThreadLocal<ReferenceMap<Object, Object>> getGrammarPoolCache()
 	{
 		return GRAMMAR_POOL_CACHE;
 	}

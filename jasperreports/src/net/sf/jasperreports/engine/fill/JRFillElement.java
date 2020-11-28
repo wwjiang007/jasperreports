@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -72,6 +72,10 @@ import net.sf.jasperreports.engine.util.StyleUtil;
  */
 public abstract class JRFillElement implements JRElement, JRFillCloneable, JRStyleSetter, DynamicPropertiesHolder
 {
+	/**
+	 *
+	 */
+	public static final String EXCEPTION_MESSAGE_KEY_INVALID_BOOKMARK_LEVEL = "fill.anchor.bookmark.level.invalid";
 
 
 	/**
@@ -815,7 +819,7 @@ public abstract class JRFillElement implements JRElement, JRFillCloneable, JRSty
 			}
 			else
 			{
-				isExprTrue = printWhenExpressionValue.booleanValue();
+				isExprTrue = printWhenExpressionValue;
 			}
 		}
 
@@ -1846,5 +1850,44 @@ public abstract class JRFillElement implements JRElement, JRFillCloneable, JRSty
 	protected void setExpressionEvaluator(JRFillExpressionEvaluator expressionEvaluator)
 	{
 		this.expressionEvaluator = expressionEvaluator;
+	}
+
+
+	/**
+	 *
+	 */
+	public static Integer getBookmarkLevel(Object value) throws JRException
+	{
+		Integer level = null;
+		
+		if (value != null)
+		{
+			if (value instanceof Number)
+			{
+				level = ((Number)value).intValue();
+			}
+			else
+			{
+				try
+				{
+					level = Integer.parseInt(value.toString());
+				}
+				catch (NumberFormatException e)
+				{
+					//do nothing
+				}
+			}
+			
+			if (level == null || level < 0)
+			{
+				throw 
+					new JRException(
+						EXCEPTION_MESSAGE_KEY_INVALID_BOOKMARK_LEVEL,  
+						new Object[] {value} 
+						);
+			}
+		}
+		
+		return level;
 	}
 }

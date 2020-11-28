@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -131,6 +131,7 @@ import net.sf.jasperreports.engine.part.PartComponentsEnvironment;
 import net.sf.jasperreports.engine.part.PartEvaluationTime;
 import net.sf.jasperreports.engine.query.QueryExecuterFactory;
 import net.sf.jasperreports.engine.type.CalculationEnum;
+import net.sf.jasperreports.engine.type.DatasetResetTypeEnum;
 import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
 import net.sf.jasperreports.engine.type.IncrementTypeEnum;
 import net.sf.jasperreports.engine.type.PartEvaluationTimeType;
@@ -2092,10 +2093,10 @@ public class JRVerifier
 				JRLineBox box = contents.getLineBox();
 				if (box != null)
 				{
-					topPadding = box.getTopPadding().intValue();
-					leftPadding = box.getLeftPadding().intValue();
-					bottomPadding = box.getBottomPadding().intValue();
-					rightPadding = box.getRightPadding().intValue();
+					topPadding = box.getTopPadding();
+					leftPadding = box.getLeftPadding();
+					bottomPadding = box.getBottomPadding();
+					rightPadding = box.getRightPadding();
 				}
 
 				int cellWidth = contents.getWidth();
@@ -2185,8 +2186,8 @@ public class JRVerifier
 				addBrokenRule("Chart datasets with dataset run cannont have Column or Page increment type.", dataset);
 			}
 
-			ResetTypeEnum resetType = dataset.getResetTypeValue();
-			if (resetType == ResetTypeEnum.PAGE || resetType == ResetTypeEnum.COLUMN)
+			DatasetResetTypeEnum resetType = dataset.getDatasetResetType();
+			if (resetType == DatasetResetTypeEnum.PAGE || resetType == DatasetResetTypeEnum.COLUMN)
 			{
 				addBrokenRule("Chart datasets with dataset run cannont have Column or Page reset type.", dataset);
 			}
@@ -2316,8 +2317,8 @@ public class JRVerifier
 		JRElement[] elements = frame.getElements();
 		if (elements != null && elements.length > 0)
 		{
-			int leftPadding = frame.getLineBox().getLeftPadding().intValue();
-			int rightPadding = frame.getLineBox().getRightPadding().intValue();
+			int leftPadding = frame.getLineBox().getLeftPadding();
+			int rightPadding = frame.getLineBox().getRightPadding();
 
 			int avlblWidth = frame.getWidth() - leftPadding - rightPadding;
 

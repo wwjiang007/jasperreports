@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -63,7 +63,7 @@ import net.sf.jasperreports.metadata.properties.StandardPropertiesMetadataSerial
  * @author Lucian Chirita (lucianc@users.sourceforge.net)
  */
 @SupportedAnnotationTypes("net.sf.jasperreports.annotations.properties.Property")
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions({PropertyProcessor.OPTION_MESSAGES_NAME,
 	PropertyProcessor.OPTION_PROPERTIES_DOC,
 	PropertyProcessor.OPTION_CONFIG_REFERENCE_OUT})
@@ -218,6 +218,14 @@ public class PropertyProcessor extends AbstractProcessor
 		{
 			propertyScopes.add(contextIndex, PropertyScope.GLOBAL);
 		}
+		
+		//automatically adding Report if Dataset is present
+		int datasetIndex = propertyScopes.indexOf(PropertyScope.DATASET);
+		if (datasetIndex >= 0 && !propertyScopes.contains(PropertyScope.REPORT))
+		{
+			propertyScopes.add(datasetIndex, PropertyScope.REPORT);
+		}
+		
 		property.setScopes(propertyScopes);
 		
 		@SuppressWarnings("unchecked")

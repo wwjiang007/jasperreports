@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,6 +48,7 @@ public class ParametersHtmlExporterOutput extends ParametersWriterExporterOutput
 	 * 
 	 */
 	private HtmlResourceHandler imageHandler;
+	private HtmlResourceHandler fontHandler;
 	private HtmlResourceHandler resourceHandler;
 	
 	/**
@@ -70,7 +71,7 @@ public class ParametersHtmlExporterOutput extends ParametersWriterExporterOutput
 
 		if (imageHandler == null)
 		{
-			if (isOutputImagesToDirParameter == null || isOutputImagesToDirParameter.booleanValue())
+			if (isOutputImagesToDirParameter == null || isOutputImagesToDirParameter)
 			{
 				File imagesDir = (File)parameters.get(net.sf.jasperreports.engine.export.JRHtmlExporterParameter.IMAGES_DIR);
 				if (imagesDir == null)
@@ -93,6 +94,8 @@ public class ParametersHtmlExporterOutput extends ParametersWriterExporterOutput
 				imageHandler = new WebHtmlResourceHandler(imagesUri + "{0}");
 			}
 		}
+
+		resourceHandler = (HtmlResourceHandler)parameters.get(net.sf.jasperreports.engine.export.JRHtmlExporterParameter.RESOURCE_HANDLER);
 
 		StringBuffer sb = (StringBuffer)parameters.get(net.sf.jasperreports.engine.JRExporterParameter.OUTPUT_STRING_BUFFER);
 		if (sb == null)
@@ -122,11 +125,17 @@ public class ParametersHtmlExporterOutput extends ParametersWriterExporterOutput
 
 					if (
 						imageHandler == null
-						&& (isOutputImagesToDirParameter == null || isOutputImagesToDirParameter.booleanValue())
+						&& (isOutputImagesToDirParameter == null || isOutputImagesToDirParameter)
 						)
 					{
 						File imagesDir = new File(destFile.getParent(), destFile.getName() + "_files");
 						imageHandler = new FileHtmlResourceHandler(imagesDir, imagesUri == null ? imagesDir.getName() + "/{0}" : imagesUri + "{0}");
+					}
+
+					if (fontHandler == null)
+					{
+						File resourcesDir = new File(destFile.getParent(), destFile.getName() + "_files");
+						fontHandler = new FileHtmlResourceHandler(resourcesDir, resourcesDir.getName() + "/{0}");
 					}
 
 					if (resourceHandler == null)
@@ -153,13 +162,10 @@ public class ParametersHtmlExporterOutput extends ParametersWriterExporterOutput
 		return imageHandler;
 	}
 
-	/**
-	 * @deprecated Replaced by {@link #getResourceHandler()}.
-	 */
 	@Override
 	public HtmlResourceHandler getFontHandler() 
 	{
-		return getResourceHandler();
+		return fontHandler;
 	}
 
 	@Override

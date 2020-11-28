@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -56,6 +56,8 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 	
 	protected final BorderSplitType borderSplitType;
 	
+	protected final boolean widthStretchEnabled;
+	
 	/**
 	 * Element container used for filling.
 	 */
@@ -92,6 +94,7 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 		
 		lineBox = frame.getLineBox().clone(this);
 		borderSplitType = initBorderSplitType(filler, frame);
+		widthStretchEnabled = initWidthStretchEnabled(filler, frame);
 		
 		frameContainer = new JRFillFrameElements(factory);
 		
@@ -110,6 +113,7 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 		
 		lineBox = frame.getLineBox().clone(this);
 		borderSplitType = frame.borderSplitType;
+		widthStretchEnabled = frame.widthStretchEnabled;
 		
 		frameContainer = new JRFillFrameElements(frame.frameContainer, factory);
 		
@@ -123,13 +127,22 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 		BorderSplitType splitType = frame.getBorderSplitType();
 		if (splitType == null)
 		{
-			String splitTypeProp = filler.getPropertiesUtil().getProperty(filler.getMainDataset(), PROPERTY_BORDER_SPLIT_TYPE);
+			String splitTypeProp = filler.getPropertiesUtil().getProperty(filler.getJasperReport(), PROPERTY_BORDER_SPLIT_TYPE); // property expression does not work, 
+			// but even if we would call filler.getMainDataset(), it would be too early as it is null here for frame elements placed in group bands
 			if (splitTypeProp != null)
 			{
 				splitType = BorderSplitType.byName(splitTypeProp);
 			}
 		}
 		return splitType;
+	}
+	
+	private boolean initWidthStretchEnabled(JRBaseFiller filler, JRFrame frame)
+	{
+		boolean stretchDisabled = filler.getPropertiesUtil().getBooleanProperty(
+				PROPERTY_FRAME_WIDTH_STRETCH_DISABLED, false, 
+				frame, filler.getJasperReport());
+		return !stretchDisabled;
 	}
 
 	@Override
@@ -201,8 +214,8 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 		// whether the current frame chunk is the first one.
 		boolean first = !isOverflow || !filling;
 		
-		int topPadding = getLineBox().getTopPadding().intValue();
-		int bottomPadding = getLineBox().getBottomPadding().intValue();		
+		int topPadding = getLineBox().getTopPadding();
+		int bottomPadding = getLineBox().getBottomPadding();		
 		
 		if (availableHeight < getRelativeY() + getHeight() - topPadding - bottomPadding)
 		{
@@ -272,8 +285,8 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 	{
 		super.setStretchHeight(stretchHeight);
 		
-		int topPadding = getLineBox().getTopPadding().intValue();
-		int bottomPadding = getLineBox().getBottomPadding().intValue();		
+		int topPadding = getLineBox().getTopPadding();
+		int bottomPadding = getLineBox().getBottomPadding();		
 		frameContainer.setStretchHeight(stretchHeight + frameContainer.getFirstY() - topPadding - bottomPadding);
 	}
 	
@@ -291,8 +304,8 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 			frameContainer.moveBandBottomElements();
 			frameContainer.removeBlankElements();
 
-			int topPadding = getLineBox().getTopPadding().intValue();
-			int bottomPadding = getLineBox().getBottomPadding().intValue();
+			int topPadding = getLineBox().getTopPadding();
+			int bottomPadding = getLineBox().getBottomPadding();
 			super.setStretchHeight(frameContainer.getStretchHeight() - frameContainer.getFirstY() + topPadding + bottomPadding);
 		}
 	}
@@ -318,9 +331,24 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 		printFrame.setUUID(getUUID());
 		printFrame.setX(getX());
 		printFrame.setY(getRelativeY());
-		printFrame.setWidth(getWidth());
 		
-		frameContainer.fillElements(printFrame);
+		VirtualizableFrame virtualizableFrame = new VirtualizableFrame(printFrame, 
+				filler.getVirtualizationContext(), filler.getCurrentPage());
+		frameContainer.fillElements(virtualizableFrame);
+		virtualizableFrame.fill();
+		
+		int width = getWidth();
+		if (widthStretchEnabled)
+		{
+			JRLineBox printBox = printFrame.getLineBox();
+			int padding = (printBox.getLeftPadding() == null ? 0 : printBox.getLeftPadding())
+					+ (printBox.getRightPadding() == null ? 0 : printBox.getRightPadding());
+			if (virtualizableFrame.getContentsWidth() + padding > width)
+			{
+				width = virtualizableFrame.getContentsWidth() + padding;
+			}
+		}
+		printFrame.setWidth(width);
 		
 		printFrame.setHeight(getStretchHeight());
 		transferProperties(printFrame);
@@ -487,18 +515,18 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 		@Override
 		protected int getContainerHeight()
 		{
-			return JRFillFrame.this.getHeight() - getLineBox().getTopPadding().intValue() - getLineBox().getBottomPadding().intValue(); 
+			return JRFillFrame.this.getHeight() - getLineBox().getTopPadding() - getLineBox().getBottomPadding(); 
 		}
 
 		@Override
 		protected int getActualContainerHeight()
 		{
-			int containerHeight = JRFillFrame.this.getHeight() - getLineBox().getTopPadding().intValue() - getLineBox().getBottomPadding().intValue(); 
+			int containerHeight = JRFillFrame.this.getHeight() - getLineBox().getTopPadding() - getLineBox().getBottomPadding(); 
 			
 			if (JRFillFrame.this.frameContainer.bottomElementInGroup != null)
 			{
 				if (
-					getLineBox().getTopPadding().intValue() 
+					getLineBox().getTopPadding() 
 					+ JRFillFrame.this.frameContainer.bottomElementInGroup.getY() 
 					+ JRFillFrame.this.frameContainer.bottomElementInGroup.getHeight() > JRFillFrame.this.getHeight()
 					)
@@ -510,6 +538,13 @@ public class JRFillFrame extends JRFillElement implements JRFrame
 			}
 
 			return containerHeight; 
+		}
+
+		@Override
+		public boolean isSplitTypePreventInhibited(boolean isTopLevelCall)
+		{
+			//not actually called because fillContainerContext in the children is actually the band
+			return JRFillFrame.this.fillContainerContext.isSplitTypePreventInhibited(isTopLevelCall);
 		}
 	}
 	

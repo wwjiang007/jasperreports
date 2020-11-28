@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -73,7 +73,9 @@ public interface MapComponent extends Component, JRCloneable
 			)
 	public static final String PROPERTY_SIGNATURE = PROPERTY_PREFIX + "signature";
 	
-	@Deprecated
+	/**
+	 * 	@deprecated Replaced by #PROPERTY_GOOGLE_VERSION.
+	 */
 	public static final String PROPERTY_VERSION = PROPERTY_PREFIX + "version";
 	
 	@Property(
@@ -303,7 +305,7 @@ public interface MapComponent extends Component, JRCloneable
 	/**
 	 * String value representing the URL where the marker icon is loaded from; optional.
 	 * <p/>
-	 * This property is overriden by the {@link #ITEM_PROPERTY_MARKER_ICON_url} property value.
+	 * This property is overridden by the {@link #ITEM_PROPERTY_MARKER_ICON_url} property value.
 	 */
 	public static final String ITEM_PROPERTY_MARKER_icon = "icon";
 
@@ -369,7 +371,7 @@ public interface MapComponent extends Component, JRCloneable
 	/**
 	 * String value representing the URL where the custom marker shadow icon is loaded from; optional.
 	 * <p/>
-	 * This property is overriden by {@link #ITEM_PROPERTY_MARKER_SHADOW_url}.
+	 * This property is overridden by {@link #ITEM_PROPERTY_MARKER_SHADOW_url}.
 	 */
 	public static final String ITEM_PROPERTY_MARKER_shadow = "shadow";
 

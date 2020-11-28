@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -35,12 +35,12 @@ import net.sf.jasperreports.engine.JRRuntimeException;
 /**
  * @author Lucian Chirita (lucianc@users.sourceforge.net)
  */
-public class ConcurrentMapping<K, V>
+public class ConcurrentMapping<K, V, C>
 {
 
-	public static interface Mapper<K, V>
+	public static interface Mapper<K, V, C>
 	{
-		V compute(K key);
+		V compute(K key, C context);
 	}
 	
 	private static class Entry<V>
@@ -145,16 +145,16 @@ public class ConcurrentMapping<K, V>
 		}
 	}
 
-	private final Mapper<K, V> mapper;
+	private final Mapper<K, V, C> mapper;
 	private ConcurrentHashMap<K, Entry<V>> entries;
 	
-	public ConcurrentMapping(Mapper<K, V> mapper)
+	public ConcurrentMapping(Mapper<K, V, C> mapper)
 	{
 		this.mapper = mapper;
 		this.entries = new ConcurrentHashMap<K, Entry<V>>();
 	}
 	
-	public V get(K key)
+	public V get(K key, C context)
 	{
 		Entry<V> existingEntry = entries.get(key);
 		Entry<V> newEntry = null;
@@ -165,21 +165,21 @@ public class ConcurrentMapping<K, V>
 			existingEntry = entries.putIfAbsent(key, newEntry);
 			if (existingEntry == null)
 			{
-				result = getNew(newEntry, key);
+				result = getNew(newEntry, key, context);
 			}
 			else
 			{
-				result = getExisting(existingEntry, key);
+				result = getExisting(existingEntry, key, context);
 			}
 		}
 		else
 		{
-			result = getExisting(existingEntry, key);
+			result = getExisting(existingEntry, key, context);
 		}
 		return result;
 	}
 	
-	private V getExisting(Entry<V> entry, K key)
+	private V getExisting(Entry<V> entry, K key, C context)
 	{
 		V result;
 		Entry.Result<V> entryResult = entry.result;
@@ -203,7 +203,7 @@ public class ConcurrentMapping<K, V>
 				{
 					//compute again
 					entry.result = Entry.pendingResult();
-					result = getNew(entry, key);
+					result = getNew(entry, key, context);
 				}
 				else
 				{
@@ -218,8 +218,8 @@ public class ConcurrentMapping<K, V>
 		}
 		return result;
 	}
-	
-	private V getNew(Entry<V> entry, K key)
+
+	private V getNew(Entry<V> entry, K key, C context)
 	{
 		entry.lock();
 		try
@@ -228,7 +228,7 @@ public class ConcurrentMapping<K, V>
 			boolean success = false;
 			try
 			{
-				value = mapper.compute(key);
+				value = mapper.compute(key, context);
 				success = true;
 				return value;
 			}

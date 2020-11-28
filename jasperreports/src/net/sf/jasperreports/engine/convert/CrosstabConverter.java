@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -217,9 +217,9 @@ public final class CrosstabConverter extends FrameConverter
 		{
 			frame.copyBox(box);
 			
-			boolean copyLeft = left && box.getLeftPen().getLineWidth().floatValue() <= 0f && box.getRightPen().getLineWidth().floatValue() > 0f;
-			boolean copyRight = right && box.getRightPen().getLineWidth().floatValue() <= 0f && box.getLeftPen().getLineWidth().floatValue() > 0f;
-			boolean copyTop = top && box.getTopPen().getLineWidth().floatValue() <= 0f && box.getBottomPen().getLineWidth().floatValue() > 0f;
+			boolean copyLeft = left && box.getLeftPen().getLineWidth() <= 0f && box.getRightPen().getLineWidth() > 0f;
+			boolean copyRight = right && box.getRightPen().getLineWidth() <= 0f && box.getLeftPen().getLineWidth() > 0f;
+			boolean copyTop = top && box.getTopPen().getLineWidth() <= 0f && box.getBottomPen().getLineWidth() > 0f;
 			
 			if (copyLeft)
 			{

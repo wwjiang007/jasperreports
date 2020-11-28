@@ -1,8 +1,10 @@
-<project name="JasperReports" default="compile" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="JasperReports Library" default="compile" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<description>Helps build the JasperReports distribution files.</description>
 
-	<property name="version" value="6.6.0"/>
+	<property name="organization" value="TIBCO Software Inc."/>
+	<property name="version" value="master-SNAPSHOT"/>
+	<property name="scm-tag" value="master-SNAPSHOT"/>
 
 	<path id="project-classpath">
 		<path refid="project-lib"/>
@@ -15,12 +17,12 @@
 		<ivy:cachepath pathid="project-lib" log="download-only" conf="compile"/> 
 		<ivy:cachepath pathid="annotations-lib" log="download-only" conf="annotations"/>
 		<pathconvert property="annotations-paths" refid="annotations-lib"/>
-		<javac destdir="./build/classes" debug="true" optimize="false" deprecation="true" target="1.8" source="1.8"
-				encoding="ISO-8859-1" includeantruntime="false" excludes="**/package-info.java">
+		<javac destdir="./build/classes" debug="true" optimize="false" target="1.8" source="1.8"
+				encoding="UTF-8" includeantruntime="false" excludes="**/package-info.java">
 			<classpath refid="project-classpath"/>
 			<src path="./src"/>
 			<compilerarg value="-Xlint:-unchecked"/>
-			<compilerarg value="-Xlint:-deprecation"/>
+			<compilerarg value="-Xlint:deprecation"/>
 			<compilerarg value="-Xlint:-options"/>
 			<compilerarg value="-processorpath"/>
 			<compilerarg value="${annotations-paths}"/>
@@ -50,6 +52,32 @@
 				<include name="**/*.svg"/>
 				<include name="**/*.svgz"/>
 				<include name="**/*.tmpl"/>
+				<include name="**/LICENSE.txt"/>
+			</fileset>
+		</copy>
+
+		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+			<arg value="log" />
+			<arg value="-1" />
+			<arg value="--pretty=format:%H" />
+		</exec>
+		<condition property="repository.version" value="${git.revision}" else="unknown">
+			<and>
+				<isset property="git.revision"/>
+				<length string="${git.revision}" trim="yes" length="0" when="greater"/>
+			</and>
+		</condition>
+		<copy todir="./build/classes">
+			<filterchain>
+				<!-- here it is important that the "from" properties do not 
+				actually exist in this ant build file -->
+				<replacestring from="${project.organization.name}" to="${organization}"/>
+				<replacestring from="${project.name}" to="${ant.project.name}"/>
+				<replacestring from="${project.version}" to="${version}"/>
+				<replacestring from="${buildNumber}" to="${repository.version}"/>
+			</filterchain>
+			<fileset dir="./src">
+				<include name="**/*.MF"/>
 			</fileset>
 		</copy>
 	</target>
@@ -66,7 +94,7 @@
 
 	<target name="jar" depends="compile" description="Builds the JasperReports JAR file.">
 		<mkdir dir="./dist"/> 
-		<jar jarfile="./dist/jasperreports-${version}.jar" manifest="src/META-INF/MANIFEST.MF">
+		<jar jarfile="./dist/jasperreports-${version}.jar" manifest="build/classes/META-INF/MANIFEST.MF">
 			<fileset dir="./build/classes"/>
 			<fileset dir="./">
 				<include name="**/lgpl.txt"/>
@@ -75,7 +103,7 @@
 		</jar>
 	</target>
 	
-	<target name="alljars" depends="jar, javaflow, fonts" description="Builds all JasperReports JAR files."/>
+	<target name="alljars" depends="jar, javaflow" description="Builds all JasperReports JAR files."/>
 
 	<target name="javaflow" depends="compile" description="Builds the JavaFlow instrumentated JAR file.">
 		<ivy:cachepath pathid="project-lib" log="download-only" conf="javaflow"/> 
@@ -105,7 +133,7 @@
 		</javaflow>
 
 		<mkdir dir="./dist"/> 
-		<jar jarfile="./dist/jasperreports-javaflow-${version}.jar" manifest="src/META-INF/MANIFEST.MF">
+		<jar jarfile="./dist/jasperreports-javaflow-${version}.jar" manifest="build/classes/META-INF/MANIFEST.MF">
 			<fileset dir="./build/javaflow"/>
 			<fileset dir="./">
 				<include name="**/lgpl.txt"/>
@@ -114,44 +142,26 @@
 		</jar>
 	</target>
 
-	<target name="fonts" description="Builds the JAR containing the JasperReports default font extension.">
-		<mkdir dir="./dist"/> 
-		<jar jarfile="./dist/jasperreports-fonts-${version}.jar">
-			<manifest>
-				<attribute name="Built-By" value="TIBCO Software Inc."/>
-				<section name="net/sf/jasperreports/fonts/">
-					<attribute name="Specification-Title" value="JasperReports Font Extension"/>
-					<attribute name="Specification-Version" value="${version}"/>
-					<attribute name="Specification-Vendor" value="TIBCO Software Inc."/>
-					<attribute name="Implementation-Title" value="net.sf.jasperreports.fonts"/>
-					<attribute name="Implementation-Version" value="${version}"/> 
-					<attribute name="Implementation-Vendor" value="TIBCO Software Inc."/>
-				</section>
-			</manifest>		
-			<fileset dir="./ext/fonts">
-				<exclude name="**/log4j*.*"/>
-				<exclude name="**/readme.txt"/>
-				<exclude name="**/pom.xml"/>
-			</fileset>
-		</jar>
-	</target>
-	
 	<target name="clean" description="Deletes all build files.">
 		<delete dir="./build"/>
 		<delete dir="./dist"/>
 		<delete dir="./target"/>
 	</target>
 
-	<target name="javadoc" depends="compile" description="Compiles the library API documentation.">
+	<target name="javadoc" description="Compiles the library API documentation.">
 		<mkdir dir="./dist/docs/api"/> 
 		<delete dir="./dist/docs/api/net"/>
 		<delete>
 			<fileset dir="./dist/docs/api" includes="**/*.*" />
 		</delete>
-		<ivy:cachepath pathid="project-lib" log="download-only" conf="docs"/> 
+		<ivy:cachepath pathid="project-lib" log="download-only" conf="docs"/>
 		<condition property="javadoc-arg" value="-Xdoclint:none" else="">
 			<or>
 				<matches pattern="1.8.*" string="${java.version}"/>
+				<matches pattern="9.*" string="${java.version}"/>
+				<matches pattern="10.*" string="${java.version}"/>
+				<matches pattern="11.*" string="${java.version}"/>
+				<matches pattern="12.*" string="${java.version}"/>
 			</or>
 		</condition>
 		<tstamp>
@@ -165,7 +175,8 @@
 				use="true"
 				windowtitle="JasperReports ${version} API"
 				maxmemory="1024m"
-				encoding="ISO-8859-1">
+				failonerror="true"
+				encoding="UTF-8">
 			<doctitle>
 <![CDATA[
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -190,9 +201,6 @@
 			</fileset>
 		</copy>
 	</target>
-
-	<property name="sf.net" value="false"/>
-	<property name="scm-tag" value="jr-6-6-0"/>
 
 	<target name="preparedocs" description="Prepares Documentation Folder.">
 		<mkdir dir="./dist/docs"/> 
@@ -292,23 +300,26 @@
 		</path>
 		
 		<mkdir dir="./build/test-classes"/>
-		<javac destdir="./build/test-classes" debug="true" optimize="false" deprecation="true" target="1.8" source="1.8" 
-				encoding="ISO-8859-1" includeantruntime="false">
+		<javac destdir="./build/test-classes" debug="true" optimize="false" target="1.8" source="1.8" 
+				encoding="UTF-8" includeantruntime="false">
 			<classpath refid="test-compile"/>
 			<src path="./tests"/>
 			<compilerarg value="-Xlint:-unchecked"/>
-			<compilerarg value="-Xlint:-deprecation"/>
+			<compilerarg value="-Xlint:deprecation"/>
 			<compilerarg value="-Xlint:-options"/>
 		</javac>
 		<copy todir="./build/test-classes">
 			<fileset dir="./tests">
 				<include name="**/*.jrxml"/>
+				<include name="**/*.sha"/>
 				<include name="**/*.jrpxml"/>
+				<include name="**/*.svg"/>
 				<include name="**/*.xml"/>
 				<include name="**/*.csv"/>
 				<include name="**/*.png"/>
 				<include name="**/*.jpg"/>
 				<include name="**/*.json"/>
+				<include name="**/*.err"/>
 			</fileset>
 		</copy>
 		

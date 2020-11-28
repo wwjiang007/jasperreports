@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -59,6 +59,7 @@ import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.PositionTypeEnum;
 import net.sf.jasperreports.engine.type.ResetTypeEnum;
+import net.sf.jasperreports.engine.type.TextAdjustEnum;
 import net.sf.jasperreports.engine.util.AbstractSampleApp;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -417,27 +418,27 @@ public class NoXmlDesignApp extends AbstractSampleApp
 		normalStyle.setFontSize(12f);
 		normalStyle.setPdfFontName("Helvetica");
 		normalStyle.setPdfEncoding("Cp1252");
-		normalStyle.setPdfEmbedded(false);
+		normalStyle.setPdfEmbedded(Boolean.FALSE);
 		jasperDesign.addStyle(normalStyle);
 
 		JRDesignStyle boldStyle = new JRDesignStyle();
 		boldStyle.setName("Sans_Bold");
 		boldStyle.setFontName("DejaVu Sans");
 		boldStyle.setFontSize(12f);
-		boldStyle.setBold(true);
+		boldStyle.setBold(Boolean.TRUE);
 		boldStyle.setPdfFontName("Helvetica-Bold");
 		boldStyle.setPdfEncoding("Cp1252");
-		boldStyle.setPdfEmbedded(false);
+		boldStyle.setPdfEmbedded(Boolean.FALSE);
 		jasperDesign.addStyle(boldStyle);
 
 		JRDesignStyle italicStyle = new JRDesignStyle();
 		italicStyle.setName("Sans_Italic");
 		italicStyle.setFontName("DejaVu Sans");
 		italicStyle.setFontSize(12f);
-		italicStyle.setItalic(true);
+		italicStyle.setItalic(Boolean.TRUE);
 		italicStyle.setPdfFontName("Helvetica-Oblique");
 		italicStyle.setPdfEncoding("Cp1252");
-		italicStyle.setPdfEmbedded(false);
+		italicStyle.setPdfEmbedded(Boolean.FALSE);
 		jasperDesign.addStyle(italicStyle);
 		
 		//Parameters
@@ -491,7 +492,7 @@ public class NoXmlDesignApp extends AbstractSampleApp
 		group.setName("CityGroup");
 		variable.setResetGroup(group);
 		variable.setCalculation(CalculationEnum.SYSTEM);
-		variable.setInitialValueExpression(new JRDesignExpression("($V{CityNumber} != null)?(new Integer($V{CityNumber}.intValue() + 1)):(new Integer(1))"));
+		variable.setInitialValueExpression(new JRDesignExpression("$V{CityNumber} == null ? 1 : ($V{CityNumber} + 1)"));
 		jasperDesign.addVariable(variable);
 
 		variable = new JRDesignVariable();
@@ -643,7 +644,7 @@ public class NoXmlDesignApp extends AbstractSampleApp
 		textField.setExpression(new JRDesignExpression("$F{Id}"));
 		band.addElement(textField);
 		textField = new JRDesignTextField();
-		textField.setStretchWithOverflow(true);
+		textField.setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT);
 		textField.setX(55);
 		textField.setY(4);
 		textField.setWidth(200);
@@ -653,7 +654,7 @@ public class NoXmlDesignApp extends AbstractSampleApp
 		textField.setExpression(new JRDesignExpression("$F{FirstName} + \" \" + $F{LastName}"));
 		band.addElement(textField);
 		textField = new JRDesignTextField();
-		textField.setStretchWithOverflow(true);
+		textField.setTextAdjust(TextAdjustEnum.STRETCH_HEIGHT);
 		textField.setX(260);
 		textField.setY(4);
 		textField.setWidth(255);

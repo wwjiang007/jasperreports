@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -204,13 +204,13 @@ public final class JRValueStringUtils
 						EXCEPTION_MESSAGE_KEY_SINGLE_CHARACTER_EXPECTED,
 						new Object[]{data});
 			}
-			return new Character(data.charAt(0));
+			return data.charAt(0);
 		}
 
 		@Override
 		public String serialize(Object value)
 		{
-			return String.valueOf(new char[]{((Character) value).charValue()});
+			return String.valueOf(new char[]{(Character) value});
 		}
 	}
 	
@@ -239,7 +239,7 @@ public final class JRValueStringUtils
 		@Override
 		public String serialize(Object value)
 		{
-			return ((Boolean) value).booleanValue() ? "true" : "false";
+			return ((Boolean) value) ? "true" : "false";
 		}
 	}
 	

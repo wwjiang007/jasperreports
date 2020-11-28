@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -34,7 +34,6 @@ import net.sf.jasperreports.data.AbstractClasspathAwareDataAdapterService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.util.JRClassLoader;
 
@@ -52,14 +51,6 @@ public class DataSourceDataAdapterService extends
 	public DataSourceDataAdapterService(ParameterContributorContext paramContribContext, DataSourceDataAdapter dsDataAdapter) 
 	{
 		super(paramContribContext, dsDataAdapter);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #DataSourceDataAdapterService(ParameterContributorContext, DataSourceDataAdapter)}.
-	 */
-	public DataSourceDataAdapterService(JasperReportsContext jasperReportsContext, DataSourceDataAdapter dsDataAdapter) 
-	{
-		super(jasperReportsContext, dsDataAdapter);
 	}
 
 	public DataSourceDataAdapter getDataSourceDataAdapter() {
@@ -94,9 +85,9 @@ public class DataSourceDataAdapterService extends
 				Class<?> clazz = JRClassLoader.loadClassForRealName(dsDataAdapter.getFactoryClass());
 				Object obj = null;
 				Method method = clazz.getMethod( dsDataAdapter.getMethodToCall(), new Class[0]);
-				if(!Modifier.isStatic(method.getModifiers()))
-					obj = clazz.newInstance();
-				if(JRDataSource.class.isAssignableFrom(method.getReturnType()))
+				if (!Modifier.isStatic(method.getModifiers()))
+					obj = clazz.getDeclaredConstructor().newInstance();
+				if (JRDataSource.class.isAssignableFrom(method.getReturnType()))
 				{
 					ds = (JRDataSource) method.invoke(obj,new Object[0]);
 				}
@@ -108,22 +99,9 @@ public class DataSourceDataAdapterService extends
 						new Object[]{dsDataAdapter.getMethodToCall(), dsDataAdapter.getFactoryClass()});
 				}
 			}
-			catch (ClassNotFoundException e)
+			catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException 
+				| IllegalAccessException | InstantiationException e) 
 			{
-				throw new JRException(e);			
-			} 
-			catch (NoSuchMethodException e)
-			{
-				throw new JRException(e);			
-			} 
-			catch (InvocationTargetException e)
-			{
-				throw new JRException(e);			
-			} 
-			catch (IllegalAccessException e)
-			{
-				throw new JRException(e);			
-			} catch (InstantiationException e) {
 				throw new JRException(e);			
 			} 
 			finally

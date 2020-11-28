@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,7 +30,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
-import net.sf.jasperreports.engine.JRAbstractSvgRenderer;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
 
@@ -40,7 +39,7 @@ import net.sf.jasperreports.engine.JasperReportsContext;
  * @author Narcis Marcu (narcism@users.sourceforge.net)
  * @deprecated Replaced by {@link AwtComponentRendererImpl}.
  */
-public class AwtComponentRenderer extends JRAbstractSvgRenderer implements Graphics2DRenderable, DimensionRenderable
+public class AwtComponentRenderer extends net.sf.jasperreports.engine.JRAbstractSvgRenderer implements Graphics2DRenderable, DimensionRenderable
 {
 
 	private static final long serialVersionUID = 1L;

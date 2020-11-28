@@ -8,12 +8,7 @@
 <xsl:param name="sf.net"/>
 <xsl:param name="version"/>
 
-<xsl:variable name="api.url">
- <xsl:choose>
-  <xsl:when test="$sf.net = 'true'">api/</xsl:when>
-  <xsl:otherwise>http://jasperreports.sourceforge.net/api/</xsl:otherwise>
- </xsl:choose>
-</xsl:variable>
+<xsl:variable name="api.url">api/</xsl:variable>
 
 <xsl:template match="/">
 <html>
@@ -93,7 +88,10 @@
 	font-weight: bold;
 }
 
-
+.code {
+  	font-family: Courier New, Courier, serif;
+	font-size: 13px;
+}
 </style>
 </head>
 <body bgcolor="#FFFFFF">
@@ -338,7 +336,7 @@ ga('send', 'pageview');
 
 
 <xsl:template match="code">
-  <xsl:element name="code"><xsl:apply-templates/></xsl:element>
+  <span class="code"><xsl:value-of select="."/></span>
 </xsl:template>
 
 

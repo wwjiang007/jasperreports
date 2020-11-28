@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -74,15 +74,6 @@ import net.sf.jasperreports.engine.JasperReportsContext;
  */
 public class JRXlsAbstractExporterNature extends AbstractExporterNature
 {
-	/**
-	 * @deprecated Replaced by {@link JRXlsAbstractExporter#PROPERTY_BREAK_BEFORE_ROW}.
-	 */
-	public static final String PROPERTY_BREAK_BEFORE_ROW = JRXlsAbstractExporter.PROPERTY_BREAK_BEFORE_ROW;
-	/**
-	 * @deprecated Replaced by {@link JRXlsAbstractExporter#PROPERTY_BREAK_AFTER_ROW}.
-	 */
-	public static final String PROPERTY_BREAK_AFTER_ROW = JRXlsAbstractExporter.PROPERTY_BREAK_AFTER_ROW;
-
 	protected boolean isIgnoreGraphics;
 	protected boolean isIgnorePageMargins;
 
@@ -422,7 +413,9 @@ public class JRXlsAbstractExporterNature extends AbstractExporterNature
 	
 	private void setMargin(Integer marginValue, Cut cut, String marginName)
 	{
-		if(marginValue != null)
+		if(
+			marginValue != null && (!cut.hasProperty(marginName) || (Integer)cut.getProperty(marginName) < marginValue)
+			)
 		{
 			// a margin value cannot be negative
 			cut.setProperty(marginName, max(marginValue,0));
@@ -559,14 +552,16 @@ public class JRXlsAbstractExporterNature extends AbstractExporterNature
 		
 		Integer printPageHeight = getPrintPageHeight(element);
 		// only positive  values are allowed
-		if(printPageHeight != null && printPageHeight > 0)
+		if(printPageHeight != null && printPageHeight > 0 
+			&& (!cut.hasProperty(PROPERTY_PRINT_PAGE_HEIGHT) || (Integer)cut.getProperty(PROPERTY_PRINT_PAGE_HEIGHT) < printPageHeight))
 		{
 			cut.setProperty(PROPERTY_PRINT_PAGE_HEIGHT, printPageHeight);
 		}
 		
 		Integer printPageWidth = getPrintPageWidth(element);
 		// only positive  values are allowed
-		if(printPageWidth != null && printPageWidth > 0)
+		if(printPageWidth != null && printPageWidth > 0 
+				&& (!cut.hasProperty(PROPERTY_PRINT_PAGE_WIDTH) || (Integer)cut.getProperty(PROPERTY_PRINT_PAGE_WIDTH) < printPageWidth))
 		{
 			cut.setProperty(PROPERTY_PRINT_PAGE_WIDTH, printPageWidth);
 		}

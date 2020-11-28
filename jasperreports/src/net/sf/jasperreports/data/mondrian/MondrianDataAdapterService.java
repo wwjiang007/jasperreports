@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -31,7 +31,6 @@ import mondrian.olap.DriverManager;
 import mondrian.olap.Util;
 import net.sf.jasperreports.data.jdbc.JdbcDataAdapterService;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.olap.JRMondrianQueryExecuterFactory;
 
@@ -49,15 +48,6 @@ public class MondrianDataAdapterService extends JdbcDataAdapterService {
 			ParameterContributorContext paramContribContext,
 			MondrianDataAdapter jdbcDataAdapter) {
 		super(paramContribContext, jdbcDataAdapter);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #MondrianDataAdapterService(ParameterContributorContext, MondrianDataAdapter)}.
-	 */
-	public MondrianDataAdapterService(
-			JasperReportsContext jasperReportsContext,
-			MondrianDataAdapter jdbcDataAdapter) {
-		super(jasperReportsContext, jdbcDataAdapter);
 	}
 
 	@Override

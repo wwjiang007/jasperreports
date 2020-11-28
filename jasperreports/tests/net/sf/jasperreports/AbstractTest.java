@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,16 +30,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.ITestContext;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
@@ -50,12 +56,9 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRXmlExporter;
-import net.sf.jasperreports.engine.export.XmlResourceHandler;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.JRResourcesUtil;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
@@ -66,20 +69,46 @@ public abstract class AbstractTest
 	
 	private static final String TEST = "TEST";
 
+	private ITestContext testContext;
 	private JasperReportsContext jasperReportsContext;
 
 	@BeforeClass
-	public void init() throws JRException, IOException
+	public void init(ITestContext ctx) throws JRException, IOException
 	{
+		testContext = ctx;
 		jasperReportsContext = new SimpleJasperReportsContext();
 	}
 
-	protected void testReports(String folderName, String fileNamePrefix, int maxFileNumber) throws JRException, NoSuchAlgorithmException, IOException
+	@Test(dataProvider = "testArgs")
+	public void testReport(String folderName, String fileNamePrefix, String referenceFileNamePrefix) 
+			throws JRException, NoSuchAlgorithmException, IOException
 	{
-		testReports(folderName, fileNamePrefix, fileNamePrefix, maxFileNumber);
+		runReport(folderName, fileNamePrefix, referenceFileNamePrefix);
 	}
 	
-	protected void testReports(String folderName, String fileNamePrefix, String exportFileNamePrefix, int maxFileNumber) throws JRException, NoSuchAlgorithmException, IOException
+	protected Object[][] runReportArgs(String folderName, String fileNamePrefix, int maxFileNumber)
+	{
+		return runReportArgs(folderName, fileNamePrefix, fileNamePrefix, maxFileNumber);
+	}
+
+	protected Object[][] runReportArgs(String folderName, String fileNamePrefix, String referenceFileNamePrefix, int maxFileNumber)
+	{
+		List<Object[]> args = new ArrayList<>(maxFileNumber);
+		for (int i = 1; i <= maxFileNumber; i++)
+		{
+			args.add(
+				new Object[] {
+					folderName, 
+					folderName + "/" + fileNamePrefix + "." + i + ".jrxml", 
+					folderName + "/" + referenceFileNamePrefix + "." + i
+					}
+				);
+		}
+		return args.toArray(new Object[args.size()][]);
+	}
+
+	protected void runReport(String folderName, String jrxmlFileName, String referenceFileNamePrefix) 
+			throws JRException, IOException, NoSuchAlgorithmException, FileNotFoundException
 	{
 		JasperFillManager fillManager = JasperFillManager.getInstance(getJasperReportsContext());
 		
@@ -88,40 +117,58 @@ public abstract class AbstractTest
 		params.put(JRParameter.REPORT_TIME_ZONE, TimeZone.getTimeZone("GMT"));
 		params.put(TEST, this);
 		
-		for (int i = 1; i <= maxFileNumber; i++)
+		log.debug("Running report " + jrxmlFileName);
+		
+		try
 		{
-			String jrxmlFileName = folderName + "/" + fileNamePrefix + "." + i + ".jrxml";
-			log.debug("Running report " + jrxmlFileName);
-			
 			JasperReport report = compileReport(jrxmlFileName);
 			if (report != null)
 			{
-				String exportDigest = null;
-				String referenceExportDigest = null;
+				JasperPrint print = fillManager.fill(report, params);
+				
+				assert !print.getPages().isEmpty();
+				
+				String exportDigest = getExportDigest(referenceFileNamePrefix, print);
+				log.debug("Plain report got " + exportDigest);
+				
+				boolean digestMatch = false;
 
-				JasperPrint print = null;
-				try
+				String referenceExportDigest = getDigestFromFile(referenceFileNamePrefix + "." + getExportFileExtension() + ".sha");
+				
+				if (exportDigest.equals(referenceExportDigest))
 				{
-					print = fillManager.fill(report, params);
+					digestMatch = true;
 				}
-				catch (Throwable t)
+				else
 				{
-					exportDigest = errExportDigest(t);
-					referenceExportDigest = getFileDigest(folderName + "/" + exportFileNamePrefix + "." + i + ".reference.err");
+					//fallback to account for JDK differences
+					referenceExportDigest = getDigestFromFile(referenceFileNamePrefix + ".2." + getExportFileExtension() + ".sha");
+					if (referenceExportDigest != null)
+					{
+						digestMatch = exportDigest.equals(referenceExportDigest);
+					}
 				}
 				
-				if (print != null)
-				{
-					assert !print.getPages().isEmpty();
-					
-					exportDigest = xmlExportDigest(print);
-					log.debug("Plain report got " + exportDigest);
-					
-					referenceExportDigest = getFileDigest(folderName + "/" + exportFileNamePrefix + "." + i + ".reference.jrpxml");
-				}
-				
-				assert exportDigest.equals(referenceExportDigest);
+				assert digestMatch;
 			}
+		}
+		catch (AssertionError e)
+		{
+			throw e;
+		}
+		catch (Throwable t)
+		{
+			String referenceErrorDigest = getDigestFromFile(referenceFileNamePrefix + ".err.sha");
+			if (referenceErrorDigest == null)
+			{
+				log.error("Report " + jrxmlFileName + " failed", t);
+				//we don't have a reference error, it's an unexpected exception
+				throw t;
+			}
+
+			String errorDigest = errExportDigest(t);
+
+			assert errorDigest.equals(referenceErrorDigest);
 		}
 	}
 
@@ -168,20 +215,40 @@ public abstract class AbstractTest
 		return JasperCompileManager.compileReport(design);
 	}
 
-	protected String getFileDigest(String fileName) throws JRException, NoSuchAlgorithmException
+	protected String getDigestFromFile(String fileName) throws JRException
 	{
-		byte[] bytes = JRLoader.loadBytesFromResource(fileName);
-		MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-		messageDigest.update(bytes);
-		String digest = toDigestString(messageDigest);
-		log.debug("Reference report digest is " + digest);
+		URL resourceURL = JRResourcesUtil.findClassLoaderResource(fileName, null);
+		if (resourceURL == null)
+		{
+			log.debug("did not find resource " + fileName);
+			return null;
+		}
+		
+		byte[] bytes = JRLoader.loadBytes(resourceURL);
+		String digest = null;
+		try
+		{
+			digest = new String(bytes, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new JRException(e);
+		}
+		log.debug("Reference report digest is " + digest + " for " + fileName);
 		return digest;
 	}
 	
-	protected String xmlExportDigest(JasperPrint print) 
+	protected String getExportDigest(String referenceFileNamePrefix, JasperPrint print) 
 			throws NoSuchAlgorithmException, FileNotFoundException, JRException, IOException
 	{
-		File outputFile = createXmlOutputFile();
+		File outputFile = new File(new File(testContext.getOutputDirectory()), referenceFileNamePrefix + "." + getExportFileExtension());
+		File outputDir = outputFile.getParentFile();
+		
+		if (!outputDir.exists())
+		{
+			outputDir.mkdirs();
+		}
+		
 		log.debug("XML export output at " + outputFile.getAbsolutePath());
 		
 		MessageDigest digest = MessageDigest.getInstance("SHA-1");
@@ -189,20 +256,34 @@ public abstract class AbstractTest
 		try
 		{
 			DigestOutputStream out = new DigestOutputStream(output, digest);
-			xmlExport(print, out);
+			export(print, out);
 		}
 		finally
 		{
 			output.close();
 		}
 		
-		return toDigestString(digest);
+		String digestSha = toDigestString(digest);
+		
+		File outputShaFile = new File(new File(testContext.getOutputDirectory()), referenceFileNamePrefix + "." + getExportFileExtension() + ".sha");
+		OutputStreamWriter shaWriter = new OutputStreamWriter(new FileOutputStream(outputShaFile), "UTF-8");
+
+		try
+		{
+			shaWriter.write(digestSha);
+		}
+		finally 
+		{
+			shaWriter.close();
+		}
+		
+		return digestSha;
 	}
 
 	protected String errExportDigest(Throwable t) 
 			throws NoSuchAlgorithmException, FileNotFoundException, JRException, IOException
 	{
-		File outputFile = createXmlOutputFile();
+		File outputFile = createTmpOutputFile("err");
 		log.debug("Error stack trace at " + outputFile.getAbsolutePath());
 		
 		MessageDigest digest = MessageDigest.getInstance("SHA-1");
@@ -214,7 +295,7 @@ public abstract class AbstractTest
 			//PrintStream ps = new PrintStream(out);
 			//t.printStackTrace(ps);
 			osw = new OutputStreamWriter(out, "UTF-8");
-			osw.write(t.getMessage());
+			osw.write(String.valueOf(t.getMessage()));
 		}
 		finally
 		{
@@ -236,51 +317,24 @@ public abstract class AbstractTest
 		return digestString.toString();
 	}
 	
-	protected File createXmlOutputFile() throws IOException
+	protected File createTmpOutputFile(String fileExtension) throws IOException
 	{
-		String outputDirPath = System.getProperty("xmlOutputDir");
+		String outputDirPath = System.getProperty("outputDir");
 		File outputFile;
 		if (outputDirPath == null)
 		{
-			outputFile = File.createTempFile("jr_tests_", ".jrpxml");
+			outputFile = File.createTempFile("jr_tests_", "." + fileExtension);
 		}
 		else
 		{
 			File outputDir = new File(outputDirPath);
-			outputFile = File.createTempFile("jr_tests_", ".jrpxml", outputDir);
+			outputFile = File.createTempFile("jr_tests_", "." + fileExtension, outputDir);
 		}
-		
+		outputFile.deleteOnExit();
 		return outputFile;
 	}
 
-	protected void xmlExport(JasperPrint print, OutputStream out) throws JRException, IOException
-	{
-		JRXmlExporter exporter = new JRXmlExporter();
-		
-		exporter.setExporterInput(new SimpleExporterInput(print));
-		SimpleXmlExporterOutput output = new SimpleXmlExporterOutput(out);
-		String imagesNoEmbed = print.getProperty("net.sf.jasperreports.export.xml.images.no.embed");
-		if (Boolean.valueOf(imagesNoEmbed))
-		{
-			output.setEmbeddingImages(false);
-			output.setImageHandler(new XmlResourceHandler() {
+	protected abstract void export(JasperPrint print, OutputStream out) throws JRException, IOException;
 
-				@Override
-				public void handleResource(String id, byte[] data) {
-				}
-				
-				@Override
-				public String getResourceSource(String id) {
-					return id;
-				}
-			});
-		}
-		else
-		{
-			output.setEmbeddingImages(true);
-		}
-		exporter.setExporterOutput(output);
-		exporter.exportReport();
-		out.close();
-	}
+	protected abstract String getExportFileExtension();
 }

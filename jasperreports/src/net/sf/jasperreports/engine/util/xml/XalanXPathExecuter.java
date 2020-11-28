@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -25,12 +25,12 @@ package net.sf.jasperreports.engine.util.xml;
 
 import javax.xml.transform.TransformerException;
 
-import net.sf.jasperreports.engine.JRException;
-
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import net.sf.jasperreports.engine.JRException;
 
 
 /**
@@ -75,10 +75,10 @@ public class XalanXPathExecuter implements JRXPathExecuter {
 					value = object.nodeset().nextNode();
 					break;
 				case XObject.CLASS_BOOLEAN:
-					value = object.bool() ? Boolean.TRUE : Boolean.FALSE;
+					value = object.bool();
 					break;
 				case XObject.CLASS_NUMBER:
-					value = new Double(object.num());
+					value = object.num();
 					break;
 				default:
 					value = object.str();

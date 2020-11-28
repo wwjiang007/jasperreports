@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -61,6 +61,7 @@ import net.sf.jasperreports.engine.fill.JRFillDatasetRun;
 import net.sf.jasperreports.engine.fill.JRFillObjectFactory;
 import net.sf.jasperreports.engine.fill.JRTemplateFrame;
 import net.sf.jasperreports.engine.fill.JRTemplatePrintFrame;
+import net.sf.jasperreports.engine.fill.VirtualizableFrame;
 import net.sf.jasperreports.engine.util.JRReportUtils;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
 
@@ -172,7 +173,7 @@ public class FillTable extends BaseFillComponent
 			}
 			else
 			{
-				toPrint = printWhenVal.booleanValue();
+				toPrint = printWhenVal;
 			}
 		}
 		return toPrint;
@@ -454,7 +455,6 @@ public class FillTable extends BaseFillComponent
 		printFrame.setUUID(fillContext.getComponentElement().getUUID());
 		printFrame.setX(fillContext.getComponentElement().getX());
 		printFrame.setY(fillContext.getElementPrintY());
-		printFrame.setWidth(fillWidth + lineBox.getLeftPadding() + lineBox.getRightPadding());
 		printFrame.setHeight(fillSubreport.getContentsStretchHeight() + lineBox.getTopPadding() + lineBox.getBottomPadding());
 		if (fillSubreport.getTableReport().getBaseReport().isGeneratePdfTags())
 		{
@@ -482,15 +482,24 @@ public class FillTable extends BaseFillComponent
 			fillContext.getFiller().getJasperPrint().addOrigin(origin);
 		}
 		
+		int contentsWidth = fillWidth;
 		Collection<JRPrintElement> elements = fillSubreport.getPrintElements();
 		if (elements != null)
 		{
-			for (Iterator<JRPrintElement> it = elements.iterator(); it.hasNext();)
+			VirtualizableFrame virtualizableFrame = new VirtualizableFrame(printFrame, 
+					fillContext.getFiller().getVirtualizationContext(), 
+					fillContext.getFiller().getCurrentPage());
+			
+			virtualizableFrame.addOffsetElements(elements, 0, 0);
+			virtualizableFrame.fill();
+			
+			if (fillSubreport.getPrintContentsWidth() > contentsWidth)
 			{
-				JRPrintElement element = it.next();
-				printFrame.addElement(element);
+				contentsWidth = fillSubreport.getPrintContentsWidth();
 			}
 		}
+		
+		printFrame.setWidth(contentsWidth + lineBox.getLeftPadding() + lineBox.getRightPadding());
 		
 		fillSubreport.subreportPageFilled();
 		

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,6 +32,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Types;
 import java.util.Calendar;
 import java.util.Collection;
@@ -71,6 +72,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 	public static final String EXCEPTION_MESSAGE_KEY_QUERY_STATEMENT_CANCEL_ERROR = "query.statement.cancel.error";
 	public static final String EXCEPTION_MESSAGE_KEY_QUERY_STATEMENT_EXECUTE_ERROR = "query.statement.execute.error";
 	public static final String EXCEPTION_MESSAGE_KEY_QUERY_STATEMENT_PREPARE_ERROR = "query.statement.prepare.error";
+	public static final String EXCEPTION_MESSAGE_KEY_QUERY_STATEMENT_TIMEOUT_LIMIT_EXCEEDED = "query.statement.timeout.limit.exceeded";
 	public static final String EXCEPTION_MESSAGE_KEY_UNEXPECTED_MULTI_PARAMETER_TYPE = "query.unexpected.multi.parameter.type";
 
 	public static final String CANONICAL_LANGUAGE = "SQL";
@@ -339,6 +341,14 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 				TimeZone reportTimeZone = (TimeZone) getParameterValue(JRParameter.REPORT_TIME_ZONE, true);
 				dataSource.setReportTimeZone(reportTimeZone);
 			}
+			catch (SQLTimeoutException e)
+			{
+				throw
+					new JRException(
+						EXCEPTION_MESSAGE_KEY_QUERY_STATEMENT_TIMEOUT_LIMIT_EXCEEDED,
+						new Object[]{dataset.getName()},
+						e);
+			}
 			catch (SQLException e)
 			{
 				throw 
@@ -451,10 +461,17 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 					statement.setMaxFieldSize(maxFieldSize);
 				}
 				
+				Integer queryTimeoutValue = getPropertiesUtil().getIntegerProperty(dataset,
+						JRJdbcQueryExecuterFactory.PROPERTY_JDBC_QUERY_TIMEOUT);
+				if (queryTimeoutValue != null && queryTimeoutValue >= 0)
+				{
+					statement.setQueryTimeout(queryTimeoutValue);
+				}
+				
 				Integer reportMaxCount = (Integer) getParameterValue(JRParameter.REPORT_MAX_COUNT);
 				if (reportMaxCount != null)
 				{
-					statement.setMaxRows(reportMaxCount.intValue());
+					statement.setMaxRows(reportMaxCount);
 				}
 				
 				if (isProcedureCall)
@@ -652,7 +669,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setBoolean(parameterIndex, ((Boolean)parameterValue).booleanValue());
+				statement.setBoolean(parameterIndex, (Boolean)parameterValue);
 			}
 		}
 		else if (java.lang.Byte.class.isAssignableFrom(parameterType))
@@ -663,7 +680,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setByte(parameterIndex, ((Byte)parameterValue).byteValue());
+				statement.setByte(parameterIndex, (Byte)parameterValue);
 			}
 		}
 		else if (java.lang.Double.class.isAssignableFrom(parameterType))
@@ -674,7 +691,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setDouble(parameterIndex, ((Double)parameterValue).doubleValue());
+				statement.setDouble(parameterIndex, (Double)parameterValue);
 			}
 		}
 		else if (java.lang.Float.class.isAssignableFrom(parameterType))
@@ -685,7 +702,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setFloat(parameterIndex, ((Float)parameterValue).floatValue());
+				statement.setFloat(parameterIndex, (Float)parameterValue);
 			}
 		}
 		else if (java.lang.Integer.class.isAssignableFrom(parameterType))
@@ -696,7 +713,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setInt(parameterIndex, ((Integer)parameterValue).intValue());
+				statement.setInt(parameterIndex, (Integer)parameterValue);
 			}
 		}
 		else if (java.lang.Long.class.isAssignableFrom(parameterType))
@@ -707,7 +724,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setLong(parameterIndex, ((Long)parameterValue).longValue());
+				statement.setLong(parameterIndex, (Long)parameterValue);
 			}
 		}
 		else if (java.lang.Short.class.isAssignableFrom(parameterType))
@@ -718,7 +735,7 @@ public class JRJdbcQueryExecuter extends JRAbstractQueryExecuter
 			}
 			else
 			{
-				statement.setShort(parameterIndex, ((Short)parameterValue).shortValue());
+				statement.setShort(parameterIndex, (Short)parameterValue);
 			}
 		}
 		else if (java.math.BigDecimal.class.isAssignableFrom(parameterType))

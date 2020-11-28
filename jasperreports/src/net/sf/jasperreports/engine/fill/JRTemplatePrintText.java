@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -235,60 +235,6 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 		this.leadingOffset = leadingOffset;
 	}
 
-	/**
-	 * @deprecated Replaced by {@link #getHorizontalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getHorizontalAlignmentValue()
-	{
-		return ((JRTemplateText)this.template).getHorizontalAlignmentValue();
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnHorizontalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getOwnHorizontalAlignmentValue()
-	{
-		return ((JRTemplateText)this.template).getOwnHorizontalAlignmentValue();
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setHorizontalTextAlign(HorizontalTextAlignEnum)}.
-	 */
-	@Override
-	public void setHorizontalAlignment(net.sf.jasperreports.engine.type.HorizontalAlignEnum horizontalAlignment)
-	{
-		throw new UnsupportedOperationException();
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getVerticalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getVerticalAlignmentValue()
-	{
-		return ((JRTemplateText)this.template).getVerticalAlignmentValue();
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnVerticalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getOwnVerticalAlignmentValue()
-	{
-		return ((JRTemplateText)this.template).getOwnVerticalAlignmentValue();
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setVerticalTextAlign(VerticalTextAlignEnum)}.
-	 */
-	@Override
-	public void setVerticalAlignment(net.sf.jasperreports.engine.type.VerticalAlignEnum verticalAlignment)
-	{
-		throw new UnsupportedOperationException();
-	}
-		
 	@Override
 	public HorizontalTextAlignEnum getHorizontalTextAlign()
 	{
@@ -542,6 +488,9 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 		return ((JRTemplateText)template).isOwnBold();
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setBold(Boolean)}.
+	 */
 	@Override
 	public void setBold(boolean isBold)
 	{
@@ -569,6 +518,9 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 		return ((JRTemplateText)template).isOwnItalic();
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setItalic(Boolean)}.
+	 */
 	@Override
 	public void setItalic(boolean isItalic)
 	{
@@ -595,6 +547,9 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 		return ((JRTemplateText)template).isOwnUnderline();
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setUnderline(Boolean)}.
+	 */
 	@Override
 	public void setUnderline(boolean isUnderline)
 	{
@@ -621,10 +576,13 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 		return ((JRTemplateText)template).isOwnStrikeThrough();
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setStrikeThrough(Boolean)}.
+	 */
 	@Override
 	public void setStrikeThrough(boolean isStrikeThrough)
 	{
-		setStrikeThrough(isStrikeThrough ? Boolean.TRUE : Boolean.FALSE);
+		setStrikeThrough((Boolean)isStrikeThrough);
 	}
 
 	/**
@@ -654,43 +612,6 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 	@Override
 	public void setFontSize(Float fontSize)
 	{
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getFontsize()}.
-	 */
-	@Override
-	public int getFontSize()
-	{
-		return (int)getFontsize();
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getOwnFontsize()}.
-	 */
-	@Override
-	public Integer getOwnFontSize()
-	{
-		Float fontSize = getOwnFontsize();
-		return fontSize == null ? null : fontSize.intValue();
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	@Override
-	public void setFontSize(int fontSize)
-	{
-		setFontSize((float)fontSize);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	@Override
-	public void setFontSize(Integer fontSize)
-	{
-		setFontSize(fontSize == null ? null : fontSize.floatValue());
 	}
 
 	@Override
@@ -741,6 +662,9 @@ public class JRTemplatePrintText extends JRTemplatePrintElement implements JRPri
 		return ((JRTemplateText)template).isOwnPdfEmbedded();
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setPdfEmbedded(Boolean)}.
+	 */
 	@Override
 	public void setPdfEmbedded(boolean isPdfEmbedded)
 	{

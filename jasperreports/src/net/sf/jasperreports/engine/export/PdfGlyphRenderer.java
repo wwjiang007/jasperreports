@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -78,10 +78,38 @@ public class PdfGlyphRenderer extends AbstractPdfTextRenderer
 	private boolean addActualText;	
 	private PdfGlyphGraphics2D pdfGraphics2D;
 	
-	public PdfGlyphRenderer(JasperReportsContext jasperReportsContext, boolean ignoreMissingFont, 
-			boolean addActualText)
+	/**
+	 * @deprecated Replaced by {@link #PdfGlyphRenderer(JasperReportsContext, boolean, boolean, boolean, boolean)}.
+	 */
+	public PdfGlyphRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont, 
+		boolean addActualText
+		)
 	{
-		super(jasperReportsContext, ignoreMissingFont);
+		this(
+			jasperReportsContext, 
+			ignoreMissingFont, 
+			true,
+			false,
+			addActualText
+			);
+	}
+
+	public PdfGlyphRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont, 
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine,
+		boolean addActualText
+		)
+	{
+		super(
+			jasperReportsContext, 
+			ignoreMissingFont,
+			defaultIndentFirstLine,
+			defaultJustifyLastLine
+			);
 		this.addActualText = addActualText;
 	}
 

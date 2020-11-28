@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -26,12 +26,12 @@ package net.sf.jasperreports.engine.fill;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.sf.jasperreports.engine.JRRuntimeException;
-import net.sf.jasperreports.engine.JRVirtualizable;
-
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import net.sf.jasperreports.engine.JRRuntimeException;
+import net.sf.jasperreports.engine.JRVirtualizable;
 
 
 /**
@@ -43,7 +43,7 @@ public class StoreFactoryVirtualizer extends JRAbstractLRUVirtualizer
 	public static final String EXCEPTION_MESSAGE_KEY_STORE_NOT_FOUND = "fill.virtualizer.store.not.found";
 	
 	private final VirtualizerStoreFactory storeFactory;
-	private final ReferenceMap contextStores;
+	private final ReferenceMap<JRVirtualizationContext, VirtualizerStore> contextStores;
 	
 	public StoreFactoryVirtualizer(int maxSize, VirtualizerStoreFactory storeFactory)
 	{
@@ -51,7 +51,10 @@ public class StoreFactoryVirtualizer extends JRAbstractLRUVirtualizer
 
 		this.storeFactory = storeFactory;
 		
-		this.contextStores = new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.HARD);
+		this.contextStores = 
+			new ReferenceMap<JRVirtualizationContext, VirtualizerStore>(
+				ReferenceMap.ReferenceStrength.WEAK, ReferenceMap.ReferenceStrength.HARD
+				);
 	}
 
 	protected VirtualizerStore store(JRVirtualizable o, boolean create)
@@ -62,7 +65,12 @@ public class StoreFactoryVirtualizer extends JRAbstractLRUVirtualizer
 
 	protected VirtualizerStore store(JRVirtualizationContext context, boolean create)
 	{
-		VirtualizerStore store = (VirtualizerStore) contextStores.get(context);
+		VirtualizerStore store;
+		synchronized (contextStores)
+		{
+			store = contextStores.get(context);
+		}
+
 		if (store != null || !create)
 		{
 			if (log.isTraceEnabled())

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,7 +48,7 @@ import net.sf.jasperreports.properties.PropertyConstants;
  * The container stretch is forced upon an element by all types of growth that the container itself suffers, 
  * including forced container stretch imposed onto the container by its own parent container.
  * 
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public enum StretchTypeEnum implements JREnum
 {
@@ -125,7 +125,7 @@ public enum StretchTypeEnum implements JREnum
 			category = PropertyConstants.CATEGORY_FILL,
 			defaultValue = PropertyConstants.BOOLEAN_FALSE,
 			scopes = {PropertyScope.CONTEXT},
-			sinceVersion = PropertyConstants.VERSION_5_1_2,
+			sinceVersion = PropertyConstants.VERSION_6_2_2,
 			valueType = Boolean.class
 			)
 	public static final String PROPERTY_LEGACY_ELEMENT_STRETCH_ENABLED = 
@@ -149,7 +149,7 @@ public enum StretchTypeEnum implements JREnum
 	@Override
 	public Byte getValueByte()
 	{
-		return new Byte(value);
+		return value;
 	}
 	
 	/**
@@ -188,6 +188,6 @@ public enum StretchTypeEnum implements JREnum
 	 */
 	public static StretchTypeEnum getByValue(byte value)
 	{
-		return getByValue(new Byte(value));
+		return getByValue((Byte)value);
 	}
 }

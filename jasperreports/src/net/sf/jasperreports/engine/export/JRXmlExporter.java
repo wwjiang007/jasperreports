@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -315,7 +315,7 @@ public class JRXmlExporter extends JRAbstractExporter<ReportExportConfiguration,
 		{
 			lcIsEmbeddingImages = Boolean.TRUE;
 		}
-		isEmbeddingImages = lcIsEmbeddingImages.booleanValue();
+		isEmbeddingImages = lcIsEmbeddingImages;
 		
 		if (!isEmbeddingImages)
 		{
@@ -486,6 +486,7 @@ public class JRXmlExporter extends JRAbstractExporter<ReportExportConfiguration,
 						if (
 							isNewerVersionOrEqual(JRConstants.VERSION_6_4_0)
 							&& encodedValue.length() != value.length()
+							&& value.trim().equals(value)
 							)
 						{
 							xmlWriter.writeCDATA(value);
@@ -838,6 +839,10 @@ public class JRXmlExporter extends JRAbstractExporter<ReportExportConfiguration,
 	{
 		xmlWriter.startElement(JRXmlConstants.ELEMENT_image);
 		xmlWriter.addAttribute(JRXmlConstants.ATTRIBUTE_scaleImage, image.getOwnScaleImageValue());
+		if(isNewerVersionOrEqual(JRConstants.VERSION_6_10_0))
+		{
+			xmlWriter.addAttribute(JRXmlConstants.ATTRIBUTE_rotation, image.getOwnRotation());
+		}
 		xmlWriter.addAttribute(JRXmlConstants.ATTRIBUTE_hAlign, image.getOwnHorizontalImageAlign());
 		xmlWriter.addAttribute(JRXmlConstants.ATTRIBUTE_vAlign, image.getOwnVerticalImageAlign());
 		
@@ -912,7 +917,10 @@ public class JRXmlExporter extends JRAbstractExporter<ReportExportConfiguration,
 						DataRenderable dataRenderer = 
 							getRendererUtil().getDataRenderable(
 								renderer,
-								new Dimension(image.getWidth(), image.getHeight()),
+								new Dimension(
+									Math.max(image.getWidth() - image.getLineBox().getLeftPadding() - image.getLineBox().getRightPadding(), 0), 
+									Math.max(image.getHeight() - image.getLineBox().getTopPadding() - image.getLineBox().getBottomPadding(), 0)
+									),
 								ModeEnum.OPAQUE == image.getModeValue() ? image.getBackcolor() : null
 								);
 							
@@ -943,7 +951,10 @@ public class JRXmlExporter extends JRAbstractExporter<ReportExportConfiguration,
 							DataRenderable dataRenderer = 
 								getRendererUtil().getDataRenderable(
 									renderer,
-									new Dimension(image.getWidth(), image.getHeight()),
+									new Dimension(
+										Math.max(image.getWidth() - image.getLineBox().getLeftPadding() - image.getLineBox().getRightPadding(), 0), 
+										Math.max(image.getHeight() - image.getLineBox().getTopPadding() - image.getLineBox().getBottomPadding(), 0)
+										),
 									ModeEnum.OPAQUE == image.getModeValue() ? image.getBackcolor() : null
 									);
 

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,11 +23,12 @@
  */
 package net.sf.jasperreports.engine.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRException;
+import org.apache.commons.collections4.map.ReferenceMap;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import net.sf.jasperreports.engine.JRException;
 
 
 /**
@@ -42,7 +43,7 @@ public class JRSingletonCache<T>
 	public static final String EXCEPTION_MESSAGE_KEY_CLASS_NOT_FOUND = "util.singleton.cache.class.not.found";
 	public static final String EXCEPTION_MESSAGE_KEY_INSTANCE_ERROR = "util.singleton.cache.instance.error";
 	
-	private final ReferenceMap cache;
+	private final ReferenceMap<Object, Map<String,T>> cache;
 	private final Class<T> itf;
 
 	/**
@@ -52,7 +53,7 @@ public class JRSingletonCache<T>
 	 */
 	public JRSingletonCache(Class<T> itf)
 	{
-		cache = new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.SOFT);
+		cache = new ReferenceMap<Object, Map<String,T>>(ReferenceMap.ReferenceStrength.WEAK, ReferenceMap.ReferenceStrength.SOFT);
 		this.itf = itf;
 	}
 
@@ -93,7 +94,7 @@ public class JRSingletonCache<T>
 						new Object[]{className, itf.getName()});
 			}
 
-			return clazz.newInstance();
+			return clazz.getDeclaredConstructor().newInstance();
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -103,15 +104,8 @@ public class JRSingletonCache<T>
 					new Object[]{className},
 					e);
 		}
-		catch (InstantiationException e)
-		{
-			throw 
-				new JRException(
-					EXCEPTION_MESSAGE_KEY_INSTANCE_ERROR,
-					new Object[]{className},
-					e);
-		}
-		catch (IllegalAccessException e)
+		catch (InstantiationException | IllegalAccessException 
+			| NoSuchMethodException | InvocationTargetException e)
 		{
 			throw 
 				new JRException(
@@ -121,14 +115,13 @@ public class JRSingletonCache<T>
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Map<String,T> getContextInstanceCache()
 	{
 		Object contextKey = getContextKey();
-		Map<String,T> contextCache = (Map<String,T>) cache.get(contextKey);
+		Map<String,T> contextCache = cache.get(contextKey);
 		if (contextCache == null)
 		{
-			contextCache = new ReferenceMap();
+			contextCache = new ReferenceMap<String,T>();
 			cache.put(contextKey, contextCache);
 		}
 		return contextCache;

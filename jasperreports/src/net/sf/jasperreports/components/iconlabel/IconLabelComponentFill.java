@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -25,7 +25,6 @@ package net.sf.jasperreports.components.iconlabel;
 
 import java.awt.Color;
 
-import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRBoxContainer;
 import net.sf.jasperreports.engine.JRComponentElement;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
@@ -52,6 +51,7 @@ import net.sf.jasperreports.engine.fill.JRFillTextField;
 import net.sf.jasperreports.engine.fill.JRTemplateFrame;
 import net.sf.jasperreports.engine.fill.JRTemplatePrintFrame;
 import net.sf.jasperreports.engine.type.HorizontalImageAlignEnum;
+import net.sf.jasperreports.engine.type.TextAdjustEnum;
 import net.sf.jasperreports.engine.type.VerticalImageAlignEnum;
 import net.sf.jasperreports.engine.util.JRBoxUtil;
 import net.sf.jasperreports.engine.util.StyleResolver;
@@ -60,7 +60,7 @@ import net.sf.jasperreports.engine.util.StyleResolver;
  * 
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  */
-public class IconLabelComponentFill extends BaseFillComponent implements StretchableFillComponent, ConditionalStyleAwareFillComponent, JRBoxContainer, JRAlignment, JRImageAlignment
+public class IconLabelComponentFill extends BaseFillComponent implements StretchableFillComponent, ConditionalStyleAwareFillComponent, JRBoxContainer, JRImageAlignment
 {
 	private final IconLabelComponent iconLabelComponent;
 
@@ -581,11 +581,11 @@ public class IconLabelComponentFill extends BaseFillComponent implements Stretch
 
 			int leftPadding = getLineBox().getLeftPadding() + (int)Math.floor(paddingDiff);
 			leftPadding = leftPadding < 0 ? 0 : leftPadding;
-			getLineBox().setLeftPadding(leftPadding);
+			getLineBox().setLeftPadding((Integer)leftPadding);
 			
 			int rightPadding = getLineBox().getRightPadding() + (int)Math.ceil(paddingDiff);
 			rightPadding = rightPadding < 0 ? 0 : rightPadding;
-			getLineBox().setRightPadding(rightPadding);
+			getLineBox().setRightPadding((Integer)rightPadding);
 		}
 
 		int availableWidth = 
@@ -687,7 +687,7 @@ public class IconLabelComponentFill extends BaseFillComponent implements Stretch
 			middlePadding = (int)(iconTextField.getFontsize() / 2);
 //			labelTextField.setWidth(availableWidth);
 			int iconAvailableHeight =
-				(labelTextField.isStretchWithOverflow()
+				(labelTextField.getTextAdjust() == TextAdjustEnum.STRETCH_HEIGHT
 				? textAvailableHeight - labelTextField.getStretchHeight() 
 				: iconLabelComponent.getContext().getComponentElement().getHeight() - labelTextField.getStretchHeight())
 				 - middlePadding;
@@ -790,60 +790,6 @@ public class IconLabelComponentFill extends BaseFillComponent implements Stretch
 		return lineBox;
 	}
 
-	/**
-	 * @deprecated Replaced by {@link #getHorizontalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getHorizontalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnHorizontalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getOwnHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getOwnHorizontalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setHorizontalImageAlign(HorizontalImageAlignEnum)}.
-	 */
-	@Override
-	public void setHorizontalAlignment(net.sf.jasperreports.engine.type.HorizontalAlignEnum horizontalAlignmentValue)
-	{
-		setHorizontalImageAlign(net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalImageAlignEnum(horizontalAlignmentValue));
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getVerticalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getVerticalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getVerticalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnVerticalImageAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getOwnVerticalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getOwnVerticalImageAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #setVerticalImageAlign(VerticalImageAlignEnum)}.
-	 */
-	@Override
-	public void setVerticalAlignment(net.sf.jasperreports.engine.type.VerticalAlignEnum verticalAlignmentValue)
-	{
-		setVerticalImageAlign(net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalImageAlignEnum(verticalAlignmentValue));
-	}
-		
 	@Override
 	public HorizontalImageAlignEnum getHorizontalImageAlign()
 	{

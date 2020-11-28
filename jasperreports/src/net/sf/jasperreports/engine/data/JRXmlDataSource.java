@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -109,7 +109,7 @@ import net.sf.jasperreports.repo.SimpleRepositoryContext;
  * </ul>
  * </p>
  * <p>
- * Generally the full power of XPath expression is available. As an example, "/A/B[@id > 0"] will select all the
+ * Generally the full power of XPath expression is available. As an example, "/A/B[@id &gt; 0"] will select all the
  * nodes of type /A/B having the id greater than 0. 
  * You'll find a short XPath tutorial <a href="http://www.zvon.org/xxl/XPathTutorial/General/examples.html" target="_blank">here</a>.
  * 
@@ -451,6 +451,32 @@ public class JRXmlDataSource extends AbstractXmlDataSource<JRXmlDataSource>
 		}
 		currentNode = nodeList.item(++ currentNodeIndex);
 		return true;
+	}
+
+	@Override
+	public int recordCount()
+	{
+		return nodeListLength;
+	}
+
+	@Override
+	public int currentIndex()
+	{
+		return currentNodeIndex;
+	}
+
+	@Override
+	public void moveToRecord(int index) throws NoRecordAtIndexException
+	{
+		if (index >= 0 && index < nodeListLength)
+		{
+			currentNodeIndex = index;
+			currentNode = nodeList.item(index);
+		}
+		else
+		{
+			throw new NoRecordAtIndexException(index);
+		}
 	}
 
 	@Override

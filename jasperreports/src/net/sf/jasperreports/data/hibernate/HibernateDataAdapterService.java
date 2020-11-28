@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 
 import net.sf.jasperreports.data.AbstractClasspathAwareDataAdapterService;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRClassLoader;
@@ -54,14 +53,6 @@ public class HibernateDataAdapterService extends AbstractClasspathAwareDataAdapt
 	public HibernateDataAdapterService(ParameterContributorContext paramContribContext, HibernateDataAdapter jsonDataAdapter) 
 	{
 		super(paramContribContext, jsonDataAdapter);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #HibernateDataAdapterService(ParameterContributorContext, HibernateDataAdapter)}.
-	 */
-	public HibernateDataAdapterService(JasperReportsContext jasperReportsContext, HibernateDataAdapter jsonDataAdapter) 
-	{
-		super(jasperReportsContext, jsonDataAdapter);
 	}
 
 	public HibernateDataAdapter getHibernateDataAdapter() {
@@ -86,7 +77,7 @@ public class HibernateDataAdapterService extends AbstractClasspathAwareDataAdapt
 					clazz = JRClassLoader.loadClassForRealName("org.hibernate.cfg.AnnotationConfiguration");
 				}
 				if (clazz != null) {
-					Object configure = clazz.newInstance();
+					Object configure = clazz.getDeclaredConstructor().newInstance();
 					if (configure != null) {
 						String xmlFileName = hbmDA.getXMLFileName();
 						if (xmlFileName != null && !xmlFileName.isEmpty()) {
@@ -122,21 +113,9 @@ public class HibernateDataAdapterService extends AbstractClasspathAwareDataAdapt
 										session);
 					}
 				}
-			} catch (IOException e) {
-				throw new JRException(e);
-			} catch (ClassNotFoundException e) {
-				throw new JRException(e);
-			} catch (InstantiationException e) {
-				throw new JRException(e);
-			} catch (IllegalAccessException e) {
-				throw new JRException(e);
-			} catch (IllegalArgumentException e) {
-				throw new JRException(e);
-			} catch (SecurityException e) {
-				throw new JRException(e);
-			} catch (InvocationTargetException e) {
-				throw new JRException(e);
-			} catch (NoSuchMethodException e) {
+			} catch (IOException | ClassNotFoundException | InstantiationException 
+				| IllegalAccessException | IllegalArgumentException | SecurityException 
+				| InvocationTargetException | NoSuchMethodException e) {
 				throw new JRException(e);
 			} finally {
 				Thread.currentThread().setContextClassLoader(oldThreadClassLoader);

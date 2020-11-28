@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.apache.commons.collections.map.LinkedMap;
+import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -248,7 +248,7 @@ public class ReportConverter
 	protected void setStyles(JRReport report)
 	{
 		//styleFactory = new StyleFactory();
-		stylesMap = new LinkedMap();
+		stylesMap = new LinkedMap<String, JRStyle>();
 		
 		loadReportStyles(report);
 		
@@ -483,9 +483,9 @@ public class ReportConverter
 		printFrame.setY(y);
 		printFrame.setWidth(width);
 		printFrame.setHeight(1);
-		printFrame.getLineBox().getPen().setLineWidth(0);
+		printFrame.getLineBox().getPen().setLineWidth((Float)0f);
 		printFrame.getLineBox().getPen().setLineStyle(LineStyleEnum.SOLID);
-		printFrame.getLineBox().getTopPen().setLineWidth(0.1f);
+		printFrame.getLineBox().getTopPen().setLineWidth((Float)0.1f);
 		printFrame.getLineBox().getTopPen().setLineStyle(LineStyleEnum.DASHED);
 		printFrame.getLineBox().getTopPen().setLineColor(GRID_LINE_COLOR);
 		pageElements.add(0, printFrame);
@@ -501,9 +501,9 @@ public class ReportConverter
 		printFrame.setY(y);
 		printFrame.setWidth(1);
 		printFrame.setHeight(height);
-		printFrame.getLineBox().getPen().setLineWidth(0);
+		printFrame.getLineBox().getPen().setLineWidth((Float)0f);
 		printFrame.getLineBox().getPen().setLineStyle(LineStyleEnum.SOLID);
-		printFrame.getLineBox().getLeftPen().setLineWidth(0.1f);
+		printFrame.getLineBox().getLeftPen().setLineWidth((Float)0.1f);
 		printFrame.getLineBox().getLeftPen().setLineStyle(LineStyleEnum.DASHED);
 		printFrame.getLineBox().getLeftPen().setLineColor(GRID_LINE_COLOR);
 		pageElements.add(0, printFrame);

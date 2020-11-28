@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -214,7 +214,7 @@ public class JRFillBand extends JRFillElementContainer implements JRBand, JROrig
 	 */
 	protected void setNewGroup(JRGroup group, boolean isNew)
 	{
-		isNewGroupMap.put(group, isNew ? Boolean.TRUE : Boolean.FALSE);
+		isNewGroupMap.put(group, isNew);
 	}
 
 
@@ -230,7 +230,7 @@ public class JRFillBand extends JRFillElementContainer implements JRBand, JROrig
 			value = Boolean.FALSE;
 		}
 
-		return value.booleanValue();
+		return value;
 	}
 
 
@@ -361,7 +361,7 @@ public class JRFillBand extends JRFillElementContainer implements JRBand, JROrig
 			}
 			else
 			{
-				isPrintTrue = printWhenExpressionValue.booleanValue();
+				isPrintTrue = printWhenExpressionValue;
 			}
 		}
 
@@ -612,7 +612,8 @@ public class JRFillBand extends JRFillElementContainer implements JRBand, JROrig
 		return isSplitTypePreventInhibited(true);
 	}
 	
-	protected boolean isSplitTypePreventInhibited(boolean isTopLevelCall)
+	@Override
+	public boolean isSplitTypePreventInhibited(boolean isTopLevelCall)
 	{
 		boolean isSplitTypePreventInhibited = false;
 		

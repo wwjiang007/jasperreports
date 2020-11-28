@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -73,7 +73,7 @@ public class JRGroovyGenerator
 	/**
 	 *
 	 */
-	private static final int EXPR_MAX_COUNT_PER_METHOD = 100;
+	private static final int EXPR_MAX_COUNT_PER_METHOD = 40;
 
 	private static Map<Byte, String> fieldPrefixMap;
 	private static Map<Byte, String> variablePrefixMap;
@@ -82,25 +82,26 @@ public class JRGroovyGenerator
 	static
 	{
 		fieldPrefixMap = new HashMap<Byte, String>();
-		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
-		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "");
-		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
+		fieldPrefixMap.put(JRExpression.EVALUATION_OLD,       "Old");
+		fieldPrefixMap.put(JRExpression.EVALUATION_ESTIMATED, "");
+		fieldPrefixMap.put(JRExpression.EVALUATION_DEFAULT,   "");
 		
 		variablePrefixMap = new HashMap<Byte, String>();
-		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
-		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
-		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
+		variablePrefixMap.put(JRExpression.EVALUATION_OLD,       "Old");
+		variablePrefixMap.put(JRExpression.EVALUATION_ESTIMATED, "Estimated");
+		variablePrefixMap.put(JRExpression.EVALUATION_DEFAULT,   "");
 		
 		methodSuffixMap = new HashMap<Byte, String>();
-		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
-		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
-		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
+		methodSuffixMap.put(JRExpression.EVALUATION_OLD,       "Old");
+		methodSuffixMap.put(JRExpression.EVALUATION_ESTIMATED, "Estimated");
+		methodSuffixMap.put(JRExpression.EVALUATION_DEFAULT,   "");
 	}
 	
 	/**
 	 *
 	 */
 	protected final JRSourceCompileTask sourceTask;
+	private final ReportClassFilter classFilter;
 
 	private final int maxMethodSize;
 
@@ -109,9 +110,10 @@ public class JRGroovyGenerator
 	protected Map<String, JRVariable> variablesMap;
 	protected JRVariable[] variables;
 	
-	protected JRGroovyGenerator(JRSourceCompileTask sourceTask)
+	protected JRGroovyGenerator(JRSourceCompileTask sourceTask, ReportClassFilter classFilter)
 	{
 		this.sourceTask = sourceTask;
+		this.classFilter = classFilter;
 		
 		this.parametersMap = sourceTask.getParametersMap();
 		this.fieldsMap = sourceTask.getFieldsMap();
@@ -128,7 +130,12 @@ public class JRGroovyGenerator
 	 */
 	public static String generateClass(JRSourceCompileTask sourceTask) throws JRException
 	{
-		JRGroovyGenerator generator = new JRGroovyGenerator(sourceTask);
+		return generateClass(sourceTask, null);
+	}
+	
+	public static String generateClass(JRSourceCompileTask sourceTask, ReportClassFilter classFilter) throws JRException
+	{
+		JRGroovyGenerator generator = new JRGroovyGenerator(sourceTask, classFilter);
 		return generator.generateClass();
 	}
 	
@@ -232,8 +239,12 @@ public class JRGroovyGenerator
 		sb.append(" */\n");
 		sb.append("class ");
 		sb.append(sourceTask.getUnitName());
-		sb.append(" extends net.sf.jasperreports.compilers.GroovyEvaluator\n");
-		sb.append("{\n"); 
+		sb.append(" extends ");
+		String baseClass = classFilter != null && classFilter.isFilteringEnabled() 
+				? "net.sf.jasperreports.compilers.GroovySandboxEvaluator" 
+				: "net.sf.jasperreports.compilers.GroovyEvaluator";
+		sb.append(baseClass);
+		sb.append("\n{\n"); 
 		sb.append("\n");
 		sb.append(
 				"    def methodMissing(String name, args) {\n" +
@@ -471,7 +482,7 @@ public class JRGroovyGenerator
 			sb.append("     *\n");
 			sb.append("     */\n");
 			sb.append("    Object evaluate");
-			sb.append(methodSuffixMap.get(new Byte(evaluationType)));
+			sb.append(methodSuffixMap.get(evaluationType));
 			sb.append("(int id)\n");
 			sb.append("    {\n");
 			sb.append("        return null;\n");
@@ -547,7 +558,7 @@ public class JRGroovyGenerator
 		sb.append("     *\n");
 		sb.append("     */\n");
 		sb.append("    Object evaluate");
-		sb.append( methodSuffixMap.get(new Byte(evaluationType)));
+		sb.append( methodSuffixMap.get(evaluationType));
 		if (methodIndex > 0)
 		{
 			sb.append(methodIndex);
@@ -574,7 +585,7 @@ public class JRGroovyGenerator
 		sb.append(")\n");
 		sb.append("        {\n");
 		sb.append("            value = evaluate");
-		sb.append(methodSuffixMap.get(new Byte(evaluationType)));
+		sb.append(methodSuffixMap.get(evaluationType));
 		sb.append(methodIndex);
 		sb.append("(id);\n");
 		sb.append("        }\n");
@@ -654,7 +665,7 @@ public class JRGroovyGenerator
 						sb.append("field_");
 						sb.append(JRStringUtil.getJavaIdentifier(chunkText)); 
 						sb.append(".get");
-						sb.append(fieldPrefixMap.get(new Byte(evaluationType))); 
+						sb.append(fieldPrefixMap.get(evaluationType)); 
 						sb.append("Value())");
 	
 						break;
@@ -673,7 +684,7 @@ public class JRGroovyGenerator
 						sb.append("variable_"); 
 						sb.append(JRStringUtil.getJavaIdentifier(chunkText)); 
 						sb.append(".get");
-						sb.append(variablePrefixMap.get(new Byte(evaluationType))); 
+						sb.append(variablePrefixMap.get(evaluationType)); 
 						sb.append("Value())");
 	
 						break;

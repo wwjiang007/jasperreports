@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,6 +32,7 @@ import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.export.GenericElementRtfHandler;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporterContext;
+import net.sf.jasperreports.repo.RepositoryContext;
 
 /**
  *
@@ -66,9 +67,10 @@ public class CVElementRtfHandler implements GenericElementRtfHandler
 
 		try
 		{
+			RepositoryContext repositoryContext = exporterContext.getRepository().getRepositoryContext();
 			JRPrintImage chartImage = 
-				CVElementImageProvider.getDefaultProvider()
-					.getImage(exporterContext.getJasperReportsContext(), element);
+				CVElementImageProvider.getInstance().getImage(repositoryContext, element);
+
 			JRRtfExporter exporter = (JRRtfExporter) exporterContext.getExporterRef();
 			exporter.exportImage(chartImage);
 		}

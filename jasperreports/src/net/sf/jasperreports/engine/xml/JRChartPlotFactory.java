@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -85,7 +85,7 @@ public class JRChartPlotFactory extends JRBaseFactory
 			String seriesNumber = atts.getValue(JRXmlConstants.ATTRIBUTE_seriesOrder);
 			if (seriesNumber != null && seriesNumber.length() > 0)
 			{
-				seriesIndex = Integer.valueOf(seriesNumber).intValue();
+				seriesIndex = Integer.valueOf(seriesNumber);
 			}
 			String colorName = atts.getValue(JRXmlConstants.ATTRIBUTE_color);
 			if (colorName != null && colorName.length() > 0)

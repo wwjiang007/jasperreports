@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -90,7 +90,7 @@ public abstract class JRHibernateAbstractDataSource implements JRDataSource
 		{
 			for (int i = 0; i < aliases.length; i++)
 			{
-				aliasesMap.put(aliases[i], Integer.valueOf(i));
+				aliasesMap.put(aliases[i], i);
 			}
 		}
 		
@@ -210,7 +210,7 @@ public abstract class JRHibernateAbstractDataSource implements JRDataSource
 						new Object[]{fieldAlias});
 			}
 			
-			Type type = returnTypes[fieldIdx.intValue()];
+			Type type = returnTypes[fieldIdx];
 			if (!type.isEntityType() && !type.isComponentType())
 			{
 				throw 
@@ -219,11 +219,11 @@ public abstract class JRHibernateAbstractDataSource implements JRDataSource
 						new Object[]{fieldAlias});
 			}
 			
-			reader = new IndexPropertyFieldReader(fieldIdx.intValue(), fieldProperty);
+			reader = new IndexPropertyFieldReader(fieldIdx, fieldProperty);
 		}
 		else
 		{
-			reader = new IndexFieldReader(fieldIdx.intValue());
+			reader = new IndexFieldReader(fieldIdx);
 		}
 		
 		return reader;

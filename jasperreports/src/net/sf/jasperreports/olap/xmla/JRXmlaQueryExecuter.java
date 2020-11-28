@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -685,15 +685,14 @@ public class JRXmlaQueryExecuter extends JRAbstractQueryExecuter
 				String valueType = valueElement.getAttribute("xsi:type");
 				if (valueType.equals("xsd:int"))
 				{
-					value = new Long(valueElement.getValue());
+					value = Long.valueOf(valueElement.getValue());
 				}
-				else if (valueType.equals("xsd:double"))
+				else if (
+					valueType.equals("xsd:double")
+					|| valueType.equals("xsd:decimal")
+					)
 				{
-					value = new Double(valueElement.getValue());
-				}
-				else if (valueType.equals("xsd:decimal"))
-				{
-					value = new Double(valueElement.getValue());
+					value = Double.valueOf(valueElement.getValue());
 				}
 				else
 				{

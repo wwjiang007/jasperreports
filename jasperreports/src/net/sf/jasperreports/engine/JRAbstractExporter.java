@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -68,9 +68,11 @@ import net.sf.jasperreports.export.ExporterOutput;
 import net.sf.jasperreports.export.PropertiesDefaultsConfigurationFactory;
 import net.sf.jasperreports.export.PropertiesNoDefaultsConfigurationFactory;
 import net.sf.jasperreports.export.ReportExportConfiguration;
-import net.sf.jasperreports.export.SimpleExporterInputItem;
 import net.sf.jasperreports.properties.PropertyConstants;
 import net.sf.jasperreports.renderers.util.RendererUtil;
+import net.sf.jasperreports.repo.RepositoryResourceContext;
+import net.sf.jasperreports.repo.RepositoryUtil;
+import net.sf.jasperreports.repo.SimpleRepositoryContext;
 
 
 /**
@@ -144,6 +146,12 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 		public JasperReportsContext getJasperReportsContext()
 		{
 			return JRAbstractExporter.this.getJasperReportsContext();
+		}
+		
+		@Override
+		public RepositoryUtil getRepository()
+		{
+			return JRAbstractExporter.this.getRepository();
 		}
 		
 		@Override
@@ -490,6 +498,12 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 		return rendererUtil;
 	}
 
+	public RepositoryUtil getRepository()
+	{
+		RepositoryResourceContext resourceContext = crtItem == null ? null : crtItem.getRepositoryReportContext();
+		SimpleRepositoryContext repositoryContext = SimpleRepositoryContext.of(getJasperReportsContext(), resourceContext);
+		return RepositoryUtil.getInstance(repositoryContext);
+	}
 	
 	@Override
 	public abstract void exportReport() throws JRException;
@@ -511,7 +525,7 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 			Integer offsetX = configuration.getOffsetX();
 			if (offsetX != null)
 			{
-				elementOffsetX = offsetX.intValue();
+				elementOffsetX = offsetX;
 			}
 			else
 			{
@@ -521,7 +535,7 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 			Integer offsetY = configuration.getOffsetY();
 			if (offsetY != null)
 			{
-				elementOffsetY = offsetY.intValue();
+				elementOffsetY = offsetY;
 			}
 			else
 			{
@@ -693,15 +707,6 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 	
 	
 	/**
-	 * @deprecated Replaced by {@link #setCurrentExporterInputItem(ExporterInputItem)}.
-	 */
-	protected void setJasperPrint(JasperPrint jasperPrint)
-	{
-		setCurrentExporterInputItem(new SimpleExporterInputItem(jasperPrint));
-	}
-	
-
-	/**
 	 *
 	 */
 	protected abstract Class<C> getConfigurationInterface();
@@ -724,7 +729,8 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 			exporterInput = new net.sf.jasperreports.export.parameters.ParametersExporterInput(parameters);
 		}
 		
-		jasperPrint = exporterInput.getItems().get(0).getJasperPrint();//this is just for the sake of getCurrentConfiguration() calls made prior to any setCurrentExporterInputItem() call
+		crtItem = exporterInput.getItems().get(0);//for getRepository
+		jasperPrint = crtItem.getJasperPrint();//this is just for the sake of getCurrentConfiguration() calls made prior to any setCurrentExporterInputItem() call
 	}
 
 	
@@ -890,8 +896,8 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 		}
 		else
 		{
-			int topPadding = frame.getLineBox().getTopPadding().intValue();
-			int leftPadding = frame.getLineBox().getLeftPadding().intValue();
+			int topPadding = frame.getLineBox().getTopPadding();
+			int leftPadding = frame.getLineBox().getLeftPadding();
 
 			setElementOffsets(getOffsetX() + frame.getX() + leftPadding, getOffsetY() + frame.getY() + topPadding);
 		}
@@ -1258,14 +1264,6 @@ public abstract class JRAbstractExporter<RC extends ReportExportConfiguration, C
 		}
 
 		return hyperlinkProducerFactory.getHandler(link.getLinkType());
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getHyperlinkProducer(JRPrintHyperlink)}.
-	 */
-	protected JRHyperlinkProducer getCustomHandler(JRPrintHyperlink link)
-	{
-		return getHyperlinkProducer(link);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -34,7 +34,6 @@ import net.sf.jasperreports.export.ReportExportConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.WriterExporterOutput;
 import net.sf.jasperreports.export.XlsReportConfiguration;
 import net.sf.jasperreports.properties.PropertyConstants;
 
@@ -180,12 +179,6 @@ public class JRExporterParameter
 
 
 	/**
-	 * @deprecated Replaced by {@link WriterExporterOutput#PROPERTY_CHARACTER_ENCODING}.
-	 */
-	public static final String PROPERTY_CHARACTER_ENCODING = WriterExporterOutput.PROPERTY_CHARACTER_ENCODING;
-
-
-	/**
 	 * @deprecated Replaced by {@link ReportExportConfiguration#getProgressMonitor()}.
 	 */
 	public static final JRExporterParameter PROGRESS_MONITOR = new JRExporterParameter("Progress Monitor");
@@ -266,11 +259,5 @@ public class JRExporterParameter
 	 * and {@link XlsReportConfiguration#isIgnorePageMargins()}.
 	 */
 	public static final JRExporterParameter IGNORE_PAGE_MARGINS = new JRExporterParameter("Ignore page margins");
-	
-
-	/**
-	 * @deprecated Replaced by {@link ReportExportConfiguration#PROPERTY_IGNORE_PAGE_MARGINS}.
-	 */
-	public static final String PROPERTY_IGNORE_PAGE_MARGINS = ReportExportConfiguration.PROPERTY_IGNORE_PAGE_MARGINS;
 
 }

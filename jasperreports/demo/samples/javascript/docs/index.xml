@@ -55,13 +55,13 @@ are declared as follows:
 <code>
 &#160;&#160;&lt;parameter name="A" class="java.lang.Double"&gt;
 <br/>
-&#160;&#160;&#160;&#160;&lt;defaultValueExpression&gt;&lt;![CDATA[3]]&gt;&lt;/defaultValueExpression&gt;
+&#160;&#160;&#160;&#160;&lt;defaultValueExpression&gt;3&lt;/defaultValueExpression&gt;
 <br/>
 &#160;&#160;&lt;/parameter&gt;
 <br/>
 &#160;&#160;&lt;parameter name="B" class="java.lang.Double"&gt;
 <br/>
-&#160;&#160;&#160;&#160;&lt;defaultValueExpression>&lt;![CDATA[5]]&gt;&lt;/defaultValueExpression&gt;
+&#160;&#160;&#160;&#160;&lt;defaultValueExpression>5&lt;/defaultValueExpression&gt;
 <br/>
 &#160;&#160;&lt;/parameter&gt;
 </code>
@@ -100,7 +100,7 @@ parameters (however, the specific parameter syntax still has to be respected).
 The equivalent Java expression would be:
 <br/>
 <br/>
-<code>&#160;&#160;&lt;textFieldExpression class="java.lang.Double"&gt;&lt;![CDATA[new Double($P{A}.doubleValue() + $P{B}.doubleValue())]]&gt;&lt;/textFieldExpression&gt;</code>
+<code>&#160;&#160;&lt;textFieldExpression class="java.lang.Double"&gt;&lt;![CDATA[Double.valueOf($P{A}.doubleValue() + $P{B}.doubleValue())]]&gt;&lt;/textFieldExpression&gt;</code>
 <br/>
 <br/>
 with a lot more complicated syntax.

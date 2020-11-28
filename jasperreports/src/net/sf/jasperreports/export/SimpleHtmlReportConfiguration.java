@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +23,7 @@
  */
 package net.sf.jasperreports.export;
 
+import net.sf.jasperreports.export.type.HtmlBorderCollapseEnum;
 import net.sf.jasperreports.export.type.HtmlSizeUnitEnum;
 
 
@@ -35,7 +36,7 @@ public class SimpleHtmlReportConfiguration extends SimpleReportExportConfigurati
 	private Boolean isWhitePageBackground;
 	private Boolean isWrapBreakWord;
 	private HtmlSizeUnitEnum sizeUnit;
-	private String borderCollapse;
+	private HtmlBorderCollapseEnum borderCollapse;
 	private Boolean isIgnorePageMargins;
 	private Boolean accessibleHtml;
 	private Float zoomRatio;
@@ -43,6 +44,7 @@ public class SimpleHtmlReportConfiguration extends SimpleReportExportConfigurati
 	private Boolean isEmbedImage;
 	private Boolean isEmbeddedSvgUseFonts;
 	private Boolean isConvertSvgToImage;
+	private Boolean isUseBackgroundImageToAlign;
 
 	
 	/**
@@ -108,8 +110,25 @@ public class SimpleHtmlReportConfiguration extends SimpleReportExportConfigurati
 		this.sizeUnit = sizeUnit;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #getBorderCollapseValue()}.
+	 */
 	@Override
 	public String getBorderCollapse()
+	{
+		return borderCollapse == null ? null : borderCollapse.getName();
+	}
+	
+	/**
+	 * @deprecated Replaced by {@link #setBorderCollapse(HtmlBorderCollapseEnum)}.
+	 */
+	public void setBorderCollapse(String borderCollapse)
+	{
+		setBorderCollapse(HtmlBorderCollapseEnum.getByName(borderCollapse));
+	}
+	
+	@Override
+	public HtmlBorderCollapseEnum getBorderCollapseValue()
 	{
 		return borderCollapse;
 	}
@@ -117,7 +136,7 @@ public class SimpleHtmlReportConfiguration extends SimpleReportExportConfigurati
 	/**
 	 * 
 	 */
-	public void setBorderCollapse(String borderCollapse)
+	public void setBorderCollapse(HtmlBorderCollapseEnum borderCollapse)
 	{
 		this.borderCollapse = borderCollapse;
 	}
@@ -218,5 +237,19 @@ public class SimpleHtmlReportConfiguration extends SimpleReportExportConfigurati
 	public void setConvertSvgToImage(Boolean isConvertSvgToImage)
 	{
 		this.isConvertSvgToImage = isConvertSvgToImage;
+	}
+	
+	@Override
+	public Boolean isUseBackgroundImageToAlign()
+	{
+		return isUseBackgroundImageToAlign;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setUseBackgroundImageToAlign(Boolean isUseBackgroundImageToAlign)
+	{
+		this.isUseBackgroundImageToAlign = isUseBackgroundImageToAlign;
 	}
 }

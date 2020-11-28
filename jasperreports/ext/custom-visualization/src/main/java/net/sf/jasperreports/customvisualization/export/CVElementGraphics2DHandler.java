@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -31,6 +31,7 @@ import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterContext;
 import net.sf.jasperreports.engine.export.draw.ImageDrawer;
 import net.sf.jasperreports.engine.export.draw.Offset;
+import net.sf.jasperreports.repo.RepositoryContext;
 
 /**
  * @author Giulio Toffoli (gtoffoli@tibco.com)
@@ -57,9 +58,10 @@ public class CVElementGraphics2DHandler implements GenericElementGraphics2DHandl
 			JRGraphics2DExporter exporter = (JRGraphics2DExporter) exporterContext.getExporterRef();
 			ImageDrawer imageDrawer = exporter.getDrawVisitor().getImageDrawer();
 
+			RepositoryContext repositoryContext = exporterContext.getRepository().getRepositoryContext();
 			imageDrawer.draw(
 				grx,
-				CVElementImageProvider.getDefaultProvider().getImage(exporterContext.getJasperReportsContext(), element),
+				CVElementImageProvider.getInstance().getImage(repositoryContext, element),
 				offset.getX(),
 				offset.getY()
 				);

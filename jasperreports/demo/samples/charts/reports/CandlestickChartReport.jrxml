@@ -123,11 +123,11 @@
 						<dataset resetType="Group" resetGroup="CountryGroup" incrementType="Group" incrementGroup="CountryGroup"/>
 						<seriesExpression><![CDATA["Freight"]]></seriesExpression>
 						<dateExpression><![CDATA[$V{DateHighestCountryGroup}]]></dateExpression>
-						<highExpression><![CDATA[new Double($V{FreightSumCountryGroup}.doubleValue() * 1.6d)]]></highExpression>
-						<lowExpression><![CDATA[new Double($V{FreightSumCountryGroup}.doubleValue() * 0.4d)]]></lowExpression>
-						<openExpression><![CDATA[new Double($V{FreightSumCountryGroup}.doubleValue() * 0.7)]]></openExpression>
-						<closeExpression><![CDATA[new Double($V{FreightSumCountryGroup}.doubleValue() * 1.4)]]></closeExpression>
-						<volumeExpression><![CDATA[new Double($V{FreightSumCountryGroup}.doubleValue() * 0.5)]]></volumeExpression>
+						<highExpression><![CDATA[$V{FreightSumCountryGroup} * 1.6d]]></highExpression>
+						<lowExpression><![CDATA[$V{FreightSumCountryGroup} * 0.4d]]></lowExpression>
+						<openExpression><![CDATA[$V{FreightSumCountryGroup} * 0.7d]]></openExpression>
+						<closeExpression><![CDATA[$V{FreightSumCountryGroup} * 1.4d]]></closeExpression>
+						<volumeExpression><![CDATA[$V{FreightSumCountryGroup} * 0.5d]]></volumeExpression>
 					</highLowDataset>
 					<candlestickPlot isShowVolume="true">
 						<plot/>
@@ -217,7 +217,7 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{OrderID}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="40" y="0" width="110" height="11" uuid="e3ba74a0-5c39-4301-a113-6e1ca7a34c24"/>
 				<textFieldExpression><![CDATA[$F{ShipName} + ", " + $F{ShipCity}]]></textFieldExpression>
 			</textField>

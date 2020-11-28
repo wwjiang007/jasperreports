@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.map.LinkedMap;
+import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -185,13 +185,13 @@ public class JRFillObjectFactory extends JRAbstractObjectFactory
 		public JRStyle getStyle(String name)
 		{
 			Integer idx = stylesIdx.get(name);
-			return idx == null ? null : styles.get(idx.intValue());
+			return idx == null ? null : styles.get(idx);
 		}
 		
 		public void addStyle(JRStyle style)
 		{
 			styles.add(style);
-			stylesIdx.put(style.getName(), Integer.valueOf(styles.size() - 1));
+			stylesIdx.put(style.getName(), styles.size() - 1);
 		}
 		
 		public void renamed(String oldName, String newName)
@@ -1555,7 +1555,7 @@ public class JRFillObjectFactory extends JRAbstractObjectFactory
 		Set<JRStyle> requestedStyles = collectRequestedStyles(styles);
 		
 		//collect used styles
-		Map<JRStyle,Object> usedStylesMap = new LinkedMap();
+		Map<JRStyle,Object> usedStylesMap = new LinkedMap<JRStyle,Object>();
 		Map<String,JRStyle> allStylesMap = new HashMap<String,JRStyle>();
 		for (Iterator<JRStyle> it = styles.iterator(); it.hasNext();)
 		{

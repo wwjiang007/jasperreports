@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -22,6 +22,8 @@
  * along with JasperReports. If not, see <http://www.gnu.org/licenses/>.
  */
 package net.sf.jasperreports.ant;
+
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tools.ant.BuildException;
 
@@ -53,17 +55,10 @@ public class UpdaterElement
 			try
 			{
 				Class<?> clazz = JRAntCompileTask.class.getClassLoader().loadClass(className);
-				updater = (ReportUpdater)clazz.newInstance();
+				updater = (ReportUpdater)clazz.getDeclaredConstructor().newInstance();
 			}
-			catch (ClassNotFoundException e)
-			{
-				throw new BuildException(e);
-			}
-			catch (IllegalAccessException e)
-			{
-				throw new BuildException(e);
-			}
-			catch (InstantiationException e)
+			catch (ClassNotFoundException | IllegalAccessException | InstantiationException 
+				| NoSuchMethodException | InvocationTargetException e)
 			{
 				throw new BuildException(e);
 			}

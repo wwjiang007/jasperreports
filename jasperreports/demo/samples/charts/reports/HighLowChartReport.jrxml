@@ -123,11 +123,11 @@
 						<dataset resetType="Group" resetGroup="CountryGroup"/>
 						<seriesExpression><![CDATA[$F{ShipCountry}]]></seriesExpression>
 						<dateExpression><![CDATA[$F{OrderDate}]]></dateExpression>
-						<highExpression><![CDATA[new Double($F{Freight}.doubleValue() + $F{Freight}.doubleValue()*0.6)]]></highExpression>
-						<lowExpression><![CDATA[new Double($F{Freight}.doubleValue() - $F{Freight}.doubleValue()*0.6)]]></lowExpression>
-						<openExpression><![CDATA[new Double($F{Freight}.doubleValue() - $F{Freight}.doubleValue()*0.3)]]></openExpression>
-						<closeExpression><![CDATA[new Double($F{Freight}.doubleValue() + $F{Freight}.doubleValue()*0.4)]]></closeExpression>
-						<volumeExpression><![CDATA[new Double($F{Freight}.doubleValue() / 2)]]></volumeExpression>
+						<highExpression><![CDATA[$F{Freight} + $F{Freight} * 0.6d]]></highExpression>
+						<lowExpression><![CDATA[$F{Freight} - $F{Freight} * 0.6d]]></lowExpression>
+						<openExpression><![CDATA[$F{Freight} - $F{Freight} * 0.3d]]></openExpression>
+						<closeExpression><![CDATA[$F{Freight} + $F{Freight} * 0.4d]]></closeExpression>
+						<volumeExpression><![CDATA[$F{Freight} / 2]]></volumeExpression>
 					</highLowDataset>
 					<highLowPlot>
 						<plot/>
@@ -217,7 +217,7 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{OrderID}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="40" y="0" width="110" height="11" uuid="64b852c3-f01a-4086-8341-05a0254cfc99"/>
 				<textFieldExpression><![CDATA[$F{ShipName} + ", " + $F{ShipCity}]]></textFieldExpression>
 			</textField>

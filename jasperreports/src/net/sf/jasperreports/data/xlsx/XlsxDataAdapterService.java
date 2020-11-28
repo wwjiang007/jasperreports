@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,14 +30,13 @@ import net.sf.jasperreports.data.excel.ExcelFormatEnum;
 import net.sf.jasperreports.data.xls.AbstractXlsDataAdapterService;
 import net.sf.jasperreports.data.xls.XlsDataAdapter;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.data.AbstractXlsDataSource;
 import net.sf.jasperreports.engine.data.JRXlsxDataSource;
 import net.sf.jasperreports.engine.query.ExcelQueryExecuterFactory;
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class XlsxDataAdapterService extends AbstractXlsDataAdapterService 
 {
@@ -48,14 +47,6 @@ public class XlsxDataAdapterService extends AbstractXlsDataAdapterService
 	public XlsxDataAdapterService(ParameterContributorContext paramContribContext, XlsxDataAdapter xlsxDataAdapter)
 	{
 		super(paramContribContext, xlsxDataAdapter);
-	}
-	
-	/**
-	 * @deprecated Replaced by {@link #XlsxDataAdapterService(ParameterContributorContext, XlsxDataAdapter)}.
-	 */
-	public XlsxDataAdapterService(JasperReportsContext jasperReportsContext, XlsxDataAdapter xlsxDataAdapter)
-	{
-		super(jasperReportsContext, xlsxDataAdapter);
 	}
 	
 	public XlsxDataAdapter getXlsxDataAdapter()

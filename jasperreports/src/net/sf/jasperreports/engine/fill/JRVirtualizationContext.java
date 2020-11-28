@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,13 +27,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,9 +50,11 @@ import net.sf.jasperreports.engine.JRVirtualizationHelper;
 import net.sf.jasperreports.engine.JRVirtualizer;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.PrintElementId;
 import net.sf.jasperreports.engine.PrintElementVisitor;
 import net.sf.jasperreports.engine.base.JRVirtualPrintPage;
 import net.sf.jasperreports.engine.base.VirtualElementsData;
+import net.sf.jasperreports.engine.base.VirtualizableElementList;
 import net.sf.jasperreports.engine.util.DeepPrintElementVisitor;
 import net.sf.jasperreports.engine.util.UniformPrintElementVisitor;
 import net.sf.jasperreports.renderers.Renderable;
@@ -70,7 +74,10 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 	
 	private static final Log log = LogFactory.getLog(JRVirtualizationContext.class);
 	
-	private static final ReferenceMap contexts = new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.WEAK);
+	private static final ReferenceMap<JasperPrint, JRVirtualizationContext> contexts = 
+		new ReferenceMap<JasperPrint, JRVirtualizationContext>(
+			ReferenceMap.ReferenceStrength.WEAK, ReferenceMap.ReferenceStrength.WEAK
+			);
 
 	private transient JRVirtualizationContext parentContext;
 	private transient JRVirtualizer virtualizer;
@@ -78,6 +85,9 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 	
 	private Map<String,Renderable> cachedRenderers;
 	private Map<String,JRTemplateElement> cachedTemplates;
+	
+	private Set<JRVirtualizationContext> frameContexts;
+	private Map<PrintElementId,VirtualizableElementList> virtualizableLists;
 	
 	private volatile boolean readOnly;
 	private volatile boolean disposed;
@@ -99,10 +109,16 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 		
 		cachedRenderers = new ConcurrentHashMap<String,Renderable>(16, 0.75f, 1);
 		cachedTemplates = new ConcurrentHashMap<String,JRTemplateElement>(16, 0.75f, 1);
+		virtualizableLists = new ConcurrentHashMap<>(16, 0.75f, 1);
 		
 		pageElementSize = JRPropertiesUtil.getInstance(jasperReportsContext).getIntegerProperty(JRVirtualPrintPage.PROPERTY_VIRTUAL_PAGE_ELEMENT_SIZE, 0);
 		
 		initLock();
+		
+		if (log.isDebugEnabled())
+		{
+			log.debug("created " + this);
+		}
 	}
 
 	protected JRVirtualizationContext(JRVirtualizationContext parentContext)
@@ -114,11 +130,17 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 		// using the same caches as the parent
 		this.cachedRenderers = parentContext.cachedRenderers;
 		this.cachedTemplates = parentContext.cachedTemplates;
+		this.virtualizableLists = parentContext.virtualizableLists;
 
 		this.pageElementSize = parentContext.pageElementSize;
 		
 		// always locking the master context
 		this.lock = parentContext.lock;
+		
+		if (log.isDebugEnabled())
+		{
+			log.debug("created sub context " + this + ", parent " + parentContext);
+		}
 	}
 	
 	private void initLock()
@@ -139,6 +161,14 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 		}
 		
 		listeners.add(listener);
+		
+		if (frameContexts != null)
+		{
+			for (JRVirtualizationContext frameContext : frameContexts)
+			{
+				frameContext.addListener(listener);
+			}
+		}
 	}
 	
 	/**
@@ -151,6 +181,14 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 		if (listeners != null)
 		{
 			listeners.remove(listener);
+		}
+		
+		if (frameContexts != null)
+		{
+			for (JRVirtualizationContext frameContext : frameContexts)
+			{
+				frameContext.removeListener(listener);
+			}
 		}
 	}
 
@@ -330,7 +368,7 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 	{
 		synchronized (contexts)
 		{
-			return (JRVirtualizationContext) contexts.get(print);
+			return contexts.get(print);
 		}
 	}
 	
@@ -377,6 +415,7 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 		GetField fields = in.readFields();
 		cachedRenderers = (Map<String, Renderable>) fields.get("cachedRenderers", null);
 		cachedTemplates = (Map<String, JRTemplateElement>) fields.get("cachedTemplates", null);
+		virtualizableLists = (Map<PrintElementId, VirtualizableElementList>) fields.get("virtualizableLists", null);
 		readOnly = fields.get("readOnly", false);
 		// use configured default if serialized by old version
 		pageElementSize = fields.get("pageElementSize", JRPropertiesUtil.getInstance(jasperReportsContext).getIntegerProperty(
@@ -572,7 +611,7 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 	 */
 	public boolean isDisposed()
 	{
-		return disposed;
+		return disposed || (parentContext != null && parentContext.isDisposed());
 	}
 	
 	public JRVirtualizationContext getMasterContext()
@@ -593,5 +632,72 @@ public class JRVirtualizationContext implements Serializable, VirtualizationList
 	public Map<String, JRTemplateElement> getCachedTemplates()
 	{
 		return cachedTemplates;
+	}
+
+	public JRVirtualizationContext getFramesContext()
+	{
+		if (frameContexts == null)
+		{
+			frameContexts = new HashSet<>();
+		}
+		
+		JRVirtualizationContext frameContext;
+		if (frameContexts.isEmpty())
+		{
+			frameContext = new JRVirtualizationContext(this);
+			if (listeners != null)
+			{
+				for (VirtualizationListener<VirtualElementsData> listener : listeners)
+				{
+					frameContext.addListener(listener);
+				}
+			}
+			
+			if (log.isDebugEnabled())
+			{
+				log.debug(this + " created frames context " + frameContext);
+			}
+			
+			frameContexts.add(frameContext);
+		}
+		else
+		{
+			frameContext = frameContexts.iterator().next();
+		}
+		return frameContext;
+	}
+	
+	public Map<PrintElementId, VirtualizableElementList> getVirtualizableLists()
+	{
+		return virtualizableLists;
+	}
+	
+	public void cacheVirtualizableList(PrintElementId id, VirtualizableElementList virtualizableList)
+	{
+		virtualizableLists.put(id, virtualizableList);
+	}
+
+	public VirtualizableElementList getVirtualizableList(PrintElementId id)
+	{
+		return virtualizableLists.get(id);
+	}
+
+	public void inheritListeners(JRVirtualizationContext sourceContext)
+	{
+		if (sourceContext.listeners != null)
+		{
+			for (VirtualizationListener<VirtualElementsData> listener : sourceContext.listeners)
+			{
+				if (listeners == null || !listeners.contains(listener))//TODO keep a set?
+				{
+					addListener(listener);
+				}
+			}
+		}
+	}
+
+	public JasperReportsContext getJasperReportsContext()
+	{
+		return jasperReportsContext;
 	}
 }

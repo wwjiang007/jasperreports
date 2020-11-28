@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -234,10 +234,13 @@ public class JRBaseLineBox implements JRLineBox, Serializable, Cloneable, JRChan
 		return padding;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #setPadding(Integer)}.
+	 */
 	@Override
 	public void setPadding(int padding)
 	{
-		setPadding(Integer.valueOf(padding));
+		setPadding((Integer)padding);
 	}
 
 	@Override
@@ -260,10 +263,13 @@ public class JRBaseLineBox implements JRLineBox, Serializable, Cloneable, JRChan
 		return topPadding;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setTopPadding(Integer)}.
+	 */
 	@Override
 	public void setTopPadding(int topPadding)
 	{
-		setTopPadding(Integer.valueOf(topPadding));
+		setTopPadding((Integer)topPadding);
 	}
 
 	@Override
@@ -286,10 +292,13 @@ public class JRBaseLineBox implements JRLineBox, Serializable, Cloneable, JRChan
 		return leftPadding;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setLeftPadding(Integer)}.
+	 */
 	@Override
 	public void setLeftPadding(int leftPadding)
 	{
-		setLeftPadding(Integer.valueOf(leftPadding));
+		setLeftPadding((Integer)leftPadding);
 	}
 
 	@Override
@@ -312,10 +321,13 @@ public class JRBaseLineBox implements JRLineBox, Serializable, Cloneable, JRChan
 		return bottomPadding;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setBottomPadding(Integer)}.
+	 */
 	@Override
 	public void setBottomPadding(int bottomPadding)
 	{
-		setBottomPadding(Integer.valueOf(bottomPadding));
+		setBottomPadding((Integer)bottomPadding);
 	}
 
 	@Override
@@ -338,10 +350,13 @@ public class JRBaseLineBox implements JRLineBox, Serializable, Cloneable, JRChan
 		return rightPadding;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setRightPadding(Integer)}.
+	 */
 	@Override
 	public void setRightPadding(int rightPadding)
 	{
-		setRightPadding(Integer.valueOf(rightPadding));
+		setRightPadding((Integer)rightPadding);
 	}
 
 	@Override

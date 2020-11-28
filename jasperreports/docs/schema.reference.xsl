@@ -8,12 +8,7 @@
 <xsl:param name="sf.net"/>
 <xsl:param name="version"/>
 
-<xsl:variable name="api.url">
- <xsl:choose>
-  <xsl:when test="$sf.net = 'true'">api/</xsl:when>
-  <xsl:otherwise>http://jasperreports.sourceforge.net/api/</xsl:otherwise>
- </xsl:choose>
-</xsl:variable>
+<xsl:variable name="api.url">api/</xsl:variable>
 
 <xsl:template match="/">
 <html>
@@ -89,6 +84,15 @@
 .indent {
     margin-left: 20px;
 } 
+
+.code {
+  	font-family: Courier New, Courier, serif;
+	font-size: 13px;
+}
+
+.bold {
+	font-weight: bold;
+}
 
 </style>
 </head>
@@ -467,8 +471,18 @@ ga('send', 'pageview');
 </xsl:template>
 
 
+<xsl:template match="xsd:b">
+  <span class="bold"><xsl:value-of select="."/></span>
+</xsl:template>
+
+
 <xsl:template match="xsd:a">
-  <span class="element"><xsl:element name="a"><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="."/></xsl:element></span>
+  <span class="element"><xsl:element name="a"><xsl:attribute name="href"><xsl:value-of select="./@href"/></xsl:attribute><xsl:attribute name="target">_blank</xsl:attribute><xsl:value-of select="."/></xsl:element></span>
+</xsl:template>
+
+
+<xsl:template match="xsd:code">
+  <span class="code"><xsl:value-of select="."/></span>
 </xsl:template>
 
 
@@ -699,7 +713,7 @@ ga('send', 'pageview');
   <tr valign="top">
     <td style="width: 10px;" nowrap="nowrap"><span class="value"><xsl:value-of select="@value"/></span></td>
     <td style="width: 10px;"></td>
-    <td><xsl:if test="xsd:annotation/xsd:documentation and xsd:annotation/xsd:documentation[.!='']"><span class="description"><xsl:value-of select="xsd:annotation/xsd:documentation"/></span></xsl:if></td>
+    <td><xsl:if test="xsd:annotation/xsd:documentation and xsd:annotation/xsd:documentation[.!='']"><span class="description"><xsl:apply-templates/></span></xsl:if></td>
   </tr>
 </xsl:template>
 

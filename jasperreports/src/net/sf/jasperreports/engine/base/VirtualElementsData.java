@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -157,7 +158,7 @@ public class VirtualElementsData implements Serializable, VirtualizationSerializ
 				}
 				else
 				{
-					evaluations = new HashMap<JRPrintElement, Integer>(count * 4 / 3 + 1, .75f);
+					evaluations = new HashMap<JRPrintElement, Integer>(count * 4 / 3 + 1, .75f);//FIXME use LinkedHashMap?
 					for (int j = 0; j < count; j++)
 					{
 						// these elements are references in the elements list, storing references
@@ -178,5 +179,23 @@ public class VirtualElementsData implements Serializable, VirtualizationSerializ
 			JRPrintElement element = (JRPrintElement) in.readJRObject();
 			elements.add(element);
 		}
+	}
+	
+	public VirtualElementsData copy()
+	{
+		ArrayList<JRPrintElement> elementsCopy = new ArrayList<>(elements);
+		VirtualElementsData copy = new VirtualElementsData(elementsCopy);
+		
+		if (elementEvaluations != null)
+		{
+			for (Entry<Pair<Integer, JREvaluationTime>, Map<JRPrintElement, Integer>> entry : elementEvaluations.entrySet())
+			{
+				Pair<Integer, JREvaluationTime> key = entry.getKey();
+				Map<JRPrintElement, Integer> evals = entry.getValue();
+				LinkedHashMap<JRPrintElement, Integer> evalsClone = new LinkedHashMap<>(evals);
+				copy.setElementEvaluations(key.first(), key.second(), evalsClone);
+			}
+		}
+		return copy;
 	}
 }

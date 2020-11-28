@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -42,6 +42,7 @@ import net.sf.jasperreports.functions.FunctionsUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Context.ClassShutterSetter;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Script;
@@ -147,7 +148,8 @@ public class JavaScriptEvaluatorScope
 			return toJSValue(variable.getEstimatedValue());
 		}
 	}
-	
+
+	private ReportClassShutter classShutter;
 	private Context context;
 	private ScriptableObject scope;
 	private volatile ProtectionDomain protectionDomain;
@@ -155,6 +157,7 @@ public class JavaScriptEvaluatorScope
 
 	public JavaScriptEvaluatorScope(JasperReportsContext jrContext, JREvaluator evaluator, FunctionsUtil functionsUtil)
 	{
+		classShutter = new ReportClassShutter(jrContext);
 		context = enter(null);
 		
 		int optimizationLevel = JRPropertiesUtil.getInstance(jrContext).getIntegerProperty(JavaScriptEvaluator.PROPERTY_OPTIMIZATION_LEVEL);
@@ -299,7 +302,7 @@ public class JavaScriptEvaluatorScope
 	}
 	
 	// enter a precreated context, or a new one if null is passed
-	protected static Context enter(Context context)
+	protected Context enter(Context context)
 	{
 		Context currentContext = Context.getCurrentContext();
 		if (context != null && context == currentContext)
@@ -315,6 +318,11 @@ public class JavaScriptEvaluatorScope
 		}
 		
 		Context newContext = ContextFactory.getGlobal().enterContext(context);
+		ClassShutterSetter classShutterSetter = newContext.getClassShutterSetter();
+		if (classShutterSetter != null)
+		{
+			classShutterSetter.setClassShutter(classShutter);
+		}
 		
 		if (log.isDebugEnabled())
 		{

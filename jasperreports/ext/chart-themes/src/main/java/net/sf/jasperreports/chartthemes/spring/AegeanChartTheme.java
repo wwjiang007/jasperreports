@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -86,7 +86,7 @@ import net.sf.jasperreports.engine.fill.DefaultChartTheme;
 
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class AegeanChartTheme extends GenericChartTheme
 {
@@ -177,7 +177,7 @@ public class AegeanChartTheme extends GenericChartTheme
 
 		PiePlot piePlot = (PiePlot)jfreeChart.getPlot();
 		JRPiePlot jrPiePlot = (JRPiePlot)getPlot();
-		boolean isShowLabels = jrPiePlot.getShowLabels() == null ? true : jrPiePlot.getShowLabels().booleanValue();
+		boolean isShowLabels = jrPiePlot.getShowLabels() == null ? true : jrPiePlot.getShowLabels();
 
 		if(isShowLabels && piePlot.getLabelGenerator() != null)
 		{
@@ -210,7 +210,7 @@ public class AegeanChartTheme extends GenericChartTheme
 
 		PiePlot3D piePlot3D = (PiePlot3D) jfreeChart.getPlot();
 		JRPie3DPlot jrPiePlot = (JRPie3DPlot)getPlot();
-		boolean isShowLabels = jrPiePlot.getShowLabels() == null ? true : jrPiePlot.getShowLabels().booleanValue();
+		boolean isShowLabels = jrPiePlot.getShowLabels() == null ? true : jrPiePlot.getShowLabels();
 		if(isShowLabels && piePlot3D.getLabelGenerator() != null)
 		{
 			piePlot3D.setLabelBackgroundPaint(ChartThemesConstants.TRANSPARENT_PAINT);
@@ -393,13 +393,13 @@ public class AegeanChartTheme extends GenericChartTheme
 		}
 
 		chartPlot.setDialOutlinePaint(Color.BLACK);
-		int meterAngle = jrPlot.getMeterAngleInteger() == null ? 180 : jrPlot.getMeterAngleInteger().intValue();
+		int meterAngle = jrPlot.getMeterAngleInteger() == null ? 180 : jrPlot.getMeterAngleInteger();
 		// Set the size of the meter
 		chartPlot.setMeterAngle(meterAngle);
 
 		// Set the spacing between ticks.  I hate the name "tickSize" since to me it
 		// implies I am changing the size of the tick, not the spacing between them.
-		double tickInterval = jrPlot.getTickIntervalDouble() == null ? 10.0 : jrPlot.getTickIntervalDouble().doubleValue();
+		double tickInterval = jrPlot.getTickIntervalDouble() == null ? 10.0 : jrPlot.getTickIntervalDouble();
 		chartPlot.setTickSize(tickInterval);
 		
 		JRFont tickLabelFont = jrPlot.getTickLabelFont();
@@ -518,7 +518,7 @@ public class AegeanChartTheme extends GenericChartTheme
 					: new Color(255 - colorStep * (i - 3), 0 + colorStep * (i - 3), 0);
 				
 				interval.setBackgroundColor(color);
-				interval.setAlpha(new Double(1.0));
+				interval.setAlpha(1.0d);
 				chartPlot.addInterval(convertInterval(interval));
 			}
 		}
@@ -529,7 +529,7 @@ public class AegeanChartTheme extends GenericChartTheme
 				evaluateTextExpression(getChart().getTitleExpression()),
 				null,
 				chartPlot,
-				getChart().getShowLegend() == null ? false : getChart().getShowLegend().booleanValue()
+				getChart().getShowLegend() == null ? false : getChart().getShowLegend()
 				);
 
 		// Set all the generic options
@@ -557,7 +557,7 @@ public class AegeanChartTheme extends GenericChartTheme
 					evaluateTextExpression(getChart().getTitleExpression()),
 					null, 
 					chartPlot, 
-					getChart().getShowLegend() == null ? false : getChart().getShowLegend().booleanValue()
+					getChart().getShowLegend() == null ? false : getChart().getShowLegend()
 					);
 
 		// Set the generic options
@@ -790,7 +790,7 @@ public class AegeanChartTheme extends GenericChartTheme
 		String displayVisibility = display != null && getChart().hasProperties() ? 
 				getChart().getPropertiesMap().getProperty(DefaultChartTheme.PROPERTY_DIAL_VALUE_DISPLAY_VISIBLE) : "false";
 
-		if(Boolean.valueOf(displayVisibility).booleanValue())
+		if (Boolean.valueOf(displayVisibility))
 		{
 			ScaledDialValueIndicator dvi = new ScaledDialValueIndicator(0, dialUnitScale);
 			dvi.setBackgroundPaint(ChartThemesConstants.TRANSPARENT_PAINT);
@@ -852,7 +852,7 @@ public class AegeanChartTheme extends GenericChartTheme
 			evaluateTextExpression(getChart().getTitleExpression()),
 			null,
 			dialPlot,
-			getChart().getShowLegend() == null ? false : getChart().getShowLegend().booleanValue()
+			getChart().getShowLegend() == null ? false : getChart().getShowLegend()
 			);
 
 		// Set all the generic options

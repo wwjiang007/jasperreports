@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -71,6 +71,11 @@ public class Report
 	
 	private String jrxml;
 	private String jrpxml;
+	
+	public Report(String basename)
+	{
+		this(basename + ".jrxml", basename + ".jrpxml");
+	}
 	
 	public Report(String jrxml, String jrpxml)
 	{
@@ -224,6 +229,7 @@ public class Report
 			File outputDir = new File(outputDirPath);
 			outputFile = File.createTempFile("jr_tests_", ".jrpxml", outputDir);
 		}
+		outputFile.deleteOnExit();
 		return outputFile;
 	}
 

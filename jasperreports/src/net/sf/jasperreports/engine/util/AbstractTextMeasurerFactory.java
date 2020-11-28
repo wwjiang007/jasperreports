@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,27 +23,14 @@
  */
 package net.sf.jasperreports.engine.util;
 
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
-import net.sf.jasperreports.engine.JRCommonText;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.fill.JRTextMeasurer;
 
 /**
- * Factory of {@link JdkGlyphFixTextMeasurer} instances.
+ * Factory of {@link JRTextMeasurer} instances.
  * 
  * @author Lucian Chirita (lucianc@users.sourceforge.net)
  * @see JRTextMeasurerUtil#PROPERTY_TEXT_MEASURER_FACTORY
  */
 public abstract class AbstractTextMeasurerFactory implements JRTextMeasurerFactory
 {
-
-	/**
-	 * @deprecated Replaced by {@link #createMeasurer(JasperReportsContext, JRCommonText)}.
-	 */
-	@Override
-	public final JRTextMeasurer createMeasurer(JRCommonText text)
-	{
-		return createMeasurer(DefaultJasperReportsContext.getInstance(), text);
-	}
-
 }

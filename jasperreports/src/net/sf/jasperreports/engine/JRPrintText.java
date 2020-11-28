@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,18 +23,43 @@
  */
 package net.sf.jasperreports.engine;
 
+import net.sf.jasperreports.annotations.properties.Property;
+import net.sf.jasperreports.annotations.properties.PropertyScope;
 import net.sf.jasperreports.engine.fill.TextFormat;
-import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.RunDirectionEnum;
 import net.sf.jasperreports.engine.util.JRStyledText;
 import net.sf.jasperreports.engine.util.JRStyledTextUtil;
+import net.sf.jasperreports.properties.PropertyConstants;
 
 
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  */
-public interface JRPrintText extends JRPrintElement, JRAlignment, JRTextAlignment, JRPrintAnchor, JRPrintHyperlink, JRFont, JRCommonText, TextFormat
+public interface JRPrintText extends JRPrintElement, JRTextAlignment, JRPrintAnchor, JRPrintHyperlink, JRFont, JRCommonText, TextFormat
 {
+	/**
+	 * Specifies if the last line in a paragraph should be justified.
+	 */
+	@Property(
+		valueType = Boolean.class,
+		defaultValue = PropertyConstants.BOOLEAN_TRUE,
+		scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT, PropertyScope.TEXT_ELEMENT},
+		sinceVersion = PropertyConstants.VERSION_6_12_0
+		)
+	public static final String PROPERTY_AWT_INDENT_FIRST_LINE = JRPropertiesUtil.PROPERTY_PREFIX + "awt.indent.first.line";
+	
+
+	/**
+	 * Specifies if the last line in a paragraph should be justified.
+	 */
+	@Property(
+		valueType = Boolean.class,
+		defaultValue = PropertyConstants.BOOLEAN_FALSE,
+		scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT, PropertyScope.TEXT_ELEMENT},
+		sinceVersion = PropertyConstants.VERSION_6_12_0
+		)
+	public static final String PROPERTY_AWT_JUSTIFY_LAST_LINE = JRPropertiesUtil.PROPERTY_PREFIX + "awt.justify.last.line";
+	
 
 	/**
 	 * Zero-length line break offset array used for {@link #getLineBreakOffsets()}
@@ -151,20 +176,6 @@ public interface JRPrintText extends JRPrintElement, JRAlignment, JRTextAlignmen
 	public void setLeadingOffset(float leadingOffset);
 
 	/**
-	 * Gets the text own rotation.
-	 * @return a value representing one of the text rotation constants in {@link RotationEnum}
-	 */
-	@Override
-	public RotationEnum getOwnRotationValue();
-	
-	/**
-	 * Sets the text rotation.
-	 * @param rotationEnum a value representing one of the text rotation constants in {@link RotationEnum}
-	 */
-	@Override
-	public void setRotation(RotationEnum rotationEnum);
-	
-	/**
 	 * Gets the text run direction.
 	 * @return a value representing one of the run direction constants in {@link RunDirectionEnum}
 	 */
@@ -185,12 +196,6 @@ public interface JRPrintText extends JRPrintElement, JRAlignment, JRTextAlignmen
 	 *
 	 */
 	public void setTextHeight(float textHeight);
-		
-	@Override
-	public String getOwnMarkup();
-		
-	@Override
-	public void setMarkup(String markup);
 		
 	/**
 	 * Returns the type of the value which was used to generate this text.

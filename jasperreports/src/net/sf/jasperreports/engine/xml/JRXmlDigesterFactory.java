@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -318,6 +318,7 @@ public final class JRXmlDigesterFactory
 		/*   */
 		digester.addFactoryCreate("*/variable", JRVariableFactory.class.getName());
 		digester.addSetNext("*/variable", "addVariable", JRDesignVariable.class.getName());
+		digester.addCallMethod("*/variable/variableDescription", "setDescription", 0);
 
 		/*   */
 		@SuppressWarnings("deprecation")
@@ -485,6 +486,9 @@ public final class JRXmlDigesterFactory
 		digester.addFactoryCreate("*/anchorNameExpression", depStringExprFactoryClass.getName());
 		digester.addSetNext("*/anchorNameExpression", "setAnchorNameExpression", JRExpression.class.getName());
 		digester.addCallMethod("*/anchorNameExpression", "setText", 0);
+		digester.addFactoryCreate("*/bookmarkLevelExpression", depStringExprFactoryClass.getName());
+		digester.addSetNext("*/bookmarkLevelExpression", "setBookmarkLevelExpression", JRExpression.class.getName());
+		digester.addCallMethod("*/bookmarkLevelExpression", "setText", 0);
 		digester.addFactoryCreate("*/hyperlinkReferenceExpression", depStringExprFactoryClass.getName());
 		digester.addSetNext("*/hyperlinkReferenceExpression", "setHyperlinkReferenceExpression", JRExpression.class.getName());
 		digester.addCallMethod("*/hyperlinkReferenceExpression", "setText", 0);

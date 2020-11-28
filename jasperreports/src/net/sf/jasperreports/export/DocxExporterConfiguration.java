@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -25,7 +25,6 @@ package net.sf.jasperreports.export;
 
 import net.sf.jasperreports.annotations.properties.Property;
 import net.sf.jasperreports.annotations.properties.PropertyScope;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.export.annotations.ExporterProperty;
 import net.sf.jasperreports.properties.PropertyConstants;
@@ -48,7 +47,7 @@ public interface DocxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_TITLE = JRPropertiesUtil.PROPERTY_PREFIX + "export.docx.metadata.title";
+	public static final String PROPERTY_METADATA_TITLE = JRDocxExporter.DOCX_EXPORTER_PROPERTIES_PREFIX + "metadata.title";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataAuthor()} export configuration setting.
@@ -58,7 +57,7 @@ public interface DocxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_AUTHOR = JRPropertiesUtil.PROPERTY_PREFIX + "export.docx.metadata.author";
+	public static final String PROPERTY_METADATA_AUTHOR = JRDocxExporter.DOCX_EXPORTER_PROPERTIES_PREFIX + "metadata.author";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataSubject()} export configuration setting.
@@ -68,7 +67,7 @@ public interface DocxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_SUBJECT = JRPropertiesUtil.PROPERTY_PREFIX + "export.docx.metadata.subject";
+	public static final String PROPERTY_METADATA_SUBJECT = JRDocxExporter.DOCX_EXPORTER_PROPERTIES_PREFIX + "metadata.subject";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataKeywords()} export configuration setting.
@@ -78,7 +77,7 @@ public interface DocxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_KEYWORDS = JRPropertiesUtil.PROPERTY_PREFIX + "export.docx.metadata.keywords";
+	public static final String PROPERTY_METADATA_KEYWORDS = JRDocxExporter.DOCX_EXPORTER_PROPERTIES_PREFIX + "metadata.keywords";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataApplication()} export configuration setting.
@@ -88,8 +87,22 @@ public interface DocxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_APPLICATION = JRPropertiesUtil.PROPERTY_PREFIX + "export.docx.metadata.application";
+	public static final String PROPERTY_METADATA_APPLICATION = JRDocxExporter.DOCX_EXPORTER_PROPERTIES_PREFIX + "metadata.application";
 
+	/**
+	 * Property that indicates whether the true type fonts used in the report should be embedded into the generated DOCX document. 
+	 * This property serves as default value for the {@link #isEmbedFonts()} export configuration setting.
+	 */
+	@Property(
+			name = "net.sf.jasperreports.export.docx.embed.fonts",
+			defaultValue = PropertyConstants.BOOLEAN_FALSE,
+			category = PropertyConstants.CATEGORY_EXPORT,
+			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
+			sinceVersion = PropertyConstants.VERSION_6_9_0,
+			valueType = Boolean.class
+			)
+	public static final String PROPERTY_EMBED_FONTS = JRDocxExporter.DOCX_EXPORTER_PROPERTIES_PREFIX + "embed.fonts";
+	
 	/**
 	 * The Title of the DOCX document.
 	 */
@@ -119,4 +132,14 @@ public interface DocxExporterConfiguration extends ExporterConfiguration
 	 */
 	@ExporterProperty(PROPERTY_METADATA_APPLICATION)
 	public String getMetadataApplication();
+	
+	/**
+	 * Indicates whether the true type fonts used in the report should be embedded into the generated DOCX document. 
+	 * @see #PROPERTY_EMBED_FONTS
+	 */
+	@ExporterProperty(
+			value=PROPERTY_EMBED_FONTS,
+			booleanDefault=false
+			)
+	public Boolean isEmbedFonts();	
 }

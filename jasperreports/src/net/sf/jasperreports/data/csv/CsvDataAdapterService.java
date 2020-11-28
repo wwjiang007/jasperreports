@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -36,7 +36,6 @@ import net.sf.jasperreports.data.DataFileStream;
 import net.sf.jasperreports.data.DataFileUtils;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
 import net.sf.jasperreports.engine.query.JRCsvQueryExecuterFactory;
@@ -58,14 +57,6 @@ public class CsvDataAdapterService extends AbstractDataAdapterService implements
 	public CsvDataAdapterService(ParameterContributorContext paramContribContext, CsvDataAdapter csvDataAdapter)
 	{
 		super(paramContribContext, csvDataAdapter);
-	}
-	
-	/**
-	 * @deprecated Replaced by {@link #CsvDataAdapterService(ParameterContributorContext, CsvDataAdapter)}.
-	 */
-	public CsvDataAdapterService(JasperReportsContext jasperReportsContext, CsvDataAdapter csvDataAdapter)
-	{
-		super(jasperReportsContext, csvDataAdapter);
 	}
 	
 	public CsvDataAdapter getCsvDataAdapter()
@@ -140,9 +131,17 @@ public class CsvDataAdapterService extends AbstractDataAdapterService implements
 					parameters.put(JRCsvQueryExecuterFactory.CSV_NUMBER_FORMAT, df);
 				}
 				
-				parameters.put( JRCsvQueryExecuterFactory.CSV_FIELD_DELIMITER, csvDataAdapter.getFieldDelimiter());
-				parameters.put( JRCsvQueryExecuterFactory.CSV_RECORD_DELIMITER, csvDataAdapter.getRecordDelimiter());
-				parameters.put( JRCsvQueryExecuterFactory.CSV_USE_FIRST_ROW_AS_HEADER, new Boolean(csvDataAdapter.isUseFirstRowAsHeader()));
+				String fieldDelimiter = csvDataAdapter.getFieldDelimiter();
+				if (fieldDelimiter != null && !fieldDelimiter.isEmpty()) {
+					parameters.put( JRCsvQueryExecuterFactory.CSV_FIELD_DELIMITER, fieldDelimiter);
+				}
+				
+				String recordDelimiter = csvDataAdapter.getRecordDelimiter();
+				if (recordDelimiter != null && !recordDelimiter.isEmpty()) {
+					parameters.put( JRCsvQueryExecuterFactory.CSV_RECORD_DELIMITER, recordDelimiter);
+				}
+				
+				parameters.put( JRCsvQueryExecuterFactory.CSV_USE_FIRST_ROW_AS_HEADER, csvDataAdapter.isUseFirstRowAsHeader());
 
 				if (!csvDataAdapter.isUseFirstRowAsHeader())
 				{ 

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -57,14 +57,14 @@ public class ValuesSerializationTest extends BaseSerializationTests
 	public Object[][] baseObjects()
 	{
 		return new Object[][]{
-				{Boolean.FALSE},
-				{Boolean.TRUE},
-				{Byte.valueOf((byte) 20)},
-				{Short.valueOf((short) 670)},
-				{Integer.valueOf(7)},
-				{Long.valueOf(System.currentTimeMillis())},
-				{Float.valueOf(5.44f)},
-				{Double.valueOf(7.33)},
+				{false},
+				{true},
+				{(byte) 20},
+				{(short) 670},
+				{7},
+				{System.currentTimeMillis()},
+				{5.44f},
+				{7.33d},
 				{UUID.randomUUID()},
 				{BigInteger.ZERO},
 				{BigInteger.ONE},

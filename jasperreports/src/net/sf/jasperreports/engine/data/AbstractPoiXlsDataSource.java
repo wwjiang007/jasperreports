@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -57,7 +57,7 @@ import net.sf.jasperreports.repo.SimpleRepositoryContext;
  * in each row (these indices start with 0). To avoid this situation, users can either specify a collection of column 
  * names or set a flag to read the column names from the first row of the XLSX or XLS file.
  *
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public abstract class AbstractPoiXlsDataSource extends AbstractXlsDataSource
 {
@@ -481,6 +481,33 @@ public abstract class AbstractPoiXlsDataSource extends AbstractXlsDataSource
 					(Object[])null);
 		}
 	}
+	
+	// only used in JSS, to guess field types
+	public String getStringFieldValue(JRField jrField) throws JRException
+	{
+		try
+		{
+			Integer columnIndex = getColumnIndex(jrField);
+			Sheet sheet = workbook.getSheetAt(sheetIndex);
+			Cell cell = sheet.getRow(recordIndex).getCell(columnIndex);
+			if (cell == null)
+			{
+				return null;
+			}
+			else
+			{
+				return cell.toString();
+			}
+		}
+		catch (Exception e)
+		{
+			throw
+				new JRException(
+					EXCEPTION_MESSAGE_KEY_XLS_FIELD_VALUE_NOT_RETRIEVED,
+					new Object[]{jrField.getName(), String.class.getName()},
+					e);
+		}
+	}	
 	
 }
 

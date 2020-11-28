@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -51,7 +51,7 @@ import net.sf.jasperreports.renderers.Renderable;
 /**
  * Spider Chart design evaluator.
  * 
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class SpiderChartRendererEvaluator
 {
@@ -62,7 +62,7 @@ public class SpiderChartRendererEvaluator
 	public static final String FILL_DATASET = "fillDataset";
 	public static final String SAMPLE_DATASET = "sampleDataset";
 	
-	public static final Double SAMPLE_MAXVALUE = Double.valueOf(10d);
+	public static final Double SAMPLE_MAXVALUE = 10d;
 	
 	private static DefaultCategoryDataset sampleDataset;
 	

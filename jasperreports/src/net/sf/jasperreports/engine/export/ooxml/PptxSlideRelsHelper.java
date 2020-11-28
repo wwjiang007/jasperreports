@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -53,11 +53,15 @@ public class PptxSlideRelsHelper extends BaseHelper
 	/**
 	 * 
 	 */
-	public void exportHeader()
+	public void exportHeader(boolean isSlideMaster)
 	{
 		write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		write("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">\n");
-		write("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout\" Target=\"../slideLayouts/slideLayout1.xml\"/>\n");
+		if (isSlideMaster)
+		{
+			write("<Relationship Id=\"rIdTh\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"../theme/theme1.xml\"/>\n");
+		}
+		write("<Relationship Id=\"rIdSl\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout\" Target=\"../slideLayouts/slideLayout1.xml\"/>\n");
 	}
 	
 	/**
@@ -80,11 +84,11 @@ public class PptxSlideRelsHelper extends BaseHelper
 		Integer linkIndex = linkCache.get(href);
 		if (linkIndex == null)
 		{
-			linkIndex = Integer.valueOf(linkCache.size());
+			linkIndex = linkCache.size();
 			exportHyperlink(linkIndex, href);
 			linkCache.put(href, linkIndex);
 		}
-		return linkIndex.intValue();
+		return linkIndex;
 	}
 
 	/**

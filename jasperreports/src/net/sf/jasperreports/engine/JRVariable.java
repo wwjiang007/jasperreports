@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -153,7 +153,7 @@ import net.sf.jasperreports.engine.type.ResetTypeEnum;
  * <pre>
  *   &lt;variable name="QuantitySum" class="java.lang.Double" resetType="Page" calculation="Sum"&gt;
  *     &lt;variableExpression&gt;$F{Quantity}&lt;/variableExpression&gt;
- *     &lt;initialValueExpression&gt;new Double(0)&lt;/initialValueExpression&gt;
+ *     &lt;initialValueExpression&gt;0&lt;/initialValueExpression&gt;
  *   &lt;/variable&gt;</pre>
  * In this example, the page sum variable will be initialized with zero at the beginning of
  * each new page.
@@ -253,6 +253,16 @@ public interface JRVariable extends JRCloneable
 	public String getName();
 
 
+	/**
+	 * Gets the variable optional description.
+	 */
+	public String getDescription();
+		
+	/**
+	 * Sets the variable description.
+	 */
+	public void setDescription(String description);
+		
 	/**
 	 * Returns the class of the variable value. Any class is allowed as long as it is in the classpath at compile and run time.
 	 * @return a <tt>Class</tt> instance representing the variable value class

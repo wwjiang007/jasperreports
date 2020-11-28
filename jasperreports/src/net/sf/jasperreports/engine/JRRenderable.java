@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -36,7 +36,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
 import net.sf.jasperreports.engine.type.ImageTypeEnum;
-import net.sf.jasperreports.engine.type.RenderableTypeEnum;
 
 
 /**
@@ -52,12 +51,12 @@ public interface JRRenderable extends Serializable
 
 
 	/**
-	 * @deprecated Replaced by {@link RenderableTypeEnum#IMAGE}.
+	 * @deprecated Replaced by {@link net.sf.jasperreports.engine.type.RenderableTypeEnum#IMAGE}.
 	 */
 	public static final byte TYPE_IMAGE = 0;
 
 	/**
-	 * @deprecated Replaced by {@link RenderableTypeEnum#SVG}.
+	 * @deprecated Replaced by {@link net.sf.jasperreports.engine.type.RenderableTypeEnum#SVG}.
 	 */
 	public static final byte TYPE_SVG = 1;
 

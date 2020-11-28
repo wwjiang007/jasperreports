@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -268,27 +268,27 @@ public class JRPrintServiceExporter extends JRAbstractExporter<PrintServiceRepor
 			Boolean pageDialog = configuration.isDisplayPageDialog();
 			if (pageDialog != null)
 			{
-				displayPageDialog = pageDialog.booleanValue();
+				displayPageDialog = pageDialog;
 			}
 	
 			Boolean pageDialogOnlyOnce = configuration.isDisplayPageDialogOnlyOnce();
 			if (displayPageDialog && pageDialogOnlyOnce != null)
 			{
 				// it can be (eventually) set to true only if displayPageDialog is true
-				displayPageDialogOnlyOnce = pageDialogOnlyOnce.booleanValue();
+				displayPageDialogOnlyOnce = pageDialogOnlyOnce;
 			}
 	
 			Boolean printDialog = configuration.isDisplayPrintDialog();
 			if (printDialog != null)
 			{
-				displayPrintDialog = printDialog.booleanValue();
+				displayPrintDialog = printDialog;
 			}
 	
 			Boolean printDialogOnlyOnce = configuration.isDisplayPrintDialogOnlyOnce();
 			if (displayPrintDialog && printDialogOnlyOnce != null)
 			{
 //				 it can be (eventually) set to true only if displayPrintDialog is true
-				displayPrintDialogOnlyOnce = printDialogOnlyOnce.booleanValue();
+				displayPrintDialogOnlyOnce = printDialogOnlyOnce;
 			}
 			PrinterJob printerJob = PrinterJob.getPrinterJob();
 			

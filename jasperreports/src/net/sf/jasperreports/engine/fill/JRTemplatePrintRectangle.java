@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -71,6 +71,9 @@ public class JRTemplatePrintRectangle extends JRTemplatePrintGraphicElement impl
 		return ((JRTemplateRectangle)this.template).getOwnRadius();
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setRadius(Integer)}.
+	 */
 	@Override
 	public void setRadius(int radius)
 	{

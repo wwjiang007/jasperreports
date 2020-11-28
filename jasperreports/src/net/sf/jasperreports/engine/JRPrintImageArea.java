@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -64,10 +64,10 @@ public class JRPrintImageArea implements Serializable
 	static
 	{
 		htmlShapes = new HashMap<String,Byte>();
-		htmlShapes.put(SHAPE_HTML_DEFAULT, new Byte(SHAPE_DEFAULT));
-		htmlShapes.put(SHAPE_HTML_RECTANGLE, new Byte(SHAPE_RECTANGLE));
-		htmlShapes.put(SHAPE_HTML_CIRCLE, new Byte(SHAPE_CIRCLE));
-		htmlShapes.put(SHAPE_HTML_POLYGON, new Byte(SHAPE_POLYGON));
+		htmlShapes.put(SHAPE_HTML_DEFAULT, SHAPE_DEFAULT);
+		htmlShapes.put(SHAPE_HTML_RECTANGLE, SHAPE_RECTANGLE);
+		htmlShapes.put(SHAPE_HTML_CIRCLE, SHAPE_CIRCLE);
+		htmlShapes.put(SHAPE_HTML_POLYGON, SHAPE_POLYGON);
 	}
 	
 	
@@ -87,7 +87,7 @@ public class JRPrintImageArea implements Serializable
 					EXCEPTION_MESSAGE_KEY_UNKNOWN_HTML_SHAPE,
 					new Object[]{htmlShape});
 		}
-		return shape.byteValue();
+		return shape;
 	}
 	
 	

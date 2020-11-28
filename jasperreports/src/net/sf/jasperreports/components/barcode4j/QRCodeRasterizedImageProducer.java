@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -67,12 +67,21 @@ public class QRCodeRasterizedImageProducer implements QRCodeImageProducer
 		
 		String encoding = JRPropertiesUtil.getInstance(jasperReportsContext).getProperty(
 				componentElement, QRCodeComponent.PROPERTY_QRCODE_CHARACTER_ENCODING, QRCodeComponent.PROPERTY_DEFAULT_ENCODING);
-		hints.put(EncodeHintType.CHARACTER_SET, encoding);
+		if (!encoding.isEmpty())
+		{
+			hints.put(EncodeHintType.CHARACTER_SET, encoding);
+		}
 		
 		hints.put(EncodeHintType.ERROR_CORRECTION, qrCodeBean.getErrorCorrectionLevel().getErrorCorrectionLevel());
 		
 		int margin = qrCodeBean.getMargin() == null ? QRCodeSVGImageProducer.DEFAULT_MARGIN : qrCodeBean.getMargin();
 		hints.put(EncodeHintType.MARGIN, margin);
+		
+		Integer qrVersion = qrCodeBean.getQrVersion();
+		if(qrVersion != null)
+		{
+			hints.put(EncodeHintType.QR_VERSION, qrVersion);
+		}
 
 		int resolution = JRPropertiesUtil.getInstance(jasperReportsContext).getIntegerProperty(
 				componentElement, BarcodeRasterizedImageProducer.PROPERTY_RESOLUTION, 300);

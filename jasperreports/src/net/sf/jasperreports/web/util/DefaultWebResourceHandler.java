@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -24,6 +24,10 @@
 package net.sf.jasperreports.web.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +37,9 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRPropertiesUtil.PropertySuffix;
@@ -40,9 +47,6 @@ import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.MessageUtil;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -123,6 +127,15 @@ public class DefaultWebResourceHandler extends AbstractWebResourceHandler
 	 */
 	protected boolean checkResourceName(JasperReportsContext jasperReportsContext, String resourceName) 
 	{
+		try
+		{
+			resourceName = new URI(URLEncoder.encode(resourceName, "UTF-8")).normalize().getPath();
+		}
+		catch (URISyntaxException | UnsupportedEncodingException e)
+		{
+			throw new JRRuntimeException(e);
+		}
+		
 		boolean matched = false;
 
 		List<PropertySuffix> patternProps = JRPropertiesUtil.getInstance(jasperReportsContext).getProperties(PROPERTIES_WEB_RESOURCE_PATTERN_PREFIX);//FIXMESORT cache this

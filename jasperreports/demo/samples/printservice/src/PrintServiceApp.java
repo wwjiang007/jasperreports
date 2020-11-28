@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -134,27 +134,27 @@ public class PrintServiceApp extends AbstractSampleApp
 		normalStyle.setFontSize(8f);
 		normalStyle.setPdfFontName("Helvetica");
 		normalStyle.setPdfEncoding("Cp1252");
-		normalStyle.setPdfEmbedded(false);
+		normalStyle.setPdfEmbedded(Boolean.FALSE);
 		jasperPrint.addStyle(normalStyle);
 
 		JRDesignStyle boldStyle = new JRDesignStyle();
 		boldStyle.setName("Sans_Bold");
 		boldStyle.setFontName("DejaVu Sans");
 		boldStyle.setFontSize(8f);
-		boldStyle.setBold(true);
+		boldStyle.setBold(Boolean.TRUE);
 		boldStyle.setPdfFontName("Helvetica-Bold");
 		boldStyle.setPdfEncoding("Cp1252");
-		boldStyle.setPdfEmbedded(false);
+		boldStyle.setPdfEmbedded(Boolean.FALSE);
 		jasperPrint.addStyle(boldStyle);
 
 		JRDesignStyle italicStyle = new JRDesignStyle();
 		italicStyle.setName("Sans_Italic");
 		italicStyle.setFontName("DejaVu Sans");
 		italicStyle.setFontSize(8f);
-		italicStyle.setItalic(true);
+		italicStyle.setItalic(Boolean.TRUE);
 		italicStyle.setPdfFontName("Helvetica-Oblique");
 		italicStyle.setPdfEncoding("Cp1252");
-		italicStyle.setPdfEmbedded(false);
+		italicStyle.setPdfEmbedded(Boolean.FALSE);
 		jasperPrint.addStyle(italicStyle);
 		
 		JRPrintPage page = new JRBasePrintPage();

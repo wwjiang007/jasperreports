@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRXmlUtils;
 import net.sf.jasperreports.repo.RepositoryUtil;
@@ -54,11 +54,11 @@ public class RemoteXmlDataAdapterService extends XmlDataAdapterService
 	 * 
 	 */
 	public RemoteXmlDataAdapterService(
-		JasperReportsContext jasperReportsContext,
+		ParameterContributorContext paramContribContext,
 		RemoteXmlDataAdapter remoteXmlDataAdapter
 		) 
 	{
-		super(jasperReportsContext, remoteXmlDataAdapter);
+		super(paramContribContext, remoteXmlDataAdapter);
 	}
 	
 	public RemoteXmlDataAdapter getRemoteXmlDataAdapter() 

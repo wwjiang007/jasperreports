@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +23,7 @@
  */
 package net.sf.jasperreports.data.jdbc;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -33,10 +34,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import net.sf.jasperreports.data.AbstractClasspathAwareDataAdapterService;
+import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRRuntimeException;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.util.JRClassLoader;
 import net.sf.jasperreports.util.SecretsUtil;
@@ -48,6 +50,8 @@ public class JdbcDataAdapterService extends AbstractClasspathAwareDataAdapterSer
 {
 	private static final Log log = LogFactory.getLog(JdbcDataAdapterService.class);
 	public static final String EXCEPTION_MESSAGE_KEY_PASSWORD_REQUIRED = "data.jdbc.password.required";
+	public static final String EXCEPTION_MESSAGE_KEY_INVALID_URL = "data.jdbc.invalid.url";
+	public static final String EXCEPTION_MESSAGE_KEY_CONNECTION_NOT_CREATED = "data.jdbc.connection.not.created";
 	
 	private Connection connection = null; 
 
@@ -109,14 +113,6 @@ public class JdbcDataAdapterService extends AbstractClasspathAwareDataAdapterSer
 		super(paramContribContext, jdbcDataAdapter);
 	}
 
-	/**
-	 * @deprecated Replaced by {@link #JdbcDataAdapterService(ParameterContributorContext, JdbcDataAdapter)}.
-	 */
-	public JdbcDataAdapterService(JasperReportsContext jasperReportsContext, JdbcDataAdapter jdbcDataAdapter) 
-	{
-		super(jasperReportsContext, jdbcDataAdapter);
-	}
-
 	public JdbcDataAdapter getJdbcDataAdapter() {
 		return (JdbcDataAdapter) getDataAdapter();
 	}
@@ -143,11 +139,11 @@ public class JdbcDataAdapterService extends AbstractClasspathAwareDataAdapterSer
 				Thread.currentThread().setContextClassLoader(getClassLoader(oldThreadClassLoader));
 				
 				Class<?> clazz = JRClassLoader.loadClassForRealName(jdbcDataAdapter.getDriver());
-				Driver driver = (Driver) clazz.newInstance();
+				Driver driver = (Driver) clazz.getDeclaredConstructor().newInstance();
 				
 //				Driver driver = (Driver) (Class.forName(
 //						jdbcDataAdapter.getDriver(), true, getClassLoader()))
-//						.newInstance();
+//						.getDeclaredConstructor().newInstance();
 
 				
 				Properties	connectProps = new Properties();
@@ -167,13 +163,22 @@ public class JdbcDataAdapterService extends AbstractClasspathAwareDataAdapterSer
 				
 				connection = driver.connect(jdbcDataAdapter.getUrl(), connectProps);
 				if(connection == null)
-					throw new SQLException("No suitable driver found for "+ jdbcDataAdapter.getUrl());
+				{
+					boolean urlValid = driver.acceptsURL(jdbcDataAdapter.getUrl());
+					if (!urlValid)
+					{
+						throw new JRRuntimeException(EXCEPTION_MESSAGE_KEY_INVALID_URL, 
+								new Object[] {jdbcDataAdapter.getUrl(), jdbcDataAdapter.getDriver()});
+					}
+					
+					throw new JRRuntimeException(EXCEPTION_MESSAGE_KEY_CONNECTION_NOT_CREATED, 
+							new Object[] {jdbcDataAdapter.getUrl()});
+				}
+				
+				setupConnection(jdbcDataAdapter);
 			}
-			catch (ClassNotFoundException ex){
-				throw new JRRuntimeException(ex);
-			} catch (InstantiationException e) {
-				throw new JRRuntimeException(e);
-			} catch (IllegalAccessException e) {
+			catch (ClassNotFoundException | InstantiationException | IllegalAccessException 
+				| NoSuchMethodException | InvocationTargetException e) {
 				throw new JRRuntimeException(e);
 			} finally {
 				Thread.currentThread().setContextClassLoader(oldThreadClassLoader);
@@ -182,7 +187,84 @@ public class JdbcDataAdapterService extends AbstractClasspathAwareDataAdapterSer
 		}
 		return null;
 	}
-	 
+
+	protected void setupConnection(JdbcDataAdapter dataAdapter) throws SQLException
+	{
+		JRPropertiesUtil props = JRPropertiesUtil.getInstance(getJasperReportsContext());
+		JRDataset dataset = getParameterContributorContext().getDataset();
+		
+		Boolean autoCommit = getAutoCommit(dataAdapter, props, dataset);
+		if (autoCommit != null)
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("setting auto commit " + autoCommit + " on connection " + connection);
+			}
+			connection.setAutoCommit(autoCommit);
+		}
+		
+		Boolean readOnly = getReadOnly(dataAdapter, props, dataset);
+		if (readOnly != null)
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("setting read only " + readOnly + " on connection " + connection);
+			}
+			connection.setReadOnly(readOnly);
+		}
+		
+		Integer transactionIsolation = getTransactionIsolation(dataAdapter, props, dataset);
+		if (transactionIsolation != null)
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("setting transaction isolation " + transactionIsolation + " on connection " + connection);
+			}
+			connection.setTransactionIsolation(transactionIsolation);
+		}
+	}
+	
+	protected Boolean getAutoCommit(JdbcDataAdapter dataAdapter, 
+			JRPropertiesUtil props, JRDataset dataset)
+	{
+		Boolean autoCommit = dataAdapter.getAutoCommit();
+		if (autoCommit != null)
+		{
+			return autoCommit;
+		}
+		
+		return props.getBooleanProperty(dataset, JdbcDataAdapter.PROPERTY_DEFAULT_AUTO_COMMIT);
+	}
+	
+	protected Boolean getReadOnly(JdbcDataAdapter dataAdapter, 
+			JRPropertiesUtil props, JRDataset dataset)
+	{
+		Boolean readOnly = dataAdapter.getReadOnly();
+		if (readOnly != null)
+		{
+			return readOnly;
+		}
+		
+		return props.getBooleanProperty(dataset, JdbcDataAdapter.PROPERTY_DEFAULT_READ_ONLY);
+	}
+	
+	protected Integer getTransactionIsolation(JdbcDataAdapter dataAdapter, 
+			JRPropertiesUtil props, JRDataset dataset)
+	{
+		TransactionIsolation transactionIsolation = dataAdapter.getTransactionIsolation();
+		if (transactionIsolation != null)
+		{
+			return transactionIsolation.getLevel();
+		}
+		
+		String prop = props.getProperty(dataset, JdbcDataAdapter.PROPERTY_DEFAULT_TRANSACTION_ISOLATION);
+		if (prop != null && !prop.trim().isEmpty())
+		{
+			transactionIsolation = TransactionIsolation.valueOf(prop.trim());
+			return transactionIsolation.getLevel();
+		}
+		return null;
+	}
 
 	public String getPassword() throws JRException {
 		throw 

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -128,7 +128,7 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		Float sizeAttr = (Float)attributes.get(TextAttribute.SIZE);
 		if (sizeAttr != null)
 		{
-			setFontSize(sizeAttr.floatValue());
+			setFontSize(sizeAttr);
 		}
 		
 		Object underline = attributes.get(TextAttribute.UNDERLINE);
@@ -284,10 +284,13 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		return isBold;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #setBold(Boolean)}.
+	 */
 	@Override
 	public void setBold(boolean isBold)
 	{
-		setBold(isBold ? Boolean.TRUE : Boolean.FALSE);
+		setBold((Boolean)isBold);
 	}
 
 	/**
@@ -315,10 +318,13 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		return isItalic;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #setItalic(Boolean)}.
+	 */
 	@Override
 	public void setItalic(boolean isItalic)
 	{
-		setItalic(isItalic ? Boolean.TRUE : Boolean.FALSE);
+		setItalic((Boolean)isItalic);
 	}
 	
 	/**
@@ -345,10 +351,13 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		return isUnderline;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #setUnderline(Boolean)}.
+	 */
 	@Override
 	public void setUnderline(boolean isUnderline)
 	{
-		setUnderline(isUnderline ? Boolean.TRUE : Boolean.FALSE);
+		setUnderline((Boolean)isUnderline);
 	}
 	
 	/**
@@ -375,10 +384,13 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		return isStrikeThrough;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #setStrikeThrough(Boolean)}.
+	 */
 	@Override
 	public void setStrikeThrough(boolean isStrikeThrough)
 	{
-		setStrikeThrough(isStrikeThrough ? Boolean.TRUE : Boolean.FALSE);
+		setStrikeThrough((Boolean)isStrikeThrough);
 	}
 
 	/**
@@ -414,42 +426,6 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		Object old = this.fontsize;
 		this.fontsize = fontSize;
 		getEventSupport().firePropertyChange(PROPERTY_FONT_SIZE, old, this.fontsize);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getFontsize()}.
-	 */
-	@Override
-	public int getFontSize()
-	{
-		return (int)getFontsize();
-	}
-	
-	/**
-	 * @deprecated Replaced by {@link #getOwnFontsize()}.
-	 */
-	@Override
-	public Integer getOwnFontSize()
-	{
-		return fontsize == null ? null : fontsize.intValue();
-	}
-	
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	@Override
-	public void setFontSize(int fontSize)
-	{
-		setFontSize((float)fontSize);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	@Override
-	public void setFontSize(Integer fontSize) 
-	{
-		setFontSize(fontSize == null ? null : fontSize.floatValue());
 	}
 
 	@Override
@@ -506,10 +482,13 @@ public class JRBaseFont implements JRFont, Serializable, JRChangeEventsSupport, 
 		return isPdfEmbedded;
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #setPdfEmbedded(Boolean)}.
+	 */
 	@Override
 	public void setPdfEmbedded(boolean isPdfEmbedded)
 	{
-		setPdfEmbedded(isPdfEmbedded ? Boolean.TRUE : Boolean.FALSE);
+		setPdfEmbedded((Boolean)isPdfEmbedded);
 	}
 	
 	/**

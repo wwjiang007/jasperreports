@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -53,6 +53,12 @@ public class FieldBooleanComparator extends AbstractFieldComparator<Boolean> {
 				break;
 			case IS_NOT_FALSE:
 				result = !Boolean.FALSE.equals(compareTo);
+				break;
+			case IS_NULL:
+				result = compareTo == null;
+				break;
+			case IS_NOT_NULL:
+				result = compareTo != null;
 				break;
 		}
 		

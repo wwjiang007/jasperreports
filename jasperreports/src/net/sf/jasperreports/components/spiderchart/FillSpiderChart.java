@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +23,8 @@
  */
 package net.sf.jasperreports.components.spiderchart;
 
+import java.lang.reflect.InvocationTargetException;
+
 import net.sf.jasperreports.charts.util.CategoryChartHyperlinkProvider;
 import net.sf.jasperreports.charts.util.ChartHyperlinkProvider;
 import net.sf.jasperreports.components.charts.AbstractChartCustomizer;
@@ -39,6 +41,7 @@ import net.sf.jasperreports.engine.component.BaseFillComponent;
 import net.sf.jasperreports.engine.component.FillPrepareResult;
 import net.sf.jasperreports.engine.fill.JRFillCloneFactory;
 import net.sf.jasperreports.engine.fill.JRFillCloneable;
+import net.sf.jasperreports.engine.fill.JRFillElement;
 import net.sf.jasperreports.engine.fill.JRFillExpressionEvaluator;
 import net.sf.jasperreports.engine.fill.JRFillHyperlinkHelper;
 import net.sf.jasperreports.engine.fill.JRFillObjectFactory;
@@ -52,7 +55,7 @@ import net.sf.jasperreports.renderers.Renderable;
 
 /**
  * 
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class FillSpiderChart extends BaseFillComponent implements JRFillCloneable
 {
@@ -101,6 +104,12 @@ public class FillSpiderChart extends BaseFillComponent implements JRFillCloneabl
 	@Override
 	public void evaluate(byte evaluation) throws JRException
 	{
+		bookmarkLevel = JRFillElement.getBookmarkLevel(fillContext.evaluate(getChartSettings().getBookmarkLevelExpression(), evaluation));
+		if (bookmarkLevel == null)
+		{
+			bookmarkLevel = getChartSettings().getBookmarkLevel();
+		}
+
 		if (isEvaluateNow())
 		{
 			evaluateRenderer(evaluation);
@@ -127,7 +136,6 @@ public class FillSpiderChart extends BaseFillComponent implements JRFillCloneabl
 		dataset.finishDataset();
 
 		chartHyperlinkProvider = new CategoryChartHyperlinkProvider(dataset.getItemHyperlinks());
-		bookmarkLevel = getChartSettings().getBookmarkLevel();
 		
 		JRComponentElement element = fillContext.getComponentElement();	
 
@@ -142,10 +150,14 @@ public class FillSpiderChart extends BaseFillComponent implements JRFillCloneabl
 		
 		customizerClass = chartSettings.getCustomizerClass();
 		if (customizerClass != null && customizerClass.length() > 0) {
-			try {
+			try 
+			{
 				Class<?> myClass = JRClassLoader.loadClassForName(customizerClass);
-				chartCustomizer = (ChartCustomizer) myClass.newInstance();
-			} catch (Exception e) {
+				chartCustomizer = (ChartCustomizer) myClass.getDeclaredConstructor().newInstance();
+			}
+			catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException 
+				| IllegalAccessException | InstantiationException e) 
+			{
 				throw 
 					new JRRuntimeException(
 						EXCEPTION_MESSAGE_KEY_CUSTOMIZER_INSTANCE_ERROR,
@@ -332,10 +344,10 @@ public class FillSpiderChart extends BaseFillComponent implements JRFillCloneabl
 	}
 	
 	/**
-	 * @return the hyperlinkTooltip
+	 * @return the bookmark level
 	 */
-	public Integer getBookmarkLevel() {
-		return bookmarkLevel;
+	public int getBookmarkLevel() {
+		return bookmarkLevel == null ? getChartSettings().getBookmarkLevel() : bookmarkLevel;
 	}
 
 	/**

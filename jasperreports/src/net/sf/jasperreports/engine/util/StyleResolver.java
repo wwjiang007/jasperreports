@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -86,7 +86,7 @@ public class StyleResolver
 	
 	private static final StyleResolver INSTANCE = new StyleResolver(DefaultJasperReportsContext.getInstance());
 
-	private static final Integer INTEGER_ZERO = Integer.valueOf(0);
+	private static final Integer INTEGER_ZERO = 0;
 	
 	private final JRPropertiesUtil propertiesUtil;
 	private final Boolean stylesInheritFromDefault;
@@ -580,7 +580,7 @@ public class StyleResolver
 		Integer ownRadius = rectangle.getOwnRadius();
 		if (ownRadius != null)
 		{
-			return ownRadius.intValue();
+			return ownRadius;
 		}
 		JRStyle baseStyle = getBaseStyle(rectangle);
 		if (baseStyle != null)
@@ -588,7 +588,7 @@ public class StyleResolver
 			Integer radius = baseStyle.getRadius();
 			if (radius != null)
 			{
-				return radius.intValue();
+				return radius;
 			}
 		}
 		return 0;
@@ -1013,6 +1013,28 @@ public class StyleResolver
 	/**
 	 *
 	 */
+	public RotationEnum getRotation(JRCommonImage element)
+	{
+		RotationEnum ownRotation = element.getOwnRotation();
+		if (ownRotation != null)
+		{
+			return ownRotation;
+		}
+		JRStyle style = getBaseStyle(element);
+		if (style != null)
+		{
+			RotationEnum rotation = style.getRotationValue();
+			if (rotation != null)
+			{
+				return rotation;
+			}
+		}
+		return RotationEnum.NONE;
+	}
+
+	/**
+	 *
+	 */
 	public RotationEnum getRotationValue(JRStyle style)
 	{
 		RotationEnum ownRotation = style.getOwnRotationValue();
@@ -1134,7 +1156,7 @@ public class StyleResolver
 		Boolean ownBlankWhenNull = element.isOwnBlankWhenNull();
 		if (ownBlankWhenNull != null)
 		{
-			return ownBlankWhenNull.booleanValue();
+			return ownBlankWhenNull;
 		}
 		JRStyle baseStyle = getBaseStyle(element);
 		if (baseStyle != null)
@@ -1142,7 +1164,7 @@ public class StyleResolver
 			Boolean blankWhenNull = baseStyle.isBlankWhenNull();
 			if (blankWhenNull != null)
 			{
-				return blankWhenNull.booleanValue();
+				return blankWhenNull;
 			}
 		}
 		return false;
@@ -1218,7 +1240,7 @@ public class StyleResolver
 		Boolean ownBold = font.isOwnBold();
 		if (ownBold != null)
 		{
-			return ownBold.booleanValue();
+			return ownBold;
 		}
 		JRStyle baseStyle = getBaseStyle(font);
 		if (baseStyle != null)
@@ -1226,7 +1248,7 @@ public class StyleResolver
 			Boolean bold = baseStyle.isBold();
 			if (bold != null)
 			{
-				return bold.booleanValue();
+				return bold;
 			}
 		}
 		return false;
@@ -1258,7 +1280,7 @@ public class StyleResolver
 		Boolean ownItalic = font.isOwnItalic();
 		if (ownItalic != null)
 		{
-			return ownItalic.booleanValue();
+			return ownItalic;
 		}
 		JRStyle baseStyle = getBaseStyle(font);
 		if (baseStyle != null)
@@ -1266,7 +1288,7 @@ public class StyleResolver
 			Boolean italic = baseStyle.isItalic();
 			if (italic != null)
 			{
-				return italic.booleanValue();
+				return italic;
 			}
 		}
 		return false;
@@ -1298,7 +1320,7 @@ public class StyleResolver
 		Boolean ownUnderline = font.isOwnUnderline();
 		if (ownUnderline != null)
 		{
-			return ownUnderline.booleanValue();
+			return ownUnderline;
 		}
 		JRStyle baseStyle = getBaseStyle(font);
 		if (baseStyle != null)
@@ -1306,7 +1328,7 @@ public class StyleResolver
 			Boolean underline = baseStyle.isUnderline();
 			if (underline != null)
 			{
-				return underline.booleanValue();
+				return underline;
 			}
 		}
 		return false;
@@ -1338,7 +1360,7 @@ public class StyleResolver
 		Boolean ownStrikeThrough = font.isOwnStrikeThrough();
 		if (ownStrikeThrough != null)
 		{
-			return ownStrikeThrough.booleanValue();
+			return ownStrikeThrough;
 		}
 		JRStyle baseStyle = getBaseStyle(font);
 		if (baseStyle != null)
@@ -1346,7 +1368,7 @@ public class StyleResolver
 			Boolean strikeThrough = baseStyle.isStrikeThrough();
 			if (strikeThrough != null)
 			{
-				return strikeThrough.booleanValue();
+				return strikeThrough;
 			}
 		}
 		return false;
@@ -1377,7 +1399,7 @@ public class StyleResolver
 		Float ownFontSize = font.getOwnFontsize();
 		if (ownFontSize != null)
 		{
-			return ownFontSize.floatValue();
+			return ownFontSize;
 		}
 		JRStyle baseStyle = getBaseStyle(font);
 		if (baseStyle != null)
@@ -1385,7 +1407,7 @@ public class StyleResolver
 			Float fontSize = baseStyle.getFontsize();
 			if (fontSize != null)
 			{
-				return fontSize.floatValue();
+				return fontSize;
 			}
 		}
 		return propertiesUtil.getFloatProperty(JRFont.DEFAULT_FONT_SIZE);
@@ -1505,7 +1527,7 @@ public class StyleResolver
 		Boolean ownPdfEmbedded = font.isOwnPdfEmbedded();
 		if (ownPdfEmbedded != null)
 		{
-			return ownPdfEmbedded.booleanValue();
+			return ownPdfEmbedded;
 		}
 		JRStyle baseStyle = getBaseStyle(font);
 		if (baseStyle != null)
@@ -1513,7 +1535,7 @@ public class StyleResolver
 			Boolean pdfEmbedded = baseStyle.isPdfEmbedded();
 			if (pdfEmbedded != null)
 			{
-				return pdfEmbedded.booleanValue();
+				return pdfEmbedded;
 			}
 		}
 		return propertiesUtil.getBooleanProperty(JRFont.DEFAULT_PDF_EMBEDDED);

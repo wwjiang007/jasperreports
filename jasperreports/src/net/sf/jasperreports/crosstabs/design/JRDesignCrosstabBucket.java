@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,7 +30,6 @@ import net.sf.jasperreports.engine.analytics.dataset.BucketOrder;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.events.JRChangeEventsSupport;
 import net.sf.jasperreports.engine.design.events.JRPropertyChangeSupport;
-import net.sf.jasperreports.engine.type.SortOrderEnum;
 
 /**
  * Implementation of {@link net.sf.jasperreports.crosstabs.JRCrosstabBucket crosstab group bucket}
@@ -107,25 +106,6 @@ public class JRDesignCrosstabBucket extends JRBaseCrosstabBucket implements JRCh
 		getEventSupport().firePropertyChange(PROPERTY_EXPRESSION, old, this.expression);
 	}
 
-	
-	/**
-	 * Sets the sorting type.
-	 * 
-	 * @param orderValue one of
-	 * <ul>
-	 * 	<li>{@link SortOrderEnum#ASCENDING SortOrderEnum.ASCENDING}</li>
-	 * 	<li>{@link SortOrderEnum#DESCENDING SortOrderEnum.DESCENDING}</li>
-	 * </ul>
-	 * @see net.sf.jasperreports.crosstabs.JRCrosstabBucket#getOrder()
-	 * 
-	 * @deprecated replaced by {@link #setOrder(BucketOrder)}
-	 */
-	@Deprecated
-	public void setOrder(SortOrderEnum orderValue)
-	{
-		BucketOrder order = BucketOrder.fromSortOrderEnum(orderValue);
-		setOrder(order);
-	}
 	
 	/**
 	 * Sets the sorting type.

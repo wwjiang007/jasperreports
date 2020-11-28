@@ -230,12 +230,6 @@ is set, then a Javaflow approach will be used to fill the reports rather than th
 included in the application classpath. This jar can be found in the lib directory of the JasperReport reports project distribution package.<br/>
 The jasperreports-javaflow.properties file illustrates how this property could be set in a actual implementation.<br/>
 Other alternatives for processing different queries in the same report are usage of the <a href="../list/index.html">List</a> element and <a href="../charts/index.html">Sub Datasets</a>.
-<br/>
-	<br/>
-	<b>Further Resources:</b>
-    <br/>
-    JasperReports Ultimate Guide (available from the JasperSoft eShop)<br/>
-    iReport Ultimate Guide (available from the JasperSoft eShop)<br/>
     </content>
   </feature>
 
@@ -293,7 +287,7 @@ and where should they be placed within the JSON tree object. The <api href="net/
 is designed to handle such kind of metadata information and to generate consistent data structures. 
 <br/>
 Before starting its export work, the JSON metadata exporter looks for the presence of an existing JSON schema by calling the 
-<api href="net/sf/jasperreports/export/JsonMetadataReportConfiguration.html#getJsonSchemaResource()">getJsonSchemaResource()</api> exporter configuration setting.
+<api href="net/sf/jasperreports/export/JsonMetadataReportConfiguration.html#getJsonSchemaResource--">getJsonSchemaResource()</api> exporter configuration setting.
 This can be configured either directly, using the APIs, or by reading the value from the 
 <a href="../../config.reference.html#net.sf.jasperreports.export.json.schema">net.sf.jasperreports.export.json.schema</a> report 
 property. If present, this setting provides the path to a JSON schema file that will be used to generate the JSON structure at export time. Nodes in a given schema may provide:
@@ -408,20 +402,20 @@ In ProductReport.jrxml:
           <textElement textAlignment="Right"/>
           <textFieldExpression><![CDATA[$F{Id}]] ></textFieldExpression>
         </textField>
-        <textField isStretchWithOverflow="true">
+        <textField textAdjust="StretchHeight">
           <reportElement positionType="Float" x="20" y="2" width="80" height="10" uuid="f53978bd-fc13-4359-b82d-2142640c6696">
             <property name="net.sf.jasperreports.export.json.path" value="products.Name"/>
           </reportElement>
           <textFieldExpression><![CDATA[$F{Name}]] ></textFieldExpression>
         </textField>
-        <textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="ProductGroup" pattern="#0">
+        <textField textAdjust="StretchHeight" evaluationTime="Group" evaluationGroup="ProductGroup" pattern="#0">
           <reportElement positionType="Float" x="105" y="2" width="20" height="10" uuid="aec3706b-5a2e-455a-aec0-245ada2a8830">
             <property name="net.sf.jasperreports.export.json.path" value="products.Quantity"/>
           </reportElement>
           <textElement textAlignment="Right"/>
           <textFieldExpression><![CDATA[$V{QuantityProductSum}]] ></textFieldExpression>
         </textField>
-        <textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="ProductGroup" pattern="#0.00">
+        <textField textAdjust="StretchHeight" evaluationTime="Group" evaluationGroup="ProductGroup" pattern="#0.00">
           <reportElement positionType="Float" x="130" y="2" width="30" height="10" uuid="38a1047a-67fe-4c37-ac55-1252bcb7f9db">
             <property name="net.sf.jasperreports.export.json.path" value="products.Price"/>
           </reportElement>
@@ -447,13 +441,13 @@ In AddressReport.jrxml:
         <textElement textAlignment="Right"/>
         <textFieldExpression><![CDATA[$F{Id}]] ></textFieldExpression>
       </textField>
-      <textField isStretchWithOverflow="true">
+      <textField textAdjust="StretchHeight">
         <reportElement positionType="Float" x="20" y="2" width="80" height="10" uuid="1c766997-5272-480b-935f-cf519342a2a1">
           <property name="net.sf.jasperreports.export.json.path" value="customers.Name"/>
         </reportElement>
         <textFieldExpression><![CDATA[$F{FirstName} + " " + $F{LastName}]] ></textFieldExpression>
       </textField>
-      <textField isStretchWithOverflow="true">
+      <textField textAdjust="StretchHeight">
         <reportElement positionType="Float" x="105" y="2" width="70" height="10" uuid="919d119f-31d8-4631-b19c-555f21ef3e5e">
           <property name="net.sf.jasperreports.export.json.path" value="customers.Street"/>
         </reportElement>

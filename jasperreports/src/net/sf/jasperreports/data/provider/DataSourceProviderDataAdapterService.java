@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +23,7 @@
  */
 package net.sf.jasperreports.data.provider;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
@@ -32,7 +33,6 @@ import net.sf.jasperreports.engine.JRDataSourceProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.util.JRClassLoader;
 
@@ -52,17 +52,6 @@ public class DataSourceProviderDataAdapterService extends AbstractClasspathAware
 		) 
 	{
 		super(paramContribContext, dsDataAdapter);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #DataSourceProviderDataAdapterService(ParameterContributorContext, DataSourceProviderDataAdapter)}.
-	 */
-	public DataSourceProviderDataAdapterService(
-		JasperReportsContext jasperReportsContext,
-		DataSourceProviderDataAdapter dsDataAdapter
-		) 
-	{
-		super(jasperReportsContext, dsDataAdapter);
 	}
 
 	public DataSourceProviderDataAdapter getDataSourceProviderDataAdapter() {
@@ -101,13 +90,12 @@ public class DataSourceProviderDataAdapterService extends AbstractClasspathAware
 					Thread.currentThread().setContextClassLoader(getClassLoader(oldThreadClassLoader));
 
 					Class<?> clazz = JRClassLoader.loadClassForRealName(dsDataAdapter.getProviderClass());
-					provider = (JRDataSourceProvider) clazz.newInstance();
+					provider = (JRDataSourceProvider) clazz.getDeclaredConstructor().newInstance();
 					// FIXME: I don't have a report, why I need a report??!
-				} catch (ClassNotFoundException e) {
-					throw new JRException(e);
-				} catch (IllegalAccessException e) {
-					throw new JRException(e);
-				} catch (InstantiationException e) {
+				}
+				catch (ClassNotFoundException | IllegalAccessException | InstantiationException 
+					| NoSuchMethodException | InvocationTargetException e) 
+				{
 					throw new JRException(e);
 				}
 				finally

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,12 +23,13 @@
  */
 package net.sf.jasperreports.engine.export;
 
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
 import net.sf.jasperreports.engine.JRPrintText;
@@ -43,48 +44,119 @@ import net.sf.jasperreports.engine.util.JRStyledText;
  */
 public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 {
+	private float yLine = 0;
+	
 	/**
-	 * 
+	 * @deprecated Replaced by {@link #SimplePdfTextRenderer(JasperReportsContext, boolean, boolean, boolean)}.
 	 */
-	public SimplePdfTextRenderer(JasperReportsContext jasperReportsContext, boolean ignoreMissingFont)
+	public SimplePdfTextRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont
+		)
 	{
-		super(jasperReportsContext, ignoreMissingFont);
+		this(jasperReportsContext, ignoreMissingFont, true, false);
 	}
 	
 	
 	/**
-	 *
+	 * 
 	 */
-	protected Phrase getPhrase(JRStyledText styledText, JRPrintText textElement)
+	public SimplePdfTextRenderer(
+		JasperReportsContext jasperReportsContext, 
+		boolean ignoreMissingFont,
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine
+		)
 	{
-		String text = styledText.getText();
+		super(
+			jasperReportsContext, 
+			ignoreMissingFont,
+			defaultIndentFirstLine,
+			defaultJustifyLastLine
+			);
+	}
 
-		AttributedString as = styledText.getAttributedString();
-
-		return pdfExporter.getPhrase(as, text, textElement);
+	
+	@Override
+	public void initialize(
+		JRPdfExporter pdfExporter, 
+		PdfContentByte pdfContentByte,
+		JRPrintText text, 
+		JRStyledText styledText, 
+		int offsetX,
+		int offsetY
+		)
+	{
+		super.initialize(
+			pdfExporter, 
+			pdfContentByte,
+			text, 
+			styledText, 
+			offsetX,
+			offsetY
+			);
+		
+		yLine = 
+			pdfExporter.getCurrentPageFormat().getPageHeight()
+				- y
+				- topPadding
+				- verticalAlignOffset
+				- text.getLeadingOffset();
 	}
 
 	
 	@Override
 	public void render()
 	{
+		super.render();
+	}
+
+	
+	@Override
+	protected void renderParagraph(
+		AttributedCharacterIterator allParagraphs,
+		int paragraphStart,
+		String paragraphText
+		)
+	{
+		AttributedString paragraph = null;
+		
+		if (paragraphText == null)
+		{
+			paragraphText = " ";
+			paragraph = 
+				new AttributedString(
+					paragraphText,
+					new AttributedString(
+						allParagraphs, 
+						paragraphStart, 
+						paragraphStart + paragraphText.length()
+						).getIterator().getAttributes()
+					);
+		}
+		else
+		{
+			paragraph = 
+				new AttributedString(
+					allParagraphs, 
+					paragraphStart, 
+					paragraphStart + paragraphText.length()
+					);
+		}
+		
 		ColumnText colText = new ColumnText(pdfContentByte);
 		colText.setSimpleColumn(
-			getPhrase(styledText, text),
+			pdfExporter.getPhrase(paragraph, paragraphText, text),
 			x + leftPadding,
-			pdfExporter.getCurrentPageFormat().getPageHeight()
-				- y
-				- topPadding
-				- verticalAlignOffset
-				- text.getLeadingOffset(),
-				//+ text.getLineSpacingFactor() * text.getFont().getSize(),
+			yLine,
 			x + width - rightPadding,
 			pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- height
 				+ bottomPadding,
 			0,//text.getLineSpacingFactor(),// * text.getFont().getSize(),
-			horizontalAlignment == Element.ALIGN_JUSTIFIED_ALL ? Element.ALIGN_JUSTIFIED : horizontalAlignment
+			horizontalAlignment == Element.ALIGN_JUSTIFIED && (isLastParagraph && justifyLastLine) 
+				? Element.ALIGN_JUSTIFIED_ALL : horizontalAlignment
 			);
 
 		colText.setLeading(0, text.getLineSpacingFactor());// * text.getFont().getSize());
@@ -101,6 +173,15 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		{
 			throw new JRRuntimeException(e);
 		}
+		
+		yLine = colText.getYLine();
+	}
+
+
+	@Override
+	protected AttributedString getAttributedString()
+	{
+		return styledText.getAttributedString();
 	}
 
 

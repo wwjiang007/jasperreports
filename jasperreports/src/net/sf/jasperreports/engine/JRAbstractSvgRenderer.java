@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -31,7 +31,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import net.sf.jasperreports.engine.type.ImageTypeEnum;
-import net.sf.jasperreports.engine.type.RenderableTypeEnum;
 import net.sf.jasperreports.engine.util.JRImageLoader;
 import net.sf.jasperreports.renderers.AbstractRenderToImageDataRenderer;
 
@@ -72,9 +71,9 @@ public abstract class JRAbstractSvgRenderer extends JRAbstractRenderer
 
 
 	@Override
-	public RenderableTypeEnum getTypeValue()
+	public net.sf.jasperreports.engine.type.RenderableTypeEnum getTypeValue()
 	{
-		return RenderableTypeEnum.SVG;
+		return net.sf.jasperreports.engine.type.RenderableTypeEnum.SVG;
 	}
 
 

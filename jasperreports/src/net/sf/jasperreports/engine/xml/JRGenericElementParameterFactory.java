@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -46,7 +46,7 @@ public class JRGenericElementParameterFactory extends JRBaseFactory
 		String skipWhenNullAttr = attrs.getValue(JRXmlConstants.ATTRIBUTE_skipWhenNull);
 		if (skipWhenNullAttr != null)
 		{
-			param.setSkipWhenEmpty(Boolean.valueOf(skipWhenNullAttr).booleanValue());
+			param.setSkipWhenEmpty(Boolean.valueOf(skipWhenNullAttr));
 		}
 		
 		return param;

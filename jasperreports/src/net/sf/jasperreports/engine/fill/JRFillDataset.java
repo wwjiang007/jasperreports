@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -1414,7 +1414,7 @@ public class JRFillDataset implements JRDataset, DatasetFillContext
 						{
 							Boolean filterExprResult = (Boolean) calculator.evaluate(
 									filterExpression, JRExpression.EVALUATION_ESTIMATED);
-							includeRow = filterExprResult != null && filterExprResult.booleanValue();
+							includeRow = filterExprResult != null && filterExprResult;
 						}
 
 						if (includeRow)
@@ -1547,7 +1547,7 @@ public class JRFillDataset implements JRDataset, DatasetFillContext
 	protected boolean advanceDataSource(boolean limit) throws JRException
 	{
 		boolean hasNext;
-		if (limit && reportMaxCount != null && reportCount >= reportMaxCount.intValue())
+		if (limit && reportMaxCount != null && reportCount >= reportMaxCount)
 		{
 			hasNext = false;
 		}
@@ -1960,7 +1960,10 @@ public class JRFillDataset implements JRDataset, DatasetFillContext
 	public JRPropertiesHolder getParentProperties()
 	{
 		// report properties propagate to subdatasets
-		return isMain ? null : filler.getMainDataset();
+		return 
+			isMain 
+			? (filler == null || filler.parent == null ? null : filler.parent.getParentProperties()) 
+			: filler.getMainDataset();
 	}
 
 

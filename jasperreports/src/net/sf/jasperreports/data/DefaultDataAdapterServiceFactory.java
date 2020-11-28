@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,6 +23,9 @@
  */
 package net.sf.jasperreports.data;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.sf.jasperreports.data.bean.BeanDataAdapter;
 import net.sf.jasperreports.data.bean.BeanDataAdapterService;
 import net.sf.jasperreports.data.csv.CsvDataAdapter;
@@ -40,7 +43,7 @@ import net.sf.jasperreports.data.hibernate.HibernateDataAdapterService;
 import net.sf.jasperreports.data.hibernate.spring.SpringHibernateDataAdapter;
 import net.sf.jasperreports.data.hibernate.spring.SpringHibernateDataAdapterService;
 import net.sf.jasperreports.data.jdbc.JdbcDataAdapter;
-import net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl;
+import net.sf.jasperreports.data.jdbc.JdbcDataAdapterContributorFactory;
 import net.sf.jasperreports.data.jdbc.JdbcDataAdapterService;
 import net.sf.jasperreports.data.jndi.JndiDataAdapter;
 import net.sf.jasperreports.data.jndi.JndiDataAdapterService;
@@ -52,6 +55,8 @@ import net.sf.jasperreports.data.provider.DataSourceProviderDataAdapter;
 import net.sf.jasperreports.data.provider.DataSourceProviderDataAdapterService;
 import net.sf.jasperreports.data.qe.QueryExecuterDataAdapter;
 import net.sf.jasperreports.data.qe.QueryExecuterDataAdapterService;
+import net.sf.jasperreports.data.random.RandomDataAdapter;
+import net.sf.jasperreports.data.random.RandomDataAdapterService;
 import net.sf.jasperreports.data.xls.XlsDataAdapter;
 import net.sf.jasperreports.data.xls.XlsDataAdapterService;
 import net.sf.jasperreports.data.xlsx.XlsxDataAdapter;
@@ -74,7 +79,14 @@ public class DefaultDataAdapterServiceFactory implements DataAdapterContributorF
 	 *
 	 */
 	private static final DefaultDataAdapterServiceFactory INSTANCE = new DefaultDataAdapterServiceFactory();
-	
+
+	/**
+	 *
+	 */
+	private DefaultDataAdapterServiceFactory()
+	{
+	}
+
 	/**
 	 *
 	 */
@@ -104,6 +116,10 @@ public class DefaultDataAdapterServiceFactory implements DataAdapterContributorF
 		else if (dataAdapter instanceof EmptyDataAdapter)
 		{
 			dataAdapterService = new EmptyDataAdapterService(context, (EmptyDataAdapter)dataAdapter);
+		}
+		else if (dataAdapter instanceof RandomDataAdapter)
+		{
+			dataAdapterService = new RandomDataAdapterService(context, (RandomDataAdapter)dataAdapter);
 		}
 		else if (dataAdapter instanceof JndiDataAdapter)
 		{
@@ -161,9 +177,27 @@ public class DefaultDataAdapterServiceFactory implements DataAdapterContributorF
 		{
 			dataAdapterService = new XmlaDataAdapterService(context, (XmlaDataAdapter)dataAdapter);
 		}
-		else if (dataAdapter.getClass().getName().equals(JdbcDataAdapterImpl.class.getName()))
+		else if (dataAdapter instanceof JdbcDataAdapter)
 		{
-			dataAdapterService = new JdbcDataAdapterService(context, (JdbcDataAdapter)dataAdapter);
+			JasperReportsContext jasperReportsContext = context.getJasperReportsContext();
+			
+			List<JdbcDataAdapterContributorFactory> bundles = jasperReportsContext.getExtensions(
+					JdbcDataAdapterContributorFactory.class);
+			for (Iterator<JdbcDataAdapterContributorFactory> it = bundles.iterator(); it.hasNext();)
+			{
+				JdbcDataAdapterContributorFactory factory = it.next();
+				DataAdapterService service = factory.getDataAdapterService(context, (JdbcDataAdapter)dataAdapter);
+				if (service != null)
+				{
+					dataAdapterService = service;
+					break;
+				}
+			}
+
+			if (dataAdapterService == null)
+			{
+				dataAdapterService = new JdbcDataAdapterService(context, (JdbcDataAdapter)dataAdapter);
+			}
 		}
 		
 		return dataAdapterService;

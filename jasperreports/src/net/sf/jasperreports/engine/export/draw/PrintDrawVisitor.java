@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -36,8 +36,6 @@ import net.sf.jasperreports.engine.JRPrintImage;
 import net.sf.jasperreports.engine.JRPrintLine;
 import net.sf.jasperreports.engine.JRPrintRectangle;
 import net.sf.jasperreports.engine.JRPrintText;
-import net.sf.jasperreports.engine.JRPropertiesUtil;
-import net.sf.jasperreports.engine.JRReport;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.PrintElementVisitor;
@@ -46,8 +44,6 @@ import net.sf.jasperreports.engine.export.GenericElementGraphics2DHandler;
 import net.sf.jasperreports.engine.export.GenericElementHandlerEnviroment;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
 import net.sf.jasperreports.engine.export.JRGraphics2DExporterContext;
-import net.sf.jasperreports.engine.util.JRStyledText;
-import net.sf.jasperreports.export.Graphics2DReportConfiguration;
 import net.sf.jasperreports.renderers.RenderersCache;
 
 
@@ -70,22 +66,32 @@ public class PrintDrawVisitor implements PrintElementVisitor<Offset>
 	private FrameDrawer frameDrawer;
 
 	/**
-	 * @deprecated Replaced by {@link #PrintDrawVisitor(JasperReportsContext, RenderersCache, boolean, boolean)}.
+	 * @deprecated Replaced by {@link #PrintDrawVisitor(JasperReportsContext, RenderersCache, boolean, boolean, boolean, boolean)}.
 	 */
-	public PrintDrawVisitor(JasperReportsContext jasperReportsContext)
+	public PrintDrawVisitor(
+		JasperReportsContext jasperReportsContext,
+		RenderersCache renderersCache,
+		boolean minimizePrinterJobSize,
+		boolean ignoreMissingFont
+		)
 	{
-		this.jasperReportsContext = jasperReportsContext;
-		this.lineDrawer = new LineDrawer(jasperReportsContext);
-		this.rectangleDrawer = new RectangleDrawer(jasperReportsContext);
-		this.ellipseDrawer = new EllipseDrawer(jasperReportsContext);
-		this.imageDrawer = new ImageDrawer(jasperReportsContext, new RenderersCache(jasperReportsContext));
+		this(
+			jasperReportsContext,
+			renderersCache,
+			minimizePrinterJobSize,
+			ignoreMissingFont,
+			true,
+			false
+			);
 	}
 	
 	public PrintDrawVisitor(
 		JasperReportsContext jasperReportsContext,
 		RenderersCache renderersCache,
 		boolean minimizePrinterJobSize,
-		boolean ignoreMissingFont
+		boolean ignoreMissingFont,
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine
 		)
 	{
 		this.jasperReportsContext = jasperReportsContext;
@@ -98,18 +104,42 @@ public class PrintDrawVisitor implements PrintElementVisitor<Offset>
 			new AwtTextRenderer(
 				jasperReportsContext,
 				minimizePrinterJobSize,
-				ignoreMissingFont
+				ignoreMissingFont,
+				defaultIndentFirstLine,
+				defaultJustifyLastLine
 				);
 		
 		textDrawer = new TextDrawer(jasperReportsContext, textRenderer);
 		frameDrawer = new FrameDrawer(jasperReportsContext, null, this);
 	}
 	
+	/**
+	 * @deprecated Replaced by {@link #PrintDrawVisitor(JRGraphics2DExporterContext, RenderersCache, boolean, boolean, boolean, boolean)}.
+	 */
 	public PrintDrawVisitor(
 		JRGraphics2DExporterContext exporterContext, 
 		RenderersCache renderersCache,
 		boolean minimizePrinterJobSize,
 		boolean ignoreMissingFont
+		)
+	{
+		this(
+			exporterContext, 
+			renderersCache,
+			minimizePrinterJobSize,
+			ignoreMissingFont,
+			true,
+			false
+			);
+	}
+	
+	public PrintDrawVisitor(
+		JRGraphics2DExporterContext exporterContext, 
+		RenderersCache renderersCache,
+		boolean minimizePrinterJobSize,
+		boolean ignoreMissingFont,
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine
 		)
 	{
 		this.jasperReportsContext = exporterContext.getJasperReportsContext();
@@ -122,40 +152,18 @@ public class PrintDrawVisitor implements PrintElementVisitor<Offset>
 			new AwtTextRenderer(
 				jasperReportsContext,
 				minimizePrinterJobSize,
-				ignoreMissingFont
+				ignoreMissingFont,
+				defaultIndentFirstLine,
+				defaultJustifyLastLine
 				);
 		
 		textDrawer = new TextDrawer(jasperReportsContext, textRenderer);
 		frameDrawer = new FrameDrawer(exporterContext, null, this);
 	}
 		
-	/**
-	 * @deprecated Replaced by {@link #PrintDrawVisitor(JasperReportsContext, RenderersCache, boolean, boolean)}.
-	 */
-	public void setTextRenderer(JRReport report)
-	{
-		AwtTextRenderer textRenderer = 
-			new AwtTextRenderer(
-				jasperReportsContext,
-				JRPropertiesUtil.getInstance(jasperReportsContext).getBooleanProperty(report, Graphics2DReportConfiguration.MINIMIZE_PRINTER_JOB_SIZE, true),
-				JRPropertiesUtil.getInstance(jasperReportsContext).getBooleanProperty(report, JRStyledText.PROPERTY_AWT_IGNORE_MISSING_FONT, false)
-				);
-		
-		textDrawer = new TextDrawer(jasperReportsContext, textRenderer);
-		frameDrawer = new FrameDrawer(jasperReportsContext, null, textRenderer);
-	}
-
 	public void setTextDrawer(TextDrawer textDrawer)
 	{
 		this.textDrawer = textDrawer;
-	}
-
-	/**
-	 * @deprecated To be removed.
-	 */
-	public void setFrameDrawer(FrameDrawer frameDrawer)
-	{
-		this.frameDrawer = frameDrawer;
 	}
 
 	public void setClip(boolean isClip)

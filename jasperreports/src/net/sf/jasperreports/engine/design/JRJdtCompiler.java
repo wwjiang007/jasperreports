@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -145,14 +144,14 @@ public class JRJdtCompiler extends JRAbstractJavaCompiler
 		final IErrorHandlingPolicy policy = 
 			DefaultErrorHandlingPolicies.proceedWithAllProblems();
 
-		final Map<String,String> settings = getJdtSettings();
+		final CompilerOptions options = new CompilerOptions(getJdtSettings());
 
 		final IProblemFactory problemFactory = 
 			new DefaultProblemFactory(Locale.getDefault());
 
 		final CompilerRequestor requestor = getCompilerRequestor(units);
 
-		final Compiler compiler = new Compiler(env, policy, settings, requestor, problemFactory);
+		final Compiler compiler = new Compiler(env, policy, options, requestor, problemFactory);
 
 		do
 		{
@@ -514,8 +513,10 @@ public class JRJdtCompiler extends JRAbstractJavaCompiler
 		File saveSourceDir = sourceFile == null ? null : sourceFile.getParentFile();
 		sourceFile = getSourceFile(saveSourceDir, unitName, sourceCode);
 
-		return new JRCompilationUnit(unitName, sourceCode, sourceFile, 
-				compilationUnit.getExpressions(), sourceTask);
+		JRCompilationUnit newUnit = new JRCompilationUnit(unitName);
+		newUnit.setDirectEvaluations(compilationUnit.getDirectEvaluations());
+		newUnit.setSource(sourceCode, sourceFile, sourceTask);
+		return newUnit;
 	}
 
 	

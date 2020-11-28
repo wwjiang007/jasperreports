@@ -3,11 +3,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.jasperreports</groupId>
 	<artifactId>jasperreports</artifactId>
-	<version>6.7.0-SNAPSHOT</version>
+	<version>master-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>JasperReports</name>
+	<name>JasperReports Library</name>
+	<description>Free Java Reporting Library</description>
 	<url>http://jasperreports.sourceforge.net</url>
-	<description>JasperReports Library</description>
+	<organization>
+		<name>TIBCO Software Inc.</name>
+		<url>https://www.jaspersoft.com/</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>GNU Lesser General Public License</name>
@@ -15,14 +19,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<scm>
-		<connection>scm:git:https://github.com/TIBCOSoftware/jasperreports.git</connection>
-		<tag>jr-6-6-0</tag>
-		<url>https://github.com/TIBCOSoftware/jasperreports</url>
-	</scm>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
 	<developers>
 		<developer>
 			<id>teodord</id>
@@ -51,194 +47,62 @@
 			<timezone>+2</timezone>
 		</developer>
 	</developers>
-	<repositories>
-		<repository>
-			<id>jaspersoft-third-party</id>
-			<url>http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
-		</repository>
-		<repository>
-			<id>jr-ce-releases</id>
-			<name>JasperReports CE Releases</name>
-			<url>http://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
-		</repository>
-		<repository>
-			<id>jr-snapshots</id>
-			<url>http://jaspersoft.jfrog.io/jaspersoft/jr-ce-snapshots/</url>
-		</repository>
-	</repositories>
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>tests</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<includes>
-					<include>**/*.dtd</include>
-					<include>**/*.xsd</include>
-					<include>**/*.rels</include>
-					<include>**/*.xml</include>
-					<include>**/*.properties</include>
-					<include>**/*.png</include>
-					<include>**/*.GIF</include>
-					<include>**/*.gif</include>
-					<include>**/*.ico</include>
-					<include>**/*TokenTypes.txt</include>
-					<include>**/*.vm</include>
-					<include>**/*.js</include>
-					<include>**/*.css</include>
-					<include>**/*.ttf</include>
-					<include>**/*.otf</include>
-					<include>**/*.woff</include>
-					<include>**/*.eot</include>
-					<include>**/*.svg</include>
-					<include>**/*.svgz</include>
-					<include>**/*.tmpl</include>
-				</includes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>tests</directory>
-				<includes>
-					<include>**/*.jrxml</include>
-					<include>**/*.jrpxml</include>
-					<include>**/*.xml</include>
-					<include>**/*.csv</include>
-					<include>**/*.png</include>
-					<include>**/*.jpg</include>
-					<include>**/*.json</include>
-					<include>**/*.err</include>
-				</includes>
-			</testResource>
-		</testResources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-					<fork>true</fork><!-- TODO lucianc is this ok? -->
-					<compilerArgs>
-						<arg>-AmetadataMessagesName=metadata_messages</arg>
-						<arg>-ApropertiesDoc=docs/config.reference.xml</arg>
-					</compilerArgs>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>net.sf.jasperreports</groupId>
-							<artifactId>jasperreports-annotation-processors</artifactId>
-							<version>6.6.0</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>copy_additional_resources</id>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<phase>process-resources</phase>
-						<configuration>
-							<outputDirectory>${basedir}/target/classes</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}</directory>
-									<includes>
-										<include>license.txt</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>${basedir}/src/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<systemPropertyVariables>
-						<xmlOutputDir>${project.build.directory}/surefire</xmlOutputDir>
-					</systemPropertyVariables>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.0-M1</version>
-				<configuration>
-					<quiet>true</quiet>
-					<doclint>none</doclint>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>clirr-maven-plugin</artifactId>
-				<configuration>
-					<comparisonVersion>6.6.0</comparisonVersion>
-					<ignoredDifferencesFile>${basedir}/clirr-ignore.xml</ignoredDifferencesFile>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<scm>
+		<connection>scm:git:https://github.com/TIBCOSoftware/jasperreports.git</connection>
+		<tag>master-SNAPSHOT</tag>
+		<url>https://github.com/TIBCOSoftware/jasperreports</url>
+	</scm>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.9.3</version>
+			<version>1.9.4</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.2</version>
-			<scope>compile</scope>
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-digester</groupId>
 			<artifactId>commons-digester</artifactId>
 			<version>2.1</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.2</version>
+			<scope>compile</scope>
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.3.2.GA</version>
+			<version>5.4.1.Final</version>
 			<scope>compile</scope>
+			<optional>true</optional>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.transaction</groupId>
 					<artifactId>jta</artifactId>
 				</exclusion>
 			</exclusions>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
-			<version>2.1.7.js6</version>
+			<version>2.1.7.js8</version>
  			<scope>compile</scope>
+			<optional>false</optional>
 			<exclusions>
 				<exclusion>
 					<groupId>org.bouncycastle</groupId>
@@ -253,7 +117,7 @@
 		<dependency>
 			<groupId>com.adobe.xmp</groupId>
 			<artifactId>xmpcore</artifactId>
-			<version>5.1.1</version>
+			<version>5.1.3</version>
  			<scope>compile</scope>
  			<optional>true</optional>
 		</dependency>
@@ -262,6 +126,7 @@
 			<artifactId>jcommon</artifactId>
 			<version>1.0.23</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 			<exclusions>
 				<exclusion>
 					<groupId>gnujaxp</groupId>
@@ -274,6 +139,7 @@
 			<artifactId>jfreechart</artifactId>
 			<version>1.0.19</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 			<exclusions>
 				<exclusion>
 					<groupId>gnujaxp</groupId>
@@ -284,7 +150,14 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.15</version>
+			<version>4.1.1</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>4.1.1</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -303,43 +176,44 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jdt.core.compiler</groupId>
+			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>ecj</artifactId>
-			<version>4.4.2</version>
+			<version>3.21.0</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>2.4.5</version>
+			<version>2.4.16</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.mozilla</groupId>
 			<artifactId>rhino</artifactId>
-			<version>1.7.6</version>
+			<version>1.7.11</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.7.1</version>
+			<version>1.10.8</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>net.tascalate.javaflow</groupId>
 			<artifactId>net.tascalate.javaflow.api</artifactId>
-			<version>2.2.1</version>
+			<version>2.6.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>net.tascalate.javaflow</groupId>
 			<artifactId>net.tascalate.javaflow.tools.ant</artifactId>
-			<version>2.2.1</version>
+			<version>2.6.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -358,8 +232,8 @@
 		</dependency>
 		<dependency>
 			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
+			<artifactId>javax.persistence-api</artifactId>
+			<version>2.2</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -367,6 +241,14 @@
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
 			<version>2.7.5</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<!-- we need this dependency here because it was removed from Java 11 -->
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>javax.xml.soap-api</artifactId>
+			<version>1.4.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -386,48 +268,76 @@
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.6</version>
 			<scope>compile</scope>
 			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.apache-extras.beanshell</groupId>
-			<artifactId>bsh</artifactId>
-			<version>2.0b6</version>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-anim</artifactId>
+			<version>1.11</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-awt-util</artifactId>
+			<version>1.11</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-bridge</artifactId>
-			<version>1.9</version>
+			<version>1.11</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-dom</artifactId>
+			<version>1.11</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-gvt</artifactId>
+			<version>1.11</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-svg-dom</artifactId>
+			<version>1.11</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-svggen</artifactId>
-			<version>1.9</version>
+			<version>1.11</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-transcoder</artifactId>
+			<version>1.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>3.2.18.RELEASE</version>
+			<version>5.1.4.RELEASE</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>3.2.18.RELEASE</version>
+			<version>5.1.4.RELEASE</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -448,8 +358,9 @@
 		<dependency>
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>castor-xml</artifactId>
-			<version>1.3.3</version>
+			<version>1.4.1</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
@@ -465,35 +376,44 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>3.15</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.9.5</version>
+			<version>2.10.0</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.5</version>
+			<version>2.10.0</version>
 			<scope>compile</scope>
+			<optional>false</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.9.5</version>
+			<version>2.10.0</version>
 			<scope>compile</scope>
+			<optional>false</optional>
+		</dependency>
+		<dependency>
+			<groupId>xml-apis</groupId>
+			<artifactId>xml-apis-ext</artifactId>
+			<version>1.3.04</version>
+			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>6.8.1</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.beanshell</groupId>
+					<artifactId>bsh</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -510,7 +430,7 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
-			<version>6.0.0</version>
+			<version>master-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -544,14 +464,21 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3.6</version>
+			<version>4.5.10</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.12</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
-			<version>3.2.1</version>
+			<version>3.4.0</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -559,6 +486,8 @@
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
 			<version>57.1</version>
+			<scope>compile</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -570,9 +499,172 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-metadata</artifactId>
-			<version>6.6.0</version>
+			<version>master-SNAPSHOT</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.github.kklisura.cdt</groupId>
+			<artifactId>cdt-java-client</artifactId>
+			<version>2.0.0</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.kohsuke</groupId>
+			<artifactId>groovy-sandbox</artifactId>
+			<version>1.26-jaspersoft-1</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>jaspersoft-third-party</id>
+			<url>http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+		</repository>
+		<repository>
+			<id>jr-ce-releases</id>
+			<name>JasperReports CE Releases</name>
+			<url>http://jaspersoft.jfrog.io/jaspersoft/jr-ce-releases</url>
+		</repository>
+	</repositories>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>tests</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<includes>
+					<include>**/*.dtd</include>
+					<include>**/*.xsd</include>
+					<include>**/*.rels</include>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+					<include>**/*.png</include>
+					<include>**/*.GIF</include>
+					<include>**/*.gif</include>
+					<include>**/*.ico</include>
+					<include>**/*TokenTypes.txt</include>
+					<include>**/*.vm</include>
+					<include>**/*.js</include>
+					<include>**/*.css</include>
+					<include>**/*.ttf</include>
+					<include>**/*.otf</include>
+					<include>**/*.woff</include>
+					<include>**/*.eot</include>
+					<include>**/*.svg</include>
+					<include>**/*.svgz</include>
+					<include>**/*.tmpl</include>
+					<include>**/LICENSE.txt</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/META-INF</directory>
+				<includes>
+					<include>**/*.MF</include>
+				</includes>
+				<targetPath>META-INF</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>tests</directory>
+				<includes>
+					<include>**/*.jrxml</include>
+					<include>**/*.sha</include>
+					<include>**/*.jrpxml</include>
+					<include>**/*.svg</include>
+					<include>**/*.xml</include>
+					<include>**/*.csv</include>
+					<include>**/*.png</include>
+					<include>**/*.jpg</include>
+					<include>**/*.json</include>
+					<include>**/*.err</include>
+					<include>**/*.properties</include>
+				</includes>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>true</doCheck>
+					<doUpdate>false</doUpdate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<showWarnings>true</showWarnings>
+					<fork>true</fork><!-- TODO lucianc is this ok? -->
+					<compilerArgs>
+						<arg>-AmetadataMessagesName=metadata_messages</arg>
+						<arg>-ApropertiesDoc=docs/config.reference.xml</arg>
+						<arg>-Xlint:deprecation,-unchecked,-options</arg>
+					</compilerArgs>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>net.sf.jasperreports</groupId>
+							<artifactId>jasperreports-annotation-processors</artifactId>
+							<version>master-SNAPSHOT</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifestFile>${basedir}/target/classes/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.1</version>
+				<configuration>
+					<systemPropertyVariables>
+						<xmlOutputDir>${project.build.directory}/surefire</xmlOutputDir>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<quiet>true</quiet>
+					<doclint>none</doclint>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>clirr-maven-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<comparisonVersion>6.14.0</comparisonVersion>
+					<ignoredDifferencesFile>${basedir}/clirr-ignore.xml</ignoredDifferencesFile>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

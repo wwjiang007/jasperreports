@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -25,7 +25,7 @@ package net.sf.jasperreports.export;
 
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class SimplePptxExporterConfiguration extends SimpleExporterConfiguration implements PptxExporterConfiguration
 {
@@ -34,6 +34,10 @@ public class SimplePptxExporterConfiguration extends SimpleExporterConfiguration
 	private String metadataSubject;
 	private String metadataKeywords;
 	private String metadataApplication;
+	private Boolean isBackgroundAsSlideMaster;
+	private Integer slideMasterReport;
+	private Integer slideMasterPage;
+	private Boolean embedFonts;
 	
 	@Override
 	public String getMetadataTitle()
@@ -103,5 +107,61 @@ public class SimplePptxExporterConfiguration extends SimpleExporterConfiguration
 	public void setMetadataApplication(String metadataApplication)
 	{
 		this.metadataApplication = metadataApplication;
+	}
+	
+	@Override
+	public Boolean isBackgroundAsSlideMaster()
+	{
+		return isBackgroundAsSlideMaster;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setMetadataApplication(Boolean isBackgroundAsSlideMaster)
+	{
+		this.isBackgroundAsSlideMaster = isBackgroundAsSlideMaster;
+	}
+	
+	@Override
+	public Integer getSlideMasterReport()
+	{
+		return slideMasterReport;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setSlideMasterReport(Integer slideMasterReport)
+	{
+		this.slideMasterReport = slideMasterReport;
+	}
+	
+	@Override
+	public Integer getSlideMasterPage()
+	{
+		return slideMasterPage;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setSlideMasterPage(Integer slideMasterPage)
+	{
+		this.slideMasterPage = slideMasterPage;
+	}
+
+	@Override
+	public Boolean isEmbedFonts()
+	{
+		return embedFonts;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setEmbedFonts(Boolean embedFonts)
+	{
+		this.embedFonts = embedFonts;
 	}
 }

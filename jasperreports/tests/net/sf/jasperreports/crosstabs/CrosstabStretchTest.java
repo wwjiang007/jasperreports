@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -26,9 +26,10 @@ package net.sf.jasperreports.crosstabs;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import net.sf.jasperreports.AbstractTest;
+import net.sf.jasperreports.AbstractXmlTest;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 import net.sf.jasperreports.engine.type.StretchTypeEnum;
@@ -36,18 +37,40 @@ import net.sf.jasperreports.engine.type.StretchTypeEnum;
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  */
-public class CrosstabStretchTest extends AbstractTest
+public class CrosstabStretchTest extends AbstractXmlTest
 {
-	@Test
-	public void testReports() throws JRException, NoSuchAlgorithmException, IOException
+	@Test(dataProvider = "testArgsLegacy")
+	public void testReportLegacy(String folderName, String jrxmlFileNamePrefix, String referenceFileNamePrefix) 
+			throws JRException, NoSuchAlgorithmException, IOException
 	{
 		SimpleJasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
 		setJasperReportsContext(jasperReportsContext);
 
 		jasperReportsContext.setProperty(StretchTypeEnum.PROPERTY_LEGACY_ELEMENT_STRETCH_ENABLED, "true");
-		testReports("net/sf/jasperreports/crosstabs/repo", "CrosstabStretchReport", "CrosstabLegacyStretchReport", 7);
+		runReport(folderName, jrxmlFileNamePrefix, referenceFileNamePrefix);
+	}
+	
+	@DataProvider
+	public Object[][] testArgsLegacy()
+	{
+		return runReportArgs("net/sf/jasperreports/crosstabs/repo", "CrosstabStretchReport", "CrosstabLegacyStretchReport", 7);
+	}
+	
+	@Override
+	@Test(dataProvider = "testArgs")
+	public void testReport(String folderName, String jrxmlFileNamePrefix, String referenceFileNamePrefix) 
+			throws JRException, NoSuchAlgorithmException, IOException
+	{
+		SimpleJasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+		setJasperReportsContext(jasperReportsContext);
 		
 		jasperReportsContext.setProperty(StretchTypeEnum.PROPERTY_LEGACY_ELEMENT_STRETCH_ENABLED, "false");
-		testReports("net/sf/jasperreports/crosstabs/repo", "CrosstabStretchReport", 7);
+		runReport(folderName, jrxmlFileNamePrefix, referenceFileNamePrefix);
+	}
+	
+	@DataProvider
+	public Object[][] testArgs()
+	{
+		return runReportArgs("net/sf/jasperreports/crosstabs/repo", "CrosstabStretchReport", 7);
 	}
 }

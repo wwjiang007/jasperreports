@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -89,7 +89,7 @@ import net.sf.jasperreports.engine.util.JRStringUtil;
  * <code>
  * <pre>
  * Map hints = new HashMap();
- * hints.put("fetchSize", Integer.valueOf(100));
+ * hints.put("fetchSize", 100);
  * hints.put("anyName", anyObject());
  * Map parameters = new HashMap();
  * EntityManager em = emf.createEntityManager();
@@ -277,7 +277,7 @@ public class JRJpaQueryExecuter extends JRAbstractQueryExecuter
 	 */
 	public List<?> getResultList() {
 		if (reportMaxCount != null) {
-			query.setMaxResults(reportMaxCount.intValue());
+			query.setMaxResults(reportMaxCount);
 		}
 		
 		return query.getResultList();
@@ -291,8 +291,8 @@ public class JRJpaQueryExecuter extends JRAbstractQueryExecuter
 	 * @return result row list
 	 */
 	public List<?> getResultList(int firstIndex, int resultCount) {
-		if (reportMaxCount != null && firstIndex + resultCount > reportMaxCount.intValue()) {
-			resultCount = reportMaxCount.intValue() - firstIndex;
+		if (reportMaxCount != null && firstIndex + resultCount > reportMaxCount) {
+			resultCount = reportMaxCount - firstIndex;
 		}
 		
 		query.setFirstResult(firstIndex);

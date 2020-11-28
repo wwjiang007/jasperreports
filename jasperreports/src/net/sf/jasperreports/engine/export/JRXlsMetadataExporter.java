@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.common.usermodel.HyperlinkType;
@@ -122,12 +122,12 @@ import net.sf.jasperreports.engine.type.ImageTypeEnum;
 import net.sf.jasperreports.engine.type.LineDirectionEnum;
 import net.sf.jasperreports.engine.type.ModeEnum;
 import net.sf.jasperreports.engine.type.OrientationEnum;
+import net.sf.jasperreports.engine.type.RotationEnum;
 import net.sf.jasperreports.engine.type.RunDirectionEnum;
 import net.sf.jasperreports.engine.util.DefaultFormatFactory;
 import net.sf.jasperreports.engine.util.ImageUtil;
 import net.sf.jasperreports.engine.util.JRDataUtils;
 import net.sf.jasperreports.engine.util.JRImageLoader;
-import net.sf.jasperreports.engine.util.JRStringUtil;
 import net.sf.jasperreports.engine.util.JRStyledText;
 import net.sf.jasperreports.export.XlsExporterConfiguration;
 import net.sf.jasperreports.export.XlsMetadataExporterConfiguration;
@@ -139,11 +139,10 @@ import net.sf.jasperreports.renderers.Graphics2DRenderable;
 import net.sf.jasperreports.renderers.Renderable;
 import net.sf.jasperreports.renderers.RenderersCache;
 import net.sf.jasperreports.renderers.ResourceRenderer;
-import net.sf.jasperreports.repo.RepositoryUtil;
 
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMetadataReportConfiguration, XlsMetadataExporterConfiguration, JRXlsExporterContext> 
 {
@@ -159,7 +158,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 	public static short MIN_COLOR_INDEX = 10;	/* Indexes from 0 to 9 are reserved */
 	public static String CURRENT_ROW_HEIGHT = "CURRENT_ROW_HEIGHT";
 	
-	private static Map<Color,HSSFColor> hssfColorsCache = new ReferenceMap();
+	private static Map<Color,HSSFColor> hssfColorsCache = new ReferenceMap<Color,HSSFColor>();
 
 	protected final DateFormat isoDateFormat = JRDataUtils.getIsoDateFormat();
 	
@@ -184,8 +183,8 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 	/**
 	 *
 	 */
-	protected short whiteIndex = (new HSSFColor.WHITE()).getIndex();
-	protected short blackIndex = (new HSSFColor.BLACK()).getIndex();
+	protected short whiteIndex = HSSFColor.HSSFColorPredefined.WHITE.getIndex();
+	protected short blackIndex = HSSFColor.HSSFColorPredefined.BLACK.getIndex();
 	protected short customColorIndex = MIN_COLOR_INDEX;
 
 	protected FillPatternType backgroundMode = FillPatternType.SOLID_FOREGROUND;
@@ -272,7 +271,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 		} else {
 			InputStream templateIs = null;
 			try {
-				templateIs = RepositoryUtil.getInstance(jasperReportsContext).getInputStreamFromLocation(lcWorkbookTemplate);
+				templateIs = getRepository().getInputStreamFromLocation(lcWorkbookTemplate);
 				if (templateIs == null)	{
 					throw 
 						new JRRuntimeException(
@@ -304,7 +303,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 			}
 		}
 		emptyCellStyle = workbook.createCellStyle();
-		emptyCellStyle.setFillForegroundColor((new HSSFColor.WHITE()).getIndex());
+		emptyCellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());
 		emptyCellStyle.setFillPattern(backgroundMode);
 		dataFormat = workbook.createDataFormat();
 		createHelper = workbook.getCreationHelper();
@@ -860,25 +859,32 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 				formula = getFormula(textElement);
 			}
 			
-			if (formula != null) {	
-				TextValue value = getTextValue(textElement, textStr);
-				
+			TextValue value = null;
+			String pattern = null;
+
+			if (
+				formula != null
+				|| configuration.isDetectCellType()
+				) 
+			{
+				value = getTextValue(textElement, textStr);
+
 				if (value instanceof NumberTextValue) {
-					String convertedPattern = getConvertedPattern(textElement, ((NumberTextValue)value).getPattern());
-					if (convertedPattern != null) {
-						baseStyle.setDataFormat(dataFormat.getFormat(convertedPattern));
-					}
+					pattern = ((NumberTextValue)value).getPattern();
 				} else if (value instanceof DateTextValue) {
-					String convertedPattern = getConvertedPattern(textElement, ((DateTextValue)value).getPattern());
-					if (convertedPattern != null) {
-						baseStyle.setDataFormat(dataFormat.getFormat(convertedPattern));
-					}
+					pattern = ((DateTextValue)value).getPattern();
 				}
-				
+			}
+
+			String convertedPattern = getConvertedPattern(textElement, pattern);
+			if (convertedPattern != null) {
+				baseStyle.setDataFormat(dataFormat.getFormat(convertedPattern));
+			}
+			
+			if (formula != null) {	
 				cellSettings.importValues(CellType.FORMULA, getLoadedCellStyle(baseStyle), null, formula);
 				
-			} else if (getCurrentItemConfiguration().isDetectCellType()) {
-				TextValue value = getTextValue(textElement, textStr);
+			} else if (configuration.isDetectCellType()) {
 				value.handle(new TextValueHandler() {
 					@Override
 					public void handle(StringTextValue textValue) {
@@ -891,10 +897,6 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 
 					@Override
 					public void handle(NumberTextValue textValue) {
-						String convertedPattern = getConvertedPattern(textElement, textValue.getPattern());
-						if (convertedPattern != null) {
-							baseStyle.setDataFormat(dataFormat.getFormat(convertedPattern));
-						}
 						Number value = null;
 						if (hasCurrentColumnData) {
 							if (textStr != null) {
@@ -921,10 +923,6 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 
 					@Override
 					public void handle(DateTextValue textValue) {
-						String convertedPattern = getConvertedPattern(textElement, textValue.getPattern());
-						if(convertedPattern != null) {
-							baseStyle.setDataFormat(dataFormat.getFormat(convertedPattern));
-						}
 						Date value = null;
 						if (hasCurrentColumnData) {
 							if (textStr != null) {
@@ -962,7 +960,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 				String anchorName = textElement.getAnchorName();
 				if(anchorName != null) {
 					HSSFName aName = workbook.createName();
-					aName.setNameName(JRStringUtil.getJavaIdentifier(anchorName));
+					aName.setNameName(toExcelName(anchorName));
 					aName.setSheetIndex(workbook.getSheetIndex(sheet));
 					CellReference cRef = new CellReference(rowIndex, columnNamesMap.get(currentColumnName), true, true);
 					aName.setRefersToFormula(cRef.formatAsString());
@@ -1156,9 +1154,26 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 			adjustColumnWidth(currentColumnName, element.getWidth(), ((JRXlsExporterNature)nature).getColumnAutoFit(element));
 			adjustRowHeight(element.getHeight(), Boolean.TRUE.equals(((JRXlsExporterNature)nature).getRowAutoFit(element)));
 			
+			int topPadding =
+				Math.max(element.getLineBox().getTopPadding(), getImageBorderCorrection(element.getLineBox().getTopPen()));
+			int leftPadding =
+				Math.max(element.getLineBox().getLeftPadding(), getImageBorderCorrection(element.getLineBox().getLeftPen()));
+			int bottomPadding =
+				Math.max(element.getLineBox().getBottomPadding(), getImageBorderCorrection(element.getLineBox().getBottomPen()));
+			int rightPadding =
+				Math.max(element.getLineBox().getRightPadding(), getImageBorderCorrection(element.getLineBox().getRightPen()));
+
+			int tmpAvailableImageWidth = element.getWidth() - leftPadding - rightPadding;
+			int availableImageWidth = tmpAvailableImageWidth < 0 ? 0 : tmpAvailableImageWidth;
+
+			int tmpAvailableImageHeight = element.getHeight() - topPadding - bottomPadding;
+			int availableImageHeight = tmpAvailableImageHeight < 0 ? 0 : tmpAvailableImageHeight;
+
 			InternalImageProcessor imageProcessor = 
 				new InternalImageProcessor(
-					element 
+					element,
+					availableImageWidth,
+					availableImageHeight
 					);
 						
 			Renderable renderer = element.getRenderer();
@@ -1221,7 +1236,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 					try {
 						HSSFClientAnchor anchor = 
 								new HSSFClientAnchor(
-									0, 
+									0, //paddings and offsets, although calculated, are deliberately ignored
 									0, 
 									0, 
 									0, 
@@ -1246,7 +1261,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 						//pngEncoder.setImage(bi);
 						//int imgIndex = workbook.addPicture(pngEncoder.pngEncode(), HSSFWorkbook.PICTURE_TYPE_PNG);
 						int imgIndex = workbook.addPicture(imageProcessorResult.imageData, HSSFWorkbook.PICTURE_TYPE_PNG);
-						patriarch.createPicture(anchor, imgIndex);
+						patriarch.createPicture(anchor, imgIndex).setRotationDegree(imageProcessorResult.angle);
 						
 						// set auto fill columns
 						if(repeatValue) {
@@ -1281,34 +1296,20 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 		private final JRPrintImage imageElement;
 		private final RenderersCache imageRenderersCache;
 
-		private final int topPadding;
-		private final int leftPadding;
-		private final int bottomPadding;
-		private final int rightPadding;
 		private final int availableImageWidth;
 		private final int availableImageHeight;
 		
 		protected InternalImageProcessor(
-			JRPrintImage imageElement
+			JRPrintImage imageElement,
+			int availableImageWidth,
+			int availableImageHeight
 			)
 		{
 			this.imageElement = imageElement;
 			this.imageRenderersCache = imageElement.isUsingCache() ? renderersCache : new RenderersCache(getJasperReportsContext());
 			
-			topPadding =
-				Math.max(imageElement.getLineBox().getTopPadding().intValue(), getImageBorderCorrection(imageElement.getLineBox().getTopPen()));
-			leftPadding =
-				Math.max(imageElement.getLineBox().getLeftPadding().intValue(), getImageBorderCorrection(imageElement.getLineBox().getLeftPen()));
-			bottomPadding =
-				Math.max(imageElement.getLineBox().getBottomPadding().intValue(), getImageBorderCorrection(imageElement.getLineBox().getBottomPen()));
-			rightPadding =
-				Math.max(imageElement.getLineBox().getRightPadding().intValue(), getImageBorderCorrection(imageElement.getLineBox().getRightPen()));
-
-			int tmpAvailableImageWidth = imageElement.getWidth() - leftPadding - rightPadding;
-			availableImageWidth = tmpAvailableImageWidth < 0 ? 0 : tmpAvailableImageWidth;
-
-			int tmpAvailableImageHeight = imageElement.getHeight() - topPadding - bottomPadding;
-			availableImageHeight = tmpAvailableImageHeight < 0 ? 0 : tmpAvailableImageHeight;
+			this.availableImageWidth = availableImageWidth;
+			this.availableImageHeight = availableImageHeight;
 		}
 		
 		private InternalImageProcessorResult process(Renderable renderer) throws JRException
@@ -1333,12 +1334,24 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 				}
 				case FILL_FRAME:
 				{
+					Dimension dimension = null;
+					if (
+						imageElement.getRotation() == RotationEnum.LEFT
+						|| imageElement.getRotation() == RotationEnum.RIGHT
+						)
+					{
+						dimension = new Dimension(availableImageHeight, availableImageWidth);
+					}
+					else
+					{
+						dimension = new Dimension(availableImageWidth, availableImageHeight);
+					}
 					imageProcessorResult = 
 						processImageFillFrame(
 							getRendererUtil().getImageDataRenderable(
 								imageRenderersCache,
 								renderer,
-								new Dimension(availableImageWidth, availableImageHeight),
+								dimension,
 								ModeEnum.OPAQUE == imageElement.getModeValue() ? imageElement.getBackcolor() : null
 								)
 							);
@@ -1348,12 +1361,24 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 				case RETAIN_SHAPE:
 				default:
 				{
+					Dimension dimension = null;
+					if (
+						imageElement.getRotation() == RotationEnum.LEFT
+						|| imageElement.getRotation() == RotationEnum.RIGHT
+						)
+					{
+						dimension = new Dimension(availableImageHeight, availableImageWidth);
+					}
+					else
+					{
+						dimension = new Dimension(availableImageWidth, availableImageHeight);
+					}
 					imageProcessorResult = 
 						processImageRetainShape(
 							getRendererUtil().getImageDataRenderable(
 								imageRenderersCache,
 								renderer,
-								new Dimension(availableImageWidth, availableImageHeight),
+								dimension,
 								ModeEnum.OPAQUE == imageElement.getModeValue() ? imageElement.getBackcolor() : null
 								)
 							);
@@ -1370,13 +1395,80 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 			int normalWidth = availableImageWidth;
 			int normalHeight = availableImageHeight;
 
-			Dimension2D dimension = 
-				renderer instanceof DimensionRenderable 
-				? ((DimensionRenderable)renderer).getDimension(jasperReportsContext)
-				: null;
+			DimensionRenderable dimensionRenderer = imageRenderersCache.getDimensionRenderable((Renderable)renderer);
+			Dimension2D dimension = dimensionRenderer == null ? null :  dimensionRenderer.getDimension(jasperReportsContext);
 			if (dimension != null) {
 				normalWidth = (int) dimension.getWidth();
 				normalHeight = (int) dimension.getHeight();
+			}
+
+			int minWidth = 0;
+			int minHeight = 0;
+			int topOffset = 0;
+			int leftOffset = 0;
+			int bottomOffset = 0;
+			int rightOffset = 0;
+			int translateX = 0;
+			int translateY = 0;
+			short angle = 0;
+			
+			switch (imageElement.getRotation())
+			{
+				case LEFT :
+					if (dimension == null)
+					{
+						normalWidth = availableImageHeight;
+						normalHeight = availableImageWidth;
+					}
+					minWidth = Math.min(normalWidth, availableImageHeight);
+					minHeight = Math.min(normalHeight, availableImageWidth);
+					topOffset = (int)((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageHeight - normalWidth));
+					leftOffset = (int)(ImageUtil.getYAlignFactor(imageElement) * (availableImageWidth - normalHeight));
+					bottomOffset = (int)(ImageUtil.getXAlignFactor(imageElement) * (availableImageHeight - normalWidth));
+					rightOffset = (int)((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageWidth - normalHeight));
+					translateX = bottomOffset;
+					translateY = leftOffset;
+					angle = -90;
+					break;
+				case RIGHT :
+					if (dimension == null)
+					{
+						normalWidth = availableImageHeight;
+						normalHeight = availableImageWidth;
+					}
+					minWidth = Math.min(normalWidth, availableImageHeight);
+					minHeight = Math.min(normalHeight, availableImageWidth);
+					topOffset = (int)(ImageUtil.getXAlignFactor(imageElement) * (availableImageHeight - normalWidth));
+					leftOffset = (int)((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageWidth - normalHeight));
+					bottomOffset = (int)((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageHeight - normalWidth));
+					rightOffset = (int)(ImageUtil.getYAlignFactor(imageElement) * (availableImageWidth - normalHeight));
+					translateX = topOffset;
+					translateY = rightOffset;
+					angle = 90;
+					break;
+				case UPSIDE_DOWN :
+					minWidth = Math.min(normalWidth, availableImageWidth);
+					minHeight = Math.min(normalHeight, availableImageHeight);
+					topOffset = (int)((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageHeight - normalHeight));
+					leftOffset = (int)((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageWidth - normalWidth));
+					bottomOffset = (int)(ImageUtil.getYAlignFactor(imageElement) * (availableImageHeight - normalHeight));
+					rightOffset = (int)(ImageUtil.getXAlignFactor(imageElement) * (availableImageWidth - normalWidth));
+					translateX = rightOffset;
+					translateY = bottomOffset;
+					angle = 180;
+					break;
+				case NONE :
+				default :
+					minWidth = Math.min(normalWidth, availableImageWidth);
+					minHeight = Math.min(normalHeight, availableImageHeight);
+					topOffset = (int)(ImageUtil.getYAlignFactor(imageElement) * (availableImageHeight - normalHeight));
+					leftOffset = (int)(ImageUtil.getXAlignFactor(imageElement) * (availableImageWidth - normalWidth));
+					bottomOffset = (int)((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageHeight - normalHeight));
+					rightOffset = (int)((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageWidth - normalWidth));
+					translateX = leftOffset;
+					translateY = topOffset;
+					angle = 0;
+					break;
 			}
 
 			int dpi = getPropertiesUtil().getIntegerProperty(Renderable.PROPERTY_IMAGE_DPI, 72);
@@ -1384,8 +1476,8 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 			
 			BufferedImage bi = 
 				new BufferedImage(
-					(int)(scale * availableImageWidth), 
-					(int)(scale * availableImageHeight), 
+					(int)(scale * minWidth), 
+					(int)(scale * minHeight), 
 					BufferedImage.TYPE_INT_ARGB
 					);
 			
@@ -1397,8 +1489,8 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 					new Rectangle(
 						0,
 						0,
-						availableImageWidth,
-						availableImageHeight
+						minWidth,
+						minHeight
 						)
 					);
 
@@ -1406,8 +1498,8 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 					jasperReportsContext,
 					grx,
 					new Rectangle(
-						(int) (ImageUtil.getXAlignFactor(imageElement) * (availableImageWidth - normalWidth)),
-						(int) (ImageUtil.getYAlignFactor(imageElement) * (availableImageHeight - normalHeight)),
+						translateX > 0 ? 0 : translateX,
+						translateY > 0 ? 0 : translateY,
 						normalWidth,
 						normalHeight
 						)
@@ -1418,85 +1510,139 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 				grx.dispose();
 			}
 
-			byte[] imageData = null;
-			int topOffset = 0;
-			int leftOffset = 0;
-			int bottomOffset = 0;
-			int rightOffset = 0;
-			
-//			topOffset = topPadding;
-//			leftOffset = leftPadding;
-//			bottomOffset = bottomPadding;
-//			rightOffset = rightPadding;
-
-			imageData = JRImageLoader.getInstance(jasperReportsContext).loadBytesFromAwtImage(bi, ImageTypeEnum.PNG);
-			
-			return new InternalImageProcessorResult(imageData, topOffset, leftOffset, bottomOffset, rightOffset);
+			return 
+				new InternalImageProcessorResult(
+					JRImageLoader.getInstance(jasperReportsContext).loadBytesFromAwtImage(bi, ImageTypeEnum.PNG),
+					topOffset < 0 ? 0 : topOffset, 
+					leftOffset < 0 ? 0 : leftOffset, 
+					bottomOffset < 0 ? 0 : bottomOffset, 
+					rightOffset < 0 ? 0 : rightOffset,
+					angle
+					);
 		}
 		
 		private InternalImageProcessorResult processImageFillFrame(DataRenderable renderer) throws JRException
 		{
-			int topOffset = 0;
-			int leftOffset = 0;
-			int bottomOffset = 0;
-			int rightOffset = 0;
+			short angle = 0;
 			
-//			topOffset = topPadding;
-//			leftOffset = leftPadding;
-//			bottomOffset = bottomPadding;
-//			rightOffset = rightPadding;
-
+			switch (imageElement.getRotation())
+			{
+				case LEFT:
+					angle = -90;
+					break;
+				case RIGHT:
+					angle = 90;
+					break;
+				case UPSIDE_DOWN:
+					angle = 180;
+					break;
+				case NONE:
+				default:
+					angle = 0;
+					break;
+			}
+			
 			return 
 				new InternalImageProcessorResult(
 					renderer.getData(jasperReportsContext), 
-					topOffset, 
-					leftOffset, 
-					bottomOffset, 
-					rightOffset
+					0, 
+					0, 
+					0, 
+					0,
+					angle
 					);
 		}
 		
 		private InternalImageProcessorResult processImageRetainShape(DataRenderable renderer) throws JRException
 		{
-			int normalWidth = availableImageWidth;
-			int normalHeight = availableImageHeight;
+			float normalWidth = availableImageWidth;
+			float normalHeight = availableImageHeight;
 
-			Dimension2D dimension = 
-				renderer instanceof DimensionRenderable 
-				? ((DimensionRenderable)renderer).getDimension(jasperReportsContext)
-				: null;
+			DimensionRenderable dimensionRenderer = imageRenderersCache.getDimensionRenderable((Renderable)renderer);
+			Dimension2D dimension = dimensionRenderer == null ? null :  dimensionRenderer.getDimension(jasperReportsContext);
 			if (dimension != null) {
 				normalWidth = (int) dimension.getWidth();
 				normalHeight = (int) dimension.getHeight();
 			}
 
-			double ratio = (double) normalWidth / (double) normalHeight;
+			float ratioX = 1f;
+			float ratioY = 1f;
 
-			if (ratio > (double) availableImageWidth / (double) availableImageHeight) {
-				normalWidth = availableImageWidth;
-				normalHeight = (int) (availableImageWidth / ratio);
-			} else {
-				normalWidth = (int) (availableImageHeight * ratio);
-				normalHeight = availableImageHeight;
-			}
-
+			int imageWidth = 0;
+			int imageHeight = 0;
+			
 			int topOffset = 0;
 			int leftOffset = 0;
 			int bottomOffset = 0;
 			int rightOffset = 0;
-			
-//			topOffset = topPadding + (int) (yalignFactor * (availableImageHeight - normalHeight));
-//			leftOffset = leftPadding + (int) (xalignFactor * (availableImageWidth - normalWidth));
-//			bottomOffset = bottomPadding + (int) ((1f - yalignFactor) * (availableImageHeight - normalHeight));
-//			rightOffset = rightPadding + (int) ((1f - xalignFactor) * (availableImageWidth - normalWidth));
 
+			short angle = 0;
+	
+			switch (imageElement.getRotation())
+			{
+				case LEFT:
+					ratioX = availableImageWidth / normalHeight;
+					ratioY = availableImageHeight / normalWidth;
+					ratioX = ratioX < ratioY ? ratioX : ratioY;
+					ratioY = ratioX;
+					imageWidth = (int)(normalHeight * ratioX);
+					imageHeight = (int)(normalWidth * ratioY);
+					topOffset = (int) ((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageHeight - imageHeight));
+					leftOffset = (int) (ImageUtil.getYAlignFactor(imageElement) * (availableImageWidth - imageWidth));
+					bottomOffset = (int) (ImageUtil.getXAlignFactor(imageElement) * (availableImageHeight - imageHeight));
+					rightOffset = (int) ((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageWidth - imageWidth));
+					angle = -90;
+					break;
+				case RIGHT:
+					ratioX = availableImageWidth / normalHeight;
+					ratioY = availableImageHeight / normalWidth;
+					ratioX = ratioX < ratioY ? ratioX : ratioY;
+					ratioY = ratioX;
+					imageWidth = (int)(normalHeight * ratioX);
+					imageHeight = (int)(normalWidth * ratioY);
+					topOffset = (int) (ImageUtil.getXAlignFactor(imageElement) * (availableImageHeight - imageHeight));
+					leftOffset = (int) ((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageWidth - imageWidth));
+					bottomOffset = (int) ((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageHeight - imageHeight));
+					rightOffset = (int) (ImageUtil.getYAlignFactor(imageElement) * (availableImageWidth - imageWidth));
+					angle = 90;
+					break;
+				case UPSIDE_DOWN:
+					ratioX = availableImageWidth / normalWidth;
+					ratioY = availableImageHeight / normalHeight;
+					ratioX = ratioX < ratioY ? ratioX : ratioY;
+					ratioY = ratioX;
+					imageWidth = (int)(normalWidth * ratioX);
+					imageHeight = (int)(normalHeight * ratioY);
+					topOffset = (int) ((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageHeight - imageHeight));
+					leftOffset = (int) ((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageWidth - imageWidth));
+					bottomOffset = (int) (ImageUtil.getYAlignFactor(imageElement) * (availableImageHeight - imageHeight));
+					rightOffset = (int) (ImageUtil.getXAlignFactor(imageElement) * (availableImageWidth - imageWidth));
+					angle = 180;
+					break;
+				case NONE:
+				default:
+					ratioX = availableImageWidth / normalWidth;
+					ratioY = availableImageHeight / normalHeight;
+					ratioX = ratioX < ratioY ? ratioX : ratioY;
+					ratioY = ratioX;
+					imageWidth = (int)(normalWidth * ratioX);
+					imageHeight = (int)(normalHeight * ratioY);
+					topOffset = (int) (ImageUtil.getYAlignFactor(imageElement) * (availableImageHeight - imageHeight));
+					leftOffset = (int) (ImageUtil.getXAlignFactor(imageElement) * (availableImageWidth - imageWidth));
+					bottomOffset = (int) ((1f - ImageUtil.getYAlignFactor(imageElement)) * (availableImageHeight - imageHeight));
+					rightOffset = (int) ((1f - ImageUtil.getXAlignFactor(imageElement)) * (availableImageWidth - imageWidth));
+					angle = 0;
+					break;
+			}
+			
 			return 
 				new InternalImageProcessorResult(
 					renderer.getData(jasperReportsContext), 
 					topOffset, 
 					leftOffset, 
 					bottomOffset, 
-					rightOffset
+					rightOffset,
+					angle
 					);
 		}
 	}
@@ -1508,13 +1654,15 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 //		private final int leftOffset;
 //		private final int bottomOffset;
 //		private final int rightOffset;
+		private final short angle;
 		
 		protected InternalImageProcessorResult(
 			byte[] imageData,
 			int topOffset,
 			int leftOffset,
 			int bottomOffset,
-			int rightOffset
+			int rightOffset,
+			short angle
 			)
 		{
 			this.imageData = imageData;
@@ -1522,6 +1670,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 //			this.leftOffset = leftOffset;
 //			this.bottomOffset = bottomOffset;
 //			this.rightOffset = rightOffset;
+			this.angle = angle;
 		}
 	}
 
@@ -1589,7 +1738,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 	 *
 	 */
 	protected static BorderStyle getBorderStyle(JRPen pen) {
-		float lineWidth = pen.getLineWidth().floatValue();
+		float lineWidth = pen.getLineWidth();
 
 		if (lineWidth > 0f) {
 			switch (pen.getLineStyleValue()) {
@@ -1740,14 +1889,6 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 		}
 	}
 	
-	/**
-	 * @deprecated to be removed; replaced by {@link #setFreezePane(int, int)}
-	 */ 
-	@Override
-	protected void setFreezePane(int rowIndex, int colIndex, boolean isRowEdge, boolean isColumnEdge) {
-		setFreezePane(rowIndex, colIndex);
-	}
-
 	@Override
 	protected void setAutoFilter(String autoFilterRange) {
 		//TODO: recalculate autoFilterRange depending on exported columns
@@ -2127,7 +2268,7 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 		protected static final int BOTTOM = 2;
 		protected static final int RIGHT = 3;
 
-		protected BorderStyle[] borderStyle = new BorderStyle[4];
+		protected BorderStyle[] borderStyle = new BorderStyle[] {BorderStyle.NONE, BorderStyle.NONE, BorderStyle.NONE, BorderStyle.NONE};
 		protected short[] borderColour = new short[4];
 		private int hash;
 
@@ -2458,7 +2599,10 @@ public class JRXlsMetadataExporter extends JRXlsAbstractMetadataExporter<XlsMeta
 			Hyperlink link
 			) 
 		{
-			this.cellType = cellType;
+			if(!CellType.FORMULA.equals(cellType))
+			{
+				this.cellType = cellType;
+			}
 			this.cellStyle = cellStyle;
 			this.cellValue = cellValue;
 			this.formula = formula;

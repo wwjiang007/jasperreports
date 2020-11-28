@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -52,8 +52,8 @@ import net.sf.jasperreports.engine.type.LineStyleEnum;
 public interface JRPen
 {
 
-	public static final Float LINE_WIDTH_0 = new Float(0f);
-	public static final Float LINE_WIDTH_1 = new Float(1f);
+	public static final Float LINE_WIDTH_0 = 0f;
+	public static final Float LINE_WIDTH_1 = 1f;
 
 
 	/**
@@ -81,11 +81,14 @@ public interface JRPen
 	public Float getOwnLineWidth();
 
 	/**
-	 * Sets the line width.
-	 * @param lineWidth the line width
+	 * @deprecated Replaced by {@link #setLineWidth(Float)}.
 	 */
 	public void setLineWidth(float lineWidth);
 
+	/**
+	 * Sets the line width.
+	 * @param lineWidth the line width
+	 */
 	public void setLineWidth(Float lineWidth);
 
 	/**

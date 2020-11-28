@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,7 +27,6 @@ import net.sf.jasperreports.export.ExporterInput;
 import net.sf.jasperreports.export.HtmlExporterConfiguration;
 import net.sf.jasperreports.export.HtmlExporterOutput;
 import net.sf.jasperreports.export.HtmlReportConfiguration;
-import net.sf.jasperreports.export.type.HtmlSizeUnitEnum;
 
 
 /**
@@ -123,21 +122,9 @@ public class JRHtmlExporterParameter extends net.sf.jasperreports.engine.JRExpor
 
 
 	/**
-	 * @deprecated Replaced by {@link HtmlReportConfiguration#PROPERTY_REMOVE_EMPTY_SPACE_BETWEEN_ROWS}.
-	 */
-	public static final String PROPERTY_REMOVE_EMPTY_SPACE_BETWEEN_ROWS = HtmlReportConfiguration.PROPERTY_REMOVE_EMPTY_SPACE_BETWEEN_ROWS;
-
-
-	/**
 	 * @deprecated Replaced by {@link HtmlReportConfiguration#isWhitePageBackground()}.
 	 */
 	public static final JRHtmlExporterParameter IS_WHITE_PAGE_BACKGROUND = new JRHtmlExporterParameter("Is White Page Background");
-
-
-	/**
-	 * @deprecated Replaced by {@link HtmlReportConfiguration#PROPERTY_WHITE_PAGE_BACKGROUND}.
-	 */
-	public static final String PROPERTY_WHITE_PAGE_BACKGROUND = HtmlReportConfiguration.PROPERTY_WHITE_PAGE_BACKGROUND;
 
 
 	/**
@@ -147,33 +134,11 @@ public class JRHtmlExporterParameter extends net.sf.jasperreports.engine.JRExpor
 
 
 	/**
-	 * @deprecated Replaced by {@link HtmlReportConfiguration#PROPERTY_WRAP_BREAK_WORD}.
-	 */
-	public static final String PROPERTY_WRAP_BREAK_WORD = HtmlReportConfiguration.PROPERTY_WRAP_BREAK_WORD;
-
-
-	/**
 	 * @deprecated Replaced by {@link HtmlReportConfiguration#getSizeUnit()}. 
 	 */
 	public static final JRHtmlExporterParameter SIZE_UNIT = new JRHtmlExporterParameter("Size Unit");
 
-	/**
-	 * @deprecated Replaced by {@link HtmlReportConfiguration#PROPERTY_SIZE_UNIT}.
-	 */
-	public static final String PROPERTY_SIZE_UNIT = HtmlReportConfiguration.PROPERTY_SIZE_UNIT;
 
-
-	/**
-	 * @deprecated Replaced by {@link HtmlSizeUnitEnum#PIXEL}. 
-	 */
-	public static final String SIZE_UNIT_PIXEL = HtmlSizeUnitEnum.PIXEL.getName();
-
-	/**
-	 * @deprecated Replaced by {@link HtmlSizeUnitEnum#POINT}. 
-	 */
-	public static final String SIZE_UNIT_POINT = HtmlSizeUnitEnum.POINT.getName();
-
-	
 	/**
 	 * @deprecated Replaced by {@link HtmlReportConfiguration#getZoomRatio()}.
 	 */
@@ -185,8 +150,9 @@ public class JRHtmlExporterParameter extends net.sf.jasperreports.engine.JRExpor
 	 */
 	public static final JRHtmlExporterParameter FLUSH_OUTPUT = new JRHtmlExporterParameter("Flush Output");
 	
+
 	/**
-	 * @deprecated Replaced by {@link HtmlExporterConfiguration#PROPERTY_FLUSH_OUTPUT}.
+	 * @deprecated Replaced by {@link HtmlExporterOutput#getResourceHandler()}.
 	 */
-	public static final String PROPERTY_FLUSH_OUTPUT = HtmlExporterConfiguration.PROPERTY_FLUSH_OUTPUT;
+	public static final JRHtmlExporterParameter RESOURCE_HANDLER = new JRHtmlExporterParameter("Resource Handler");
 }

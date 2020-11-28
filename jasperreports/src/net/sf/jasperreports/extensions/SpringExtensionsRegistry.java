@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -26,7 +26,7 @@ package net.sf.jasperreports.extensions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -45,8 +45,10 @@ public class SpringExtensionsRegistry implements ExtensionsRegistry
 	
 	private final ListableBeanFactory beanFactory;
 	
-	private final ReferenceMap extensionBeanNamesCache = new ReferenceMap(
-			ReferenceMap.WEAK, ReferenceMap.HARD);
+	private final ReferenceMap<Class<?>, String[]> extensionBeanNamesCache = 
+		new ReferenceMap<Class<?>, String[]>(
+			ReferenceMap.ReferenceStrength.WEAK, ReferenceMap.ReferenceStrength.HARD
+			);
 
 	/**
 	 * Creates a Spring-based extension registry.
@@ -85,7 +87,7 @@ public class SpringExtensionsRegistry implements ExtensionsRegistry
 		String[] beanNames;
 		synchronized (extensionBeanNamesCache)
 		{
-			beanNames = (String[]) extensionBeanNamesCache.get(extensionType);
+			beanNames = extensionBeanNamesCache.get(extensionType);
 		}
 		
 		if (beanNames == null)

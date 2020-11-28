@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,7 +32,7 @@ import net.sf.jasperreports.export.OdtReportConfiguration;
 /**
  * Contains parameters useful for export in Open Document format.
  * @deprecated Replaced by {@link OdtExporterConfiguration} and {@link OdsExporterConfiguration}.
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class JROpenDocumentExporterParameter extends net.sf.jasperreports.engine.JRExporterParameter
 {
@@ -51,18 +51,8 @@ public class JROpenDocumentExporterParameter extends net.sf.jasperreports.engine
 	public static final JROpenDocumentExporterParameter ODT_FLEXIBLE_ROW_HEIGHT = new JROpenDocumentExporterParameter("ODT Flexible Row Height");
 
 	/**
-	 * @deprecated Replaced by {@link OdtReportConfiguration#PROPERTY_ODT_FLEXIBLE_ROW_HEIGHT}.
-	 */
-	public static final String PROPERTY_ODT_FLEXIBLE_ROW_HEIGHT = OdtReportConfiguration.PROPERTY_ODT_FLEXIBLE_ROW_HEIGHT;
-
-	/**
 	 * @deprecated Replaced by {@link OdsReportConfiguration#isFlexibleRowHeight()}.
 	 */
 	public static final JROpenDocumentExporterParameter ODS_FLEXIBLE_ROW_HEIGHT = new JROpenDocumentExporterParameter("ODS Flexible Row Height");
-
-	/**
-	 * @deprecated Replaced by {@link OdsReportConfiguration#PROPERTY_ODS_FLEXIBLE_ROW_HEIGHT}.
-	 */
-	public static final String PROPERTY_ODS_FLEXIBLE_ROW_HEIGHT = OdsReportConfiguration.PROPERTY_ODS_FLEXIBLE_ROW_HEIGHT;
 
 }

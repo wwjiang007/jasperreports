@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -114,7 +114,7 @@ public class JRReportCompileData implements Serializable
 	 */
 	public void setCrosstabCompileData(int crosstabId, Serializable compileData)
 	{
-		crosstabCompileData.put(Integer.valueOf(crosstabId), compileData);
+		crosstabCompileData.put(crosstabId, compileData);
 	}
 	
 	
@@ -168,7 +168,7 @@ public class JRReportCompileData implements Serializable
 	 */
 	public Serializable getCrosstabCompileData(JRCrosstab crosstab) throws JRException
 	{
-		Serializable compileData = crosstabCompileData.get(Integer.valueOf(crosstab.getId()));
+		Serializable compileData = crosstabCompileData.get(crosstab.getId());
 		if (compileData == null)
 		{
 			throw 

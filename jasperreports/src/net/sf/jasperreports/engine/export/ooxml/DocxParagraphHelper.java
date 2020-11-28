@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.type.TabStopAlignEnum;
 
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class DocxParagraphHelper extends BaseHelper
 {
@@ -159,15 +159,15 @@ public class DocxParagraphHelper extends BaseHelper
 			write("      <w:ind");
 			if (paragraph.getOwnFirstLineIndent() != null)
 			{
-				write(" w:firstLine=\"" + LengthUtil.twip(paragraph.getOwnFirstLineIndent().intValue()) + "\"");
+				write(" w:firstLine=\"" + LengthUtil.twip(paragraph.getOwnFirstLineIndent()) + "\"");
 			}
 			if (paragraph.getOwnLeftIndent() != null)
 			{
-				write(" w:left=\"" + LengthUtil.twip(paragraph.getOwnLeftIndent().intValue()) + "\"");
+				write(" w:left=\"" + LengthUtil.twip(paragraph.getOwnLeftIndent()) + "\"");
 			}
 			if (paragraph.getOwnRightIndent() != null)
 			{
-				write(" w:right=\"" + LengthUtil.twip(paragraph.getOwnRightIndent().intValue()) + "\"");
+				write(" w:right=\"" + LengthUtil.twip(paragraph.getOwnRightIndent()) + "\"");
 			}
 			write("/>\n");
 		}
@@ -227,19 +227,19 @@ public class DocxParagraphHelper extends BaseHelper
 				case AT_LEAST :
 				{
 					lineRule = "atLeast";
-					lineSpacing = String.valueOf(LengthUtil.twip(paragraph.getLineSpacingSize().floatValue())); 
+					lineSpacing = String.valueOf(LengthUtil.twip(paragraph.getLineSpacingSize())); 
 					break;
 				}
 				case FIXED :
 				{
 					lineRule = "exact";
-					lineSpacing = String.valueOf(LengthUtil.twip(paragraph.getLineSpacingSize().floatValue())); 
+					lineSpacing = String.valueOf(LengthUtil.twip(paragraph.getLineSpacingSize())); 
 					break;
 				}
 				case PROPORTIONAL :
 				{
 					lineRule = "auto";
-					lineSpacing = String.valueOf((int)(paragraph.getLineSpacingSize().floatValue() * LINE_SPACING_FACTOR)); 
+					lineSpacing = String.valueOf((int)(paragraph.getLineSpacingSize() * LINE_SPACING_FACTOR)); 
 					break;
 				}
 				case DOUBLE :
@@ -263,8 +263,8 @@ public class DocxParagraphHelper extends BaseHelper
 			}
 			
 			write("   <w:spacing w:lineRule=\"" + lineRule + "\" w:line=\"" + lineSpacing + "\"");
-			write(" w:after=\"" + LengthUtil.twip(paragraph.getSpacingAfter().intValue()) + "\"");
-			write(" w:before=\"" + LengthUtil.twip(paragraph.getSpacingBefore().intValue()) + "\"/>\n");
+			write(" w:after=\"" + LengthUtil.twip(paragraph.getSpacingAfter()) + "\"");
+			write(" w:before=\"" + LengthUtil.twip(paragraph.getSpacingBefore()) + "\"/>\n");
 		}
 	}
 	

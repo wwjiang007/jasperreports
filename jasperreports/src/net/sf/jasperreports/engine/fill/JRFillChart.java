@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -25,6 +25,7 @@ package net.sf.jasperreports.engine.fill;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -159,6 +160,7 @@ public class JRFillChart extends JRFillElement implements JRChart
 
 	protected Renderable renderer;
 	private String anchorName;
+	private Integer bookmarkLevel;
 	private String hyperlinkReference;
 	private Boolean hyperlinkWhen;
 	private String hyperlinkAnchor;
@@ -344,9 +346,10 @@ public class JRFillChart extends JRFillElement implements JRChart
 			try 
 			{
 				Class<?> customizerClass = JRClassLoader.loadClassForName(customizerClassName);
-				customizer = (JRChartCustomizer) customizerClass.newInstance();
+				customizer = (JRChartCustomizer) customizerClass.getDeclaredConstructor().newInstance();
 			}
-			catch (Exception e) 
+			catch (ClassNotFoundException | InstantiationException | IllegalAccessException 
+				| NoSuchMethodException | InvocationTargetException e) 
 			{
 				throw 
 					new JRRuntimeException(
@@ -635,6 +638,12 @@ public class JRFillChart extends JRFillElement implements JRChart
 	{
 		return ((JRChart)parent).getAnchorNameExpression();
 	}
+	
+	@Override
+	public JRExpression getBookmarkLevelExpression()
+	{
+		return ((JRChart)parent).getBookmarkLevelExpression();
+	}
 
 	@Override
 	public JRExpression getHyperlinkReferenceExpression()
@@ -780,6 +789,8 @@ public class JRFillChart extends JRFillElement implements JRChart
 
 		if (isPrintWhenExpressionNull() || isPrintWhenTrue())
 		{
+			bookmarkLevel = getBookmarkLevel(evaluateExpression(getBookmarkLevelExpression(), evaluation));
+
 			if (getEvaluationTimeValue() == EvaluationTimeEnum.NOW)
 			{
 				evaluateRenderer(evaluation);
@@ -1384,7 +1395,7 @@ public class JRFillChart extends JRFillElement implements JRChart
 
 		Color color = interval.getBackgroundColor();
 		float[] components = color.getRGBColorComponents(null);
-		float alpha = interval.getAlphaDouble() == null ? (float)JRMeterInterval.DEFAULT_TRANSPARENCY : interval.getAlphaDouble().floatValue();
+		float alpha = (float)(interval.getAlphaDouble() == null ? JRMeterInterval.DEFAULT_TRANSPARENCY : interval.getAlphaDouble());
 
 		Color alphaColor = new Color(components[0], components[1], components[2], alpha);
 
@@ -1411,7 +1422,7 @@ public class JRFillChart extends JRFillElement implements JRChart
 	@Override
 	public int getBookmarkLevel()
 	{
-		return ((JRChart)parent).getBookmarkLevel();
+		return this.bookmarkLevel == null ? ((JRChart)parent).getBookmarkLevel() : this.bookmarkLevel;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,12 +27,13 @@ package net.sf.jasperreports.components.barcode4j;
 /**
  * This class is used to generate QRCode component barcode logic. 
  * 
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public class QRCodeBean
 {
 	private Integer margin;
 	private ErrorCorrectionLevelEnum errorCorrectionLevel;
+	private Integer qrVersion;
   
 	public QRCodeBean() {
 	}
@@ -51,6 +52,14 @@ public class QRCodeBean
 
 	public void setErrorCorrectionLevel(ErrorCorrectionLevelEnum errorCorrectionLevel) {
 		this.errorCorrectionLevel = errorCorrectionLevel;
+	}
+
+	public Integer getQrVersion() {
+		return qrVersion;
+	}
+
+	public void setQrVersion(Integer qrVersion) {
+		this.qrVersion = qrVersion;
 	}
 }
 

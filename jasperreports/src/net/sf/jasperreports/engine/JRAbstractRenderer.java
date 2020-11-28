@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -28,7 +28,6 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 
 import net.sf.jasperreports.engine.type.ImageTypeEnum;
-import net.sf.jasperreports.engine.type.RenderableTypeEnum;
 import net.sf.jasperreports.renderers.AbstractRenderer;
 
 
@@ -68,9 +67,9 @@ public abstract class JRAbstractRenderer implements Renderable
 
 	
 	@Override
-	public RenderableTypeEnum getTypeValue()
+	public net.sf.jasperreports.engine.type.RenderableTypeEnum getTypeValue()
 	{
-		return RenderableTypeEnum.getByValue(getType());
+		return net.sf.jasperreports.engine.type.RenderableTypeEnum.getByValue(getType());
 	}
 
 

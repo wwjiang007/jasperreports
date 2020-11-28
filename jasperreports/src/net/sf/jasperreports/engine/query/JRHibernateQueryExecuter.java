@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -479,7 +479,7 @@ public class JRHibernateQueryExecuter extends JRAbstractQueryExecuter
 	{
 		if (reportMaxCount != null)
 		{
-			query.setMaxResults(reportMaxCount.intValue());
+			query.setMaxResults(reportMaxCount);
 		}
 	}
 	
@@ -493,9 +493,9 @@ public class JRHibernateQueryExecuter extends JRAbstractQueryExecuter
 	 */
 	public List<?> list(int firstIndex, int resultCount)
 	{
-		if (reportMaxCount != null && firstIndex + resultCount > reportMaxCount.intValue())
+		if (reportMaxCount != null && firstIndex + resultCount > reportMaxCount)
 		{
-			resultCount = reportMaxCount.intValue() - firstIndex;
+			resultCount = reportMaxCount - firstIndex;
 		}
 		
 		query.setFirstResult(firstIndex);

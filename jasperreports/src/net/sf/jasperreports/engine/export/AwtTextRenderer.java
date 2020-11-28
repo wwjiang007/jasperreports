@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,7 +48,7 @@ public class AwtTextRenderer extends AbstractTextRenderer
 	
 	
 	/**
-	 * 
+	 * @deprecated Replaced by {@link #AwtTextRenderer(JasperReportsContext, boolean, boolean, boolean, boolean)}.
 	 */
 	public AwtTextRenderer(
 		JasperReportsContext jasperReportsContext,
@@ -56,7 +56,34 @@ public class AwtTextRenderer extends AbstractTextRenderer
 		boolean ignoreMissingFont
 		)
 	{
-		super(jasperReportsContext, isMinimizePrinterJobSize, ignoreMissingFont);
+		this(
+			jasperReportsContext, 
+			isMinimizePrinterJobSize, 
+			ignoreMissingFont,
+			true,
+			false
+			);
+	}
+	
+
+	/**
+	 * 
+	 */
+	public AwtTextRenderer(
+		JasperReportsContext jasperReportsContext,
+		boolean isMinimizePrinterJobSize,
+		boolean ignoreMissingFont,
+		boolean defaultIndentFirstLine,
+		boolean defaultJustifyLastLine
+		)
+	{
+		super(
+			jasperReportsContext, 
+			isMinimizePrinterJobSize, 
+			ignoreMissingFont,
+			defaultIndentFirstLine,
+			defaultJustifyLastLine
+			);
 		
 		this.noBackcolorSelector = JRStyledTextAttributeSelector.getNoBackcolorSelector(jasperReportsContext);
 		styledTextUtil = JRStyledTextUtil.getInstance(jasperReportsContext);
@@ -78,19 +105,47 @@ public class AwtTextRenderer extends AbstractTextRenderer
 		
 		super.initialize(text, styledText, offsetX, offsetY);
 	}
-		
 
+	
 	@Override
 	public void draw()
 	{
 		TabSegment segment = segments.get(segmentIndex);
 		
-		segment.layout.draw(
-			grx,
-			x + drawPosX,// + leftPadding,
-			//y + topPadding + verticalAlignOffset + text.getLeadingOffset() + drawPosY
-			y + topPadding + verticalAlignOffset + drawPosY
-			);
+// this commented code is here to show that we could have clipped each segment individually,
+// but decided against this technique because it was producing too much clipping, for little benefit;
+// the rendering would have been closer to PDF one, where trailing spaces are not rendered, 
+// but more unlike the HTML, where trailing spaces are rendered and even participate to horizontal alignment;
+// the solution that was implemented is a compromise in the sense that it renders trailing spaces, 
+// but does not consider them for text alignment
+//
+//		Shape oldClip = grx.getClip();
+//		
+//		int clipX = Math.round(x + drawPosX);
+//		int clipY = Math.round(y + topPadding + verticalAlignOffset + drawPosY - lineHeight);
+//		int clipWidth = Math.round(x + drawPosX + segment.layout.getVisibleAdvance()) - clipX;
+//		int clipHeight = Math.round(2 * lineHeight);
+//		
+//		grx.clipRect(
+//			clipX, 
+//			clipY, 
+//			clipWidth, 
+//			clipHeight
+//			);
+//		
+//		try
+//		{
+			segment.layout.draw(
+				grx,
+				x + drawPosX,// + leftPadding,
+				//y + topPadding + verticalAlignOffset + text.getLeadingOffset() + drawPosY
+				y + topPadding + verticalAlignOffset + drawPosY
+				);
+//		}
+//		finally
+//		{
+//			grx.setClip(oldClip);
+//		}
 	}
 
 	

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -164,7 +164,15 @@ public class BarcodeXmlWriter implements BarcodeVisitor
 		{
 			startBarcode(dataMatrix);
 			writeBaseAttributes(dataMatrix);
-			xmlWriteHelper.addAttribute("shape", dataMatrix.getShape());
+			xmlWriteHelper.addAttribute(DataMatrixComponent.PROPERTY_SHAPE, dataMatrix.getShape());
+			if(isNewerVersionOrEqual(version, JRConstants.VERSION_6_11_0))
+			{
+				xmlWriteHelper.addAttribute(DataMatrixComponent.PROPERTY_MIN_SYMBOL_WIDTH, dataMatrix.getMinSymbolWidth());
+				xmlWriteHelper.addAttribute(DataMatrixComponent.PROPERTY_MAX_SYMBOL_WIDTH, dataMatrix.getMaxSymbolWidth());
+				xmlWriteHelper.addAttribute(DataMatrixComponent.PROPERTY_MIN_SYMBOL_HEIGHT, dataMatrix.getMinSymbolHeight());
+				xmlWriteHelper.addAttribute(DataMatrixComponent.PROPERTY_MAX_SYMBOL_HEIGHT, dataMatrix.getMaxSymbolHeight());
+			}
+			
 			writeBaseContents(dataMatrix);
 			endBarcode();
 		}
@@ -402,6 +410,10 @@ public class BarcodeXmlWriter implements BarcodeVisitor
 			xmlWriteHelper.addAttribute(QRCodeComponent.PROPERTY_ERROR_CORRECTION_LEVEL, 
 					qrCode.getErrorCorrectionLevel(), 
 					ErrorCorrectionLevelEnum.L);
+			if(isNewerVersionOrEqual(version, JRConstants.VERSION_6_12_0))
+			{
+				xmlWriteHelper.addAttribute("qrVersion", qrCode.getQrVersion());
+			}
 			writeBaseContents(qrCode);
 			endBarcode();
 		}

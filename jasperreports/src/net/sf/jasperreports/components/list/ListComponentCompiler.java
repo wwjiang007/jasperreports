@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -96,8 +96,7 @@ public class ListComponentCompiler implements ComponentCompiler
 			PrintOrderEnum listPrintOrder = listComponent.getPrintOrderValue() == null ? PrintOrderEnum.VERTICAL : listComponent.getPrintOrderValue();
 			
 			Boolean listIgnoreWidth = listComponent.getIgnoreWidth();
-			boolean ignoreWidth = listIgnoreWidth != null 
-					&& listIgnoreWidth.booleanValue();
+			boolean ignoreWidth = listIgnoreWidth != null && listIgnoreWidth;
 			
 			if (listContents.getHeight() < 0)
 			{
@@ -119,15 +118,15 @@ public class ListComponentCompiler implements ComponentCompiler
 			}
 			else
 			{
-				contentsWidth = width.intValue();
+				contentsWidth = width;
 				
-				if (width.intValue() <= 0)
+				if (width <= 0)
 				{
 					verifier.addBrokenRule("List contents width must be positive.", listContents);
 				}
 				
 				if (!ignoreWidth && listPrintOrder == PrintOrderEnum.HORIZONTAL 
-						&& width.intValue() > elementWidth)
+						&& width > elementWidth)
 				{
 					verifier.addBrokenRule(
 							"List contents width is larger than the list element width", 

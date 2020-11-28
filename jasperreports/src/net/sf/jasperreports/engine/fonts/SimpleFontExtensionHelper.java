@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -296,7 +296,7 @@ public final class SimpleFontExtensionHelper implements ErrorHandler
 		if (nodeAttrs.getNamedItem(ATTRIBUTE_visible) != null)
 		{
 			fontFamily.setVisible(
-				Boolean.valueOf(nodeAttrs.getNamedItem(ATTRIBUTE_visible).getNodeValue()).booleanValue()
+				Boolean.valueOf(nodeAttrs.getNamedItem(ATTRIBUTE_visible).getNodeValue())
 				);
 		}
 

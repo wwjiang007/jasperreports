@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -66,7 +66,7 @@ import net.sf.jasperreports.properties.PropertyConstants;
 
 
 /**
- * @author sanda zaharia (shertage@users.sourceforge.net)
+ * @author Sanda Zaharia (shertage@users.sourceforge.net)
  */
 public abstract class JRXlsAbstractMetadataExporter<RC extends XlsMetadataReportConfiguration, C extends XlsMetadataExporterConfiguration, E extends JRExporterContext> 
 	extends JRXlsAbstractExporter<RC, C, E>
@@ -424,7 +424,7 @@ public abstract class JRXlsAbstractMetadataExporter<RC extends XlsMetadataReport
 	@Override
 	protected int getImageBorderCorrection(JRPen pen)
 	{
-		float lineWidth = pen.getLineWidth().floatValue();
+		float lineWidth = pen.getLineWidth();
 		
 		if (lineWidth > 0f)
 		{
@@ -457,13 +457,13 @@ public abstract class JRXlsAbstractMetadataExporter<RC extends XlsMetadataReport
 		}
 
 		// sheet name specified; assuming it is first occurrence
-		int crtIndex = Integer.valueOf(1);
+		int crtIndex = 1;
 		String txtIndex = "";
 
 		if(sheetNamesMap.containsKey(sheetName))
 		{
 			// sheet names must be unique; altering sheet name using number of occurrences
-			crtIndex = sheetNamesMap.get(sheetName).intValue() + 1;
+			crtIndex = sheetNamesMap.get(sheetName) + 1;
 			txtIndex = String.valueOf(crtIndex);
 		}
 

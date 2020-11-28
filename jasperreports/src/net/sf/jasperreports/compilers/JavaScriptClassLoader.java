@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -23,11 +23,7 @@
  */
 package net.sf.jasperreports.compilers;
 
-import net.sf.jasperreports.compilers.JavaScriptCompiledData.CompiledClass;
-import net.sf.jasperreports.engine.JRRuntimeException;
-import net.sf.jasperreports.engine.util.JRClassLoader;
-import net.sf.jasperreports.engine.util.ProtectionDomainFactory;
-
+import java.lang.reflect.InvocationTargetException;
 import java.security.ProtectionDomain;
 
 import org.apache.commons.logging.Log;
@@ -35,6 +31,11 @@ import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.DefiningClassLoader;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.optimizer.Codegen;
+
+import net.sf.jasperreports.compilers.JavaScriptCompiledData.CompiledClass;
+import net.sf.jasperreports.engine.JRRuntimeException;
+import net.sf.jasperreports.engine.util.JRClassLoader;
+import net.sf.jasperreports.engine.util.ProtectionDomainFactory;
 
 /**
  * Class loader used to load classes generated for JavaScript expression evaluation.
@@ -63,18 +64,11 @@ public class JavaScriptClassLoader extends DefiningClassLoader
 		Class<? extends Script> scriptClass = loadExpressionClass(compiledClass);
 		try
 		{
-			Script script = scriptClass.newInstance();
+			Script script = scriptClass.getDeclaredConstructor().newInstance();
 			return script;
 		}
-		catch (InstantiationException e)
-		{
-			throw 
-				new JRRuntimeException(
-					EXCEPTION_MESSAGE_KEY_INSTANCE_ERROR,
-					new Object[]{compiledClass.getClassName()},
-					e);
-		}
-		catch (IllegalAccessException e)
+		catch (InstantiationException | IllegalAccessException 
+			| NoSuchMethodException | InvocationTargetException e)
 		{
 			throw 
 				new JRRuntimeException(

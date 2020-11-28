@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -32,7 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
@@ -208,7 +208,7 @@ public abstract class BaseSaxParserFactory implements JRSaxParserFactory
 		}
 	}
 	
-	protected abstract ThreadLocal<ReferenceMap> getGrammarPoolCache();
+	protected abstract ThreadLocal<ReferenceMap<Object, Object>> getGrammarPoolCache();
 	
 	protected void setGrammarPoolProperty(SAXParser parser, String poolClassName)
 	{
@@ -217,11 +217,11 @@ public abstract class BaseSaxParserFactory implements JRSaxParserFactory
 			Object cacheKey = getGrammarPoolCacheKey();
 			
 			// we're using thread local caches to avoid thread safety problems
-			ThreadLocal<ReferenceMap> grammarPoolCache = getGrammarPoolCache();
-			ReferenceMap cacheMap = grammarPoolCache.get();
+			ThreadLocal<ReferenceMap<Object, Object>> grammarPoolCache = getGrammarPoolCache();
+			ReferenceMap<Object, Object> cacheMap = grammarPoolCache.get();
 			if (cacheMap == null)
 			{
-				cacheMap = new ReferenceMap(ReferenceMap.WEAK, ReferenceMap.SOFT);
+				cacheMap = new ReferenceMap<Object, Object>(ReferenceMap.ReferenceStrength.WEAK, ReferenceMap.ReferenceStrength.SOFT);
 				grammarPoolCache.set(cacheMap);
 			}
 			
@@ -282,29 +282,18 @@ public abstract class BaseSaxParserFactory implements JRSaxParserFactory
 				Constructor<? extends JRSaxParserFactory> constr = clazz.getConstructor(new Class[]{JasperReportsContext.class});
 				factory = constr.newInstance(jasperReportsContext);
 			}
-			catch (NoSuchMethodException e)
-			{
-				//ignore
-			}
-			catch (InvocationTargetException e)
+			catch (NoSuchMethodException | InvocationTargetException e)
 			{
 				//ignore
 			}
 			
 			if (factory == null)
 			{
-				factory = clazz.newInstance();
+				factory = clazz.getDeclaredConstructor().newInstance();
 			}
 		}
-		catch (ClassNotFoundException e)
-		{
-			throw new JRRuntimeException(e);
-		}
-		catch (InstantiationException e)
-		{
-			throw new JRRuntimeException(e);
-		}
-		catch (IllegalAccessException e)
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException 
+			| NoSuchMethodException | InvocationTargetException e)
 		{
 			throw new JRRuntimeException(e);
 		}

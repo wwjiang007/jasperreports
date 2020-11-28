@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -45,7 +45,7 @@ import net.sf.jasperreports.properties.PropertyConstants;
 public class XalanXPathQueryExecuterFactory extends JRXPathQueryExecuterFactory
 {
 	/**
-	 * Built-in parameter holdin the value of the <code>javax.xml.parsers.DocumentBuilderFactor</code> used to create 
+	 * Built-in parameter holding the value of the <code>javax.xml.parsers.DocumentBuilderFactor</code> used to create
 	 * documents of type <code>org.w3c.dom.Document<code>
 	 */
 	public final static String PARAMETER_DOCUMENT_BUILDER_FACTORY = "DOCUMENT_BUILDER_FACTORY";
@@ -119,12 +119,21 @@ public class XalanXPathQueryExecuterFactory extends JRXPathQueryExecuterFactory
 	
 	@Override
 	public JRQueryExecuter createQueryExecuter(
-		JasperReportsContext jasperReportsContext, 
-		JRDataset dataset, 
+		JasperReportsContext jasperReportsContext,
+		JRDataset dataset,
 		Map<String,? extends JRValueParameter> parameters
 		) throws JRException
 	{
-		return new XalanXPathQueryExecuter(jasperReportsContext, dataset, parameters);
+		return createQueryExecuter(SimpleQueryExecutionContext.of(jasperReportsContext), dataset, parameters);
 	}
 
+	@Override
+	public JRQueryExecuter createQueryExecuter(
+		QueryExecutionContext context,
+		JRDataset dataset,
+		Map<String, ? extends JRValueParameter> parameters
+		) throws JRException
+	{
+		return new XalanXPathQueryExecuter(context, dataset, parameters);
+	}
 }

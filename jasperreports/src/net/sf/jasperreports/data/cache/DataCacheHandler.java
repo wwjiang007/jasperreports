@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -42,7 +42,7 @@ public interface DataCacheHandler
 	@Property(
 			category = PropertyConstants.CATEGORY_DATA_CACHE,
 			defaultValue = PropertyConstants.BOOLEAN_TRUE,
-			scopes = {PropertyScope.CONTEXT},
+			scopes = {PropertyScope.CONTEXT, PropertyScope.DATASET},
 			sinceVersion = PropertyConstants.VERSION_4_6_0,
 			valueType = Boolean.class
 			)
@@ -51,7 +51,7 @@ public interface DataCacheHandler
 	@Property(
 			category = PropertyConstants.CATEGORY_DATA_CACHE,
 			defaultValue = PropertyConstants.BOOLEAN_TRUE,
-			scopes = {PropertyScope.CONTEXT},
+			scopes = {PropertyScope.CONTEXT, PropertyScope.DATASET},
 			sinceVersion = PropertyConstants.VERSION_4_6_0,
 			valueType = Boolean.class
 			)

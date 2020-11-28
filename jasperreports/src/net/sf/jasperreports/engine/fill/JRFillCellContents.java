@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.collections.map.ReferenceMap;
+import org.apache.commons.collections4.map.ReferenceMap;
 
 import net.sf.jasperreports.crosstabs.JRCellContents;
 import net.sf.jasperreports.crosstabs.fill.JRFillCrosstabObjectFactory;
@@ -120,7 +120,7 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 		this.originProvider = factory.getParentOriginProvider();
 		setElementOriginProvider(this.originProvider);
 		
-		transformedContentsCache = new ReferenceMap();
+		transformedContentsCache = new ReferenceMap<StretchedContents,JRFillCellContents>();
 		boxContentsCache = new HashMap<BoxContents,JRFillCellContents>();
 		clonePool = new JRClonePool(this, true, true);
 	}
@@ -155,7 +155,7 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 		
 		this.originProvider = cellContents.originProvider;
 		
-		transformedContentsCache = new ReferenceMap();
+		transformedContentsCache = new ReferenceMap<StretchedContents,JRFillCellContents>();
 		boxContentsCache = new HashMap<BoxContents,JRFillCellContents>();
 		clonePool = new JRClonePool(this, true, true);
 		
@@ -205,9 +205,9 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 			return this;
 		}
 		
-		boolean copyLeft = left && lineBox.getLeftPen().getLineWidth().floatValue() <= 0f && lineBox.getRightPen().getLineWidth().floatValue() > 0f;
-		boolean copyRight = right && lineBox.getRightPen().getLineWidth().floatValue() <= 0f && lineBox.getLeftPen().getLineWidth().floatValue() > 0f;
-		boolean copyTop = top && lineBox.getTopPen().getLineWidth().floatValue() <= 0f && lineBox.getBottomPen().getLineWidth().floatValue() > 0f;
+		boolean copyLeft = left && lineBox.getLeftPen().getLineWidth() <= 0f && lineBox.getRightPen().getLineWidth() > 0f;
+		boolean copyRight = right && lineBox.getRightPen().getLineWidth() <= 0f && lineBox.getLeftPen().getLineWidth() > 0f;
+		boolean copyTop = top && lineBox.getTopPen().getLineWidth() <= 0f && lineBox.getBottomPen().getLineWidth() > 0f;
 		
 		if (!(copyLeft || copyRight || copyTop))
 		{
@@ -265,7 +265,7 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 					);
 		}
 		
-		Object key = new StretchedContents(newWidth, newHeight, xPosition, yPosition);
+		StretchedContents key = new StretchedContents(newWidth, newHeight, xPosition, yPosition);
 		
 		JRFillCellContents transformedCell = transformedContentsCache.get(key);
 		if (transformedCell == null)
@@ -273,7 +273,7 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 			transformedCell = (JRFillCellContents) createClone();
 			transformedCell.transform(newWidth, newHeight, xPosition, yPosition);
 			
-			transformedContentsCache.put((StretchedContents)key, transformedCell);
+			transformedContentsCache.put(key, transformedCell);
 		}
 		
 		return transformedCell;
@@ -612,12 +612,12 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 	
 	protected int getTopPadding()
 	{
-		return lineBox == null ? 0 : lineBox.getTopPadding().intValue();
+		return lineBox == null ? 0 : lineBox.getTopPadding();
 	}
 	
 	protected int getBottomPadding()
 	{
-		return lineBox == null ? 0 : lineBox.getBottomPadding().intValue();
+		return lineBox == null ? 0 : lineBox.getBottomPadding();
 	}
 
 	public JRFillCloneable createClone()
@@ -796,6 +796,13 @@ public class JRFillCellContents extends JRFillElementContainer implements JRCell
 		String originalClasses = printProperties.get(HtmlExporter.PROPERTY_HTML_CLASS);
 		String newClasses = originalClasses == null ? className : (originalClasses + " " + className);
 		setPrintProperty(HtmlExporter.PROPERTY_HTML_CLASS, newClasses);
+	}
+
+	@Override
+	public boolean isSplitTypePreventInhibited(boolean isTopLevelCall)
+	{
+		//FIXME implement logic
+		return false;
 	}
 
 }

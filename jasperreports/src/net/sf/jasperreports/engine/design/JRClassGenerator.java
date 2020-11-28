@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -77,7 +77,7 @@ public class JRClassGenerator
 	/**
 	 *
 	 */
-	private static final int EXPR_MAX_COUNT_PER_METHOD = 100;
+	private static final int EXPR_MAX_COUNT_PER_METHOD = 60;
 
 	protected static final String SOURCE_EXPRESSION_ID_START = "$JR_EXPR_ID=";
 	protected static final int SOURCE_EXPRESSION_ID_START_LENGTH = SOURCE_EXPRESSION_ID_START.length();
@@ -90,19 +90,19 @@ public class JRClassGenerator
 	static
 	{
 		fieldPrefixMap = new HashMap<Byte,String>();
-		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
-		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "");
-		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
+		fieldPrefixMap.put(JRExpression.EVALUATION_OLD,       "Old");
+		fieldPrefixMap.put(JRExpression.EVALUATION_ESTIMATED, "");
+		fieldPrefixMap.put(JRExpression.EVALUATION_DEFAULT,   "");
 		
 		variablePrefixMap = new HashMap<Byte,String>();
-		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
-		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
-		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
+		variablePrefixMap.put(JRExpression.EVALUATION_OLD,       "Old");
+		variablePrefixMap.put(JRExpression.EVALUATION_ESTIMATED, "Estimated");
+		variablePrefixMap.put(JRExpression.EVALUATION_DEFAULT,   "");
 		
 		methodSuffixMap = new HashMap<Byte,String>();
-		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
-		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
-		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");		
+		methodSuffixMap.put(JRExpression.EVALUATION_OLD,       "Old");
+		methodSuffixMap.put(JRExpression.EVALUATION_ESTIMATED, "Estimated");
+		methodSuffixMap.put(JRExpression.EVALUATION_DEFAULT,   "");		
 	}
 
 	protected final JRSourceCompileTask sourceTask;
@@ -484,7 +484,7 @@ public class JRClassGenerator
 			sb.append("     *\n");
 			sb.append("     */\n");
 			sb.append("    public Object evaluate");
-			sb.append(methodSuffixMap.get(new Byte(evaluationType)));
+			sb.append(methodSuffixMap.get(evaluationType));
 			sb.append("(int id) throws Throwable\n");
 			sb.append("    {\n");
 			sb.append("        return null;\n");
@@ -547,13 +547,13 @@ public class JRClassGenerator
 		if (methodIndex > 0)
 		{
 			sb.append("    private Object evaluate");
-			sb.append(methodSuffixMap.get(new Byte(evaluationType)));
+			sb.append(methodSuffixMap.get(evaluationType));
 			sb.append(methodIndex);
 		}
 		else
 		{
 			sb.append("    public Object evaluate");
-			sb.append(methodSuffixMap.get(new Byte(evaluationType)));
+			sb.append(methodSuffixMap.get(evaluationType));
 		}
 		sb.append("(int id) throws Throwable\n");
 		sb.append("    {\n");
@@ -585,7 +585,7 @@ public class JRClassGenerator
 		if (nextMethodIndex != null)
 		{
 			sb.append("               value = evaluate");
-			sb.append(methodSuffixMap.get(new Byte(evaluationType)));
+			sb.append(methodSuffixMap.get(evaluationType));
 			sb.append(nextMethodIndex);
 			sb.append("(id);\n");
 		}
@@ -657,7 +657,7 @@ public class JRClassGenerator
 						sb.append(")field_");
 						sb.append(JRStringUtil.getJavaIdentifier(chunkText)); 
 						sb.append(".get");
-						sb.append(fieldPrefixMap.get(new Byte(evaluationType))); 
+						sb.append(fieldPrefixMap.get(evaluationType)); 
 						sb.append("Value())");
 	
 						break;
@@ -671,7 +671,7 @@ public class JRClassGenerator
 						sb.append(")variable_"); 
 						sb.append(JRStringUtil.getJavaIdentifier(chunkText)); 
 						sb.append(".get");
-						sb.append(variablePrefixMap.get(new Byte(evaluationType))); 
+						sb.append(variablePrefixMap.get(evaluationType)); 
 						sb.append("Value())");
 	
 						break;

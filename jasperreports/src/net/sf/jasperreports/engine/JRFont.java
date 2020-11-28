@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -108,7 +108,7 @@ public interface JRFont extends JRStyleContainer
 	public Boolean isOwnBold();
 	
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setBold(Boolean)}.
 	 */
 	public void setBold(boolean isBold);
 	
@@ -128,7 +128,7 @@ public interface JRFont extends JRStyleContainer
 	public Boolean isOwnItalic();
 	
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setItalic(Boolean)}.
 	 */
 	public void setItalic(boolean isItalic);
 	
@@ -148,7 +148,7 @@ public interface JRFont extends JRStyleContainer
 	public Boolean isOwnUnderline();
 	
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setUnderline(Boolean)}.
 	 */
 	public void setUnderline(boolean isUnderline);
 	
@@ -168,7 +168,7 @@ public interface JRFont extends JRStyleContainer
 	public Boolean isOwnStrikeThrough();
 	
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setStrikeThrough(Boolean)}.
 	 */
 	public void setStrikeThrough(boolean isStrikeThrough);
 
@@ -191,26 +191,6 @@ public interface JRFont extends JRStyleContainer
 	 *
 	 */
 	public void setFontSize(Float size);
-
-	/**
-	 * @deprecated Replaced by {@link #getFontsize()}.
-	 */
-	public int getFontSize();
-	
-	/**
-	 * @deprecated Replaced by {@link #getOwnFontsize()}.
-	 */
-	public Integer getOwnFontSize();
-	
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	public void setFontSize(int fontSize);
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}.
-	 */
-	public void setFontSize(Integer fontSize);
 
 	/**
 	 *
@@ -253,7 +233,7 @@ public interface JRFont extends JRStyleContainer
 	public Boolean isOwnPdfEmbedded();
 
 	/**
-	 *
+	 * @deprecated Replaced by {@link #setPdfEmbedded(Boolean)}.
 	 */
 	public void setPdfEmbedded(boolean isPdfEmbedded);
 	

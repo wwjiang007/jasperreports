@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -41,6 +41,8 @@ public final class CVPrintElement
 	public static final JRGenericElementType CV_ELEMENT_TYPE =
 		new JRGenericElementType(CVConstants.NAMESPACE, CVConstants.COMPONENT_NAME);
 
+	public static final String PARAMETER_ELEMENT_ID = "elementId";
+	
 	public static final String CONFIGURATION = "configuration";
 	public static final String SCRIPT = "script";
 	public static final String SCRIPT_URI = "script_uri";

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -41,13 +41,13 @@ public final class JRBoxUtil
 	{
 		JRLineBox clone = box.clone(box.getBoxContainer());
 		
-		clone.setTopPadding(0);
-		clone.setLeftPadding(0);
-		clone.setBottomPadding(0);
-		clone.setRightPadding(0);
+		clone.setTopPadding((Integer)0);
+		clone.setLeftPadding((Integer)0);
+		clone.setBottomPadding((Integer)0);
+		clone.setRightPadding((Integer)0);
 		
 		//FIXMEBORDER does not copy padding correctly, if we only test line width
-		if (!keepLeft || box.getLeftPen().getLineWidth().floatValue() <= 0f)
+		if (!keepLeft || box.getLeftPen().getLineWidth() <= 0f)
 		{
 			if (complementaryBox != null)
 			{
@@ -58,11 +58,11 @@ public final class JRBoxUtil
 			}
 			else
 			{
-				clone.getLeftPen().setLineWidth(0);
+				clone.getLeftPen().setLineWidth((Float)0f);
 			}
 		}
 		
-		if (!keepRight || box.getRightPen().getLineWidth().floatValue() <= 0f)
+		if (!keepRight || box.getRightPen().getLineWidth() <= 0f)
 		{
 			if (complementaryBox != null)
 			{
@@ -73,11 +73,11 @@ public final class JRBoxUtil
 			}
 			else
 			{
-				clone.getRightPen().setLineWidth(0);
+				clone.getRightPen().setLineWidth((Float)0f);
 			}
 		}
 		
-		if (!keepTop || box.getTopPen().getLineWidth().floatValue() <= 0f)
+		if (!keepTop || box.getTopPen().getLineWidth() <= 0f)
 		{
 			if (complementaryBox != null)
 			{
@@ -88,11 +88,11 @@ public final class JRBoxUtil
 			}
 			else
 			{
-				clone.getTopPen().setLineWidth(0);
+				clone.getTopPen().setLineWidth((Float)0f);
 			}
 		}
 		
-		if (!keepBottom || box.getBottomPen().getLineWidth().floatValue() <= 0f)
+		if (!keepBottom || box.getBottomPen().getLineWidth() <= 0f)
 		{
 			if (complementaryBox != null)
 			{
@@ -103,7 +103,7 @@ public final class JRBoxUtil
 			}
 			else
 			{
-				clone.getBottomPen().setLineWidth(0);
+				clone.getBottomPen().setLineWidth((Float)0f);
 			}
 		}
 		
@@ -118,22 +118,22 @@ public final class JRBoxUtil
 	{
 		if (resetLeft)
 		{
-			box.getLeftPen().setLineWidth(0f);
+			box.getLeftPen().setLineWidth((Float)0f);
 		}
 		
 		if (resetRight)
 		{
-			box.getRightPen().setLineWidth(0f);
+			box.getRightPen().setLineWidth((Float)0f);
 		}
 
 		if (resetTop)
 		{
-			box.getTopPen().setLineWidth(0f);
+			box.getTopPen().setLineWidth((Float)0f);
 		}
 		
 		if (resetBottom)
 		{
-			box.getBottomPen().setLineWidth(0f);
+			box.getBottomPen().setLineWidth((Float)0f);
 		}
 	}
 	
@@ -233,14 +233,14 @@ public final class JRBoxUtil
 
 	public static void eraseBox(JRLineBox box)
 	{
-		box.setBottomPadding(0);
-		box.setTopPadding(0);
-		box.setLeftPadding(0);
-		box.setRightPadding(0);
-		box.getBottomPen().setLineWidth(0);
-		box.getTopPen().setLineWidth(0);
-		box.getLeftPen().setLineWidth(0);
-		box.getRightPen().setLineWidth(0);
+		box.setBottomPadding((Integer)0);
+		box.setTopPadding((Integer)0);
+		box.setLeftPadding((Integer)0);
+		box.setRightPadding((Integer)0);
+		box.getBottomPen().setLineWidth((Float)0f);
+		box.getTopPen().setLineWidth((Float)0f);
+		box.getLeftPen().setLineWidth((Float)0f);
+		box.getRightPen().setLineWidth((Float)0f);
 	}
 
 	private JRBoxUtil()

@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -42,8 +42,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.BidiMap;
-import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -284,12 +284,12 @@ public class JRCsvDataSource extends JRAbstractTextDataSource// implements JRDat
 	
 	protected void assignColumnNames()
 	{
-		BidiMap indexColumns = new DualHashBidiMap();
+		BidiMap<Integer, String> indexColumns = new DualHashBidiMap<Integer, String>();
 		for (int i = 0; i < crtRecordColumnValues.size(); i++)
 		{
 			String name = crtRecordColumnValues.get(i);
 			
-			Integer existingIdx = (Integer) indexColumns.getKey(name);
+			Integer existingIdx = indexColumns.getKey(name);
 			if (existingIdx == null)
 			{
 				//use the name from the file if possible
@@ -302,7 +302,7 @@ public class JRCsvDataSource extends JRAbstractTextDataSource// implements JRDat
 				do
 				{
 					String indexName = INDEXED_COLUMN_PREFIX + forceIndex;
-					Integer existingIndex = (Integer) indexColumns.getKey(indexName);
+					Integer existingIndex = indexColumns.getKey(indexName);
 					indexColumns.put(forceIndex, indexName);
 					forceIndex = existingIndex;
 				}
@@ -313,7 +313,7 @@ public class JRCsvDataSource extends JRAbstractTextDataSource// implements JRDat
 		this.columnNames = new LinkedHashMap<String, Integer>();
 		for (int i = 0; i < crtRecordColumnValues.size(); i++)
 		{
-			String columnName = (String) indexColumns.get(i);
+			String columnName = indexColumns.get(i);
 			this.columnNames.put(columnName, i);
 		}
 	}
@@ -343,7 +343,7 @@ public class JRCsvDataSource extends JRAbstractTextDataSource// implements JRDat
 			try {
 				if (valueClass.equals(Boolean.class)) 
 				{
-					return fieldValue.equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
+					return fieldValue.equalsIgnoreCase("true");
 				}
 				else if (Number.class.isAssignableFrom(valueClass))
 				{
@@ -855,7 +855,7 @@ public class JRCsvDataSource extends JRAbstractTextDataSource// implements JRDat
 		this.columnNames = new LinkedHashMap<String, Integer>();
 		for (int i = 0; i < columnNames.length; i++)
 		{
-			this.columnNames.put(columnNames[i], Integer.valueOf(i));
+			this.columnNames.put(columnNames[i], i);
 		}
 	}
 

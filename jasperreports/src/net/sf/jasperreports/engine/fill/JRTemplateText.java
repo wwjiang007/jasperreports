@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import net.sf.jasperreports.engine.JRAlignment;
 import net.sf.jasperreports.engine.JRCommonText;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRDefaultStyleProvider;
@@ -59,7 +58,7 @@ import net.sf.jasperreports.engine.util.ObjectUtils;
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @see JRTemplatePrintText
  */
-public class JRTemplateText extends JRTemplateElement implements JRAlignment, JRTextAlignment, JRFont, JRCommonText, TextFormat
+public class JRTemplateText extends JRTemplateElement implements JRTextAlignment, JRFont, JRCommonText, TextFormat
 {
 
 
@@ -217,60 +216,6 @@ public class JRTemplateText extends JRTemplateElement implements JRAlignment, JR
 		return getStyleResolver().getMode(this, ModeEnum.TRANSPARENT);
 	}
 		
-	/**
-	 * @deprecated Replaced by {@link #getHorizontalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getHorizontalTextAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnHorizontalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.HorizontalAlignEnum getOwnHorizontalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalAlignEnum(getOwnHorizontalTextAlign());
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setHorizontalTextAlign(HorizontalTextAlignEnum)}.
-	 */
-	@Override
-	public void setHorizontalAlignment(net.sf.jasperreports.engine.type.HorizontalAlignEnum horizontalAlignmentValue)
-	{
-		setHorizontalTextAlign(net.sf.jasperreports.engine.type.HorizontalAlignEnum.getHorizontalTextAlignEnum(horizontalAlignmentValue));
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getVerticalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getVerticalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getVerticalTextAlign());
-	}
-		
-	/**
-	 * @deprecated Replaced by {@link #getOwnVerticalTextAlign()}.
-	 */
-	@Override
-	public net.sf.jasperreports.engine.type.VerticalAlignEnum getOwnVerticalAlignmentValue()
-	{
-		return net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalAlignEnum(getOwnVerticalTextAlign());
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setVerticalTextAlign(VerticalTextAlignEnum)}.
-	 */
-	@Override
-	public void setVerticalAlignment(net.sf.jasperreports.engine.type.VerticalAlignEnum verticalAlignmentValue)
-	{
-		setVerticalTextAlign(net.sf.jasperreports.engine.type.VerticalAlignEnum.getVerticalTextAlignEnum(verticalAlignmentValue));
-	}
-
 	@Override
 	public HorizontalTextAlignEnum getHorizontalTextAlign()
 	{
@@ -454,10 +399,13 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 		return isBold;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setBold(Boolean)}.
+	 */
 	@Override
 	public void setBold(boolean isBold)
 	{
-		setBold(isBold ? Boolean.TRUE : Boolean.FALSE);
+		setBold((Boolean)isBold);
 	}
 
 	/**
@@ -483,10 +431,13 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 		return isItalic;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setItalic(Boolean)}.
+	 */
 	@Override
 	public void setItalic(boolean isItalic)
 	{
-		setItalic(isItalic ? Boolean.TRUE : Boolean.FALSE);
+		setItalic((Boolean)isItalic);
 	}
 
 	/**
@@ -511,10 +462,13 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 		return isUnderline;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setUnderline(Boolean)}.
+	 */
 	@Override
 	public void setUnderline(boolean isUnderline)
 	{
-		setUnderline(isUnderline ? Boolean.TRUE : Boolean.FALSE);
+		setUnderline((Boolean)isUnderline);
 	}
 
 	/**
@@ -539,10 +493,13 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 		return isStrikeThrough;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setStrikeThrough(Boolean)}.
+	 */
 	@Override
 	public void setStrikeThrough(boolean isStrikeThrough)
 	{
-		setStrikeThrough(isStrikeThrough ? Boolean.TRUE : Boolean.FALSE);
+		setStrikeThrough((Boolean)isStrikeThrough);
 	}
 
 	/**
@@ -574,42 +531,6 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 	public void setFontSize(Float fontSize)
 	{
 		this.fontsize = fontSize;
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getFontsize()}. 
-	 */
-	@Override
-	public int getFontSize()
-	{
-		return (int)getFontsize();
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #getOwnFontsize()}. 
-	 */
-	@Override
-	public Integer getOwnFontSize()
-	{
-		return fontsize == null ? null : fontsize.intValue();
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}. 
-	 */
-	@Override
-	public void setFontSize(int fontSize)
-	{
-		setFontSize((float)fontSize);
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #setFontSize(Float)}. 
-	 */
-	@Override
-	public void setFontSize(Integer fontSize)
-	{
-		setFontSize(fontSize == null ? null : fontSize.floatValue());
 	}
 
 	@Override
@@ -662,10 +583,13 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 		return isPdfEmbedded;
 	}
 
+	/**
+	 * @deprecated Replaced by {@link #setPdfEmbedded(Boolean)}.
+	 */
 	@Override
 	public void setPdfEmbedded(boolean isPdfEmbedded)
 	{
-		setPdfEmbedded(isPdfEmbedded ? Boolean.TRUE : Boolean.FALSE);
+		setPdfEmbedded((Boolean)isPdfEmbedded);
 	}
 
 	/**
@@ -879,7 +803,7 @@ O	 * When hyperlink is of custom type, {@link HyperlinkTypeEnum#CUSTOM CUSTOM} i
 
 		if (isStyledText != null)
 		{
-			markup = isStyledText.booleanValue() ? JRCommonText.MARKUP_STYLED_TEXT : JRCommonText.MARKUP_NONE;
+			markup = isStyledText ? JRCommonText.MARKUP_STYLED_TEXT : JRCommonText.MARKUP_NONE;
 			isStyledText = null;
 		}
 

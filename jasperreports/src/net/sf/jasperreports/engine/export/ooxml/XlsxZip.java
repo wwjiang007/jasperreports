@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -47,6 +47,8 @@ public class XlsxZip extends FileBufferedZip
 	 * 
 	 */
 	private final JasperReportsContext jasperReportsContext;
+	
+	private final RepositoryUtil repository;
 
 	/**
 	 * 
@@ -71,27 +73,27 @@ public class XlsxZip extends FileBufferedZip
 	 */
 	public XlsxZip(JasperReportsContext jasperReportsContext, Integer memoryThreshold) throws IOException
 	{
+		this(jasperReportsContext, RepositoryUtil.getInstance(jasperReportsContext), memoryThreshold);
+	}
+	
+	public XlsxZip(JasperReportsContext jasperReportsContext, RepositoryUtil repository, Integer memoryThreshold) throws IOException
+	{
 		super(memoryThreshold);
 
 		this.jasperReportsContext = jasperReportsContext;
+		this.repository = repository;
 		
 		workbookEntry = createEntry("xl/workbook.xml");
-		addEntry(workbookEntry);
 		
 		stylesEntry = createEntry("xl/styles.xml");
-		addEntry(stylesEntry);
 		
 		relsEntry = createEntry("xl/_rels/workbook.xml.rels");
-		addEntry(relsEntry);
 		
 		contentTypesEntry = createEntry("[Content_Types].xml");
-		addEntry(contentTypesEntry);
 		
 		appEntry = createEntry("docProps/app.xml");
-		addEntry(appEntry);
 
 		coreEntry = createEntry("docProps/core.xml");
-		addEntry(coreEntry);
 
 		addEntry("_rels/.rels", "net/sf/jasperreports/engine/export/ooxml/xlsx/_rels/xml.rels");
 	}
@@ -149,11 +151,7 @@ public class XlsxZip extends FileBufferedZip
 	 */
 	public ExportZipEntry addSheet(int index)
 	{
-		ExportZipEntry sheetEntry = createEntry("xl/worksheets/sheet" + index + ".xml");
-
-		exportZipEntries.add(sheetEntry);
-
-		return sheetEntry;
+		return createEntry("xl/worksheets/sheet" + index + ".xml");
 	}
 	
 	/**
@@ -161,11 +159,7 @@ public class XlsxZip extends FileBufferedZip
 	 */
 	public ExportZipEntry addSheetRels(int index)
 	{
-		ExportZipEntry sheetRelsEntry = createEntry("xl/worksheets/_rels/sheet" + index + ".xml.rels");
-
-		exportZipEntries.add(sheetRelsEntry);
-		
-		return sheetRelsEntry;
+		return createEntry("xl/worksheets/_rels/sheet" + index + ".xml.rels");
 	}
 	
 	/**
@@ -173,11 +167,7 @@ public class XlsxZip extends FileBufferedZip
 	 */
 	public ExportZipEntry addDrawing(int index)
 	{
-		ExportZipEntry drawingEntry = createEntry("xl/drawings/drawing" + index + ".xml");
-
-		exportZipEntries.add(drawingEntry);
-
-		return drawingEntry;
+		return createEntry("xl/drawings/drawing" + index + ".xml");
 	}
 	
 	/**
@@ -185,11 +175,7 @@ public class XlsxZip extends FileBufferedZip
 	 */
 	public ExportZipEntry addDrawingRels(int index)
 	{
-		ExportZipEntry drawingRelsEntry = createEntry("xl/drawings/_rels/drawing" + index + ".xml.rels");
-
-		exportZipEntries.add(drawingRelsEntry);
-
-		return drawingRelsEntry;
+		return createEntry("xl/drawings/_rels/drawing" + index + ".xml.rels");
 	}
 
 	/**
@@ -201,7 +187,7 @@ public class XlsxZip extends FileBufferedZip
 		ZipInputStream templateZipIs = null;
 		try
 		{
-			templateIs = RepositoryUtil.getInstance(jasperReportsContext).getInputStreamFromLocation(template);
+			templateIs = repository.getInputStreamFromLocation(template);//TODO
 			if (templateIs == null)
 			{
 				throw 
@@ -237,8 +223,6 @@ public class XlsxZip extends FileBufferedZip
 						readBytesLength += ln;
 						entryOs.write(bytes, 0, ln);
 					}
-					
-					exportZipEntries.add(macroEntry);
 				}
 			}
 		}

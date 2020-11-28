@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,7 +48,7 @@ public interface PptxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_TITLE = JRPropertiesUtil.PROPERTY_PREFIX + "export.pptx.metadata.title";
+	public static final String PROPERTY_METADATA_TITLE = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "metadata.title";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataAuthor()} export configuration setting.
@@ -58,7 +58,7 @@ public interface PptxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_AUTHOR = JRPropertiesUtil.PROPERTY_PREFIX + "export.pptx.metadata.author";
+	public static final String PROPERTY_METADATA_AUTHOR = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "metadata.author";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataSubject()} export configuration setting.
@@ -68,7 +68,7 @@ public interface PptxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_SUBJECT = JRPropertiesUtil.PROPERTY_PREFIX + "export.pptx.metadata.subject";
+	public static final String PROPERTY_METADATA_SUBJECT = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "metadata.subject";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataKeywords()} export configuration setting.
@@ -78,7 +78,7 @@ public interface PptxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_KEYWORDS = JRPropertiesUtil.PROPERTY_PREFIX + "export.pptx.metadata.keywords";
+	public static final String PROPERTY_METADATA_KEYWORDS = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "metadata.keywords";
 
 	/**
 	 * Property whose value is used as default for the {@link #getMetadataApplication()} export configuration setting.
@@ -88,8 +88,79 @@ public interface PptxExporterConfiguration extends ExporterConfiguration
 			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
 			sinceVersion = PropertyConstants.VERSION_6_3_1
 			)
-	public static final String PROPERTY_METADATA_APPLICATION = JRPropertiesUtil.PROPERTY_PREFIX + "export.pptx.metadata.application";
+	public static final String PROPERTY_METADATA_APPLICATION = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "metadata.application";
 
+	/**
+	 * Property that provides a default value for the {@link #getSlideMasterReport()} export configuration setting.
+	 * <p>
+	 * Default value is <code>1</code>.
+	 * 
+	 * @see JRPropertiesUtil
+	 * @since 6.8.0
+	 */
+	@Property(
+			category = PropertyConstants.CATEGORY_EXPORT,
+			defaultValue = "1",
+			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
+			sinceVersion = PropertyConstants.VERSION_6_8_0,
+			valueType = Integer.class
+			)
+	public static final String PROPERTY_SLIDE_MASTER_REPORT = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "slide.master.report";
+
+	/**
+	 * Property that provides a default value for the {@link #getSlideMasterPage()} export configuration setting.
+	 * <p>
+	 * Default value is <code>1</code>.
+	 * 
+	 * @see JRPropertiesUtil
+	 * @since 6.8.0
+	 */
+	@Property(
+			category = PropertyConstants.CATEGORY_EXPORT,
+			defaultValue = "1",
+			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
+			sinceVersion = PropertyConstants.VERSION_6_8_0,
+			valueType = Integer.class
+			)
+	public static final String PROPERTY_SLIDE_MASTER_PAGE = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "slide.master.page";
+
+	/**
+	 * Property that provides a default value for the {@link #isBackgroundAsSlideMaster()} export configuration flag.
+	 * <p>
+	 * Default value is <code>false</code>.
+	 * 
+	 * @see JRPropertiesUtil
+	 * @since 6.8.0
+	 */
+	@Property(
+			category = PropertyConstants.CATEGORY_EXPORT,
+			defaultValue = PropertyConstants.BOOLEAN_FALSE,
+			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
+			sinceVersion = PropertyConstants.VERSION_6_8_0,
+			valueType = Boolean.class
+			)
+	public static final String PROPERTY_BACKGROUND_AS_SLIDE_MASTER = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "background.as.slide.master";
+
+	/**
+	 * Property that indicates if the fonts used in the report should be embedded into the generated PPTX document. 
+	 * <p/>
+	 * <b>Note: </b>PowerPoint does not embed TTF content type. Only EOT (Embedded OpenType) fonts are considered for embedding. 
+	 * Embeddable TTF fonts should be converted into EOT format first, then placed in the classpath using the font extension mechanism.
+	 * <p/>
+	 * This property serves as default value for the {@link #isEmbedFonts()} export configuration setting.
+	 * <p/>
+	 * @see JRPropertiesUtil
+	 */
+	@Property(
+			name = "net.sf.jasperreports.export.pptx.embed.fonts",
+			defaultValue = PropertyConstants.BOOLEAN_FALSE,
+			category = PropertyConstants.CATEGORY_EXPORT,
+			scopes = {PropertyScope.CONTEXT, PropertyScope.REPORT},
+			sinceVersion = PropertyConstants.VERSION_6_9_0,
+			valueType = Boolean.class
+			)
+	public static final String PROPERTY_EMBED_FONTS = JRPptxExporter.PPTX_EXPORTER_PROPERTIES_PREFIX + "embed.fonts";
+	
 	/**
 	 * The Title of the PPTX document.
 	 */
@@ -119,4 +190,48 @@ public interface PptxExporterConfiguration extends ExporterConfiguration
 	 */
 	@ExporterProperty(PROPERTY_METADATA_APPLICATION)
 	public String getMetadataApplication();
+
+	/**
+	 * Flag that specifies whether the elements from the background section on the first page should be exported as the contents of the slide master,
+	 * and then ignoring the background section elements for all pages/slides.
+	 * 
+	 * @see #PROPERTY_BACKGROUND_AS_SLIDE_MASTER
+	 */
+	@ExporterProperty(
+		value=PROPERTY_BACKGROUND_AS_SLIDE_MASTER, 
+		booleanDefault=false
+		)
+	public Boolean isBackgroundAsSlideMaster();
+
+	/**
+	 * Specifies the report (export input item) from which the content of the slide master should be extracted. The default value is 1 (first report).
+	 * 
+	 * @see #PROPERTY_SLIDE_MASTER_REPORT
+	 */
+	@ExporterProperty(
+		value=PROPERTY_SLIDE_MASTER_REPORT, 
+		intDefault=1
+		)
+	public Integer getSlideMasterReport();
+
+	/**
+	 * Specifies the page from which the content of the slide master should be extracted. The default value is 1 (first page).
+	 * 
+	 * @see #PROPERTY_SLIDE_MASTER_PAGE
+	 */
+	@ExporterProperty(
+		value=PROPERTY_SLIDE_MASTER_PAGE, 
+		intDefault=1
+		)
+	public Integer getSlideMasterPage();
+	
+	/**
+	 * Indicates whether the true type fonts used in the report should be embedded into the generated PPTX document. 
+	 * @see #PROPERTY_EMBED_FONTS
+	 */
+	@ExporterProperty(
+			value=PROPERTY_EMBED_FONTS,
+			booleanDefault=false
+			)
+	public Boolean isEmbedFonts();
 }

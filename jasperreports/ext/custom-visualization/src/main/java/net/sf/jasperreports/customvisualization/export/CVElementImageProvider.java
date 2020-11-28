@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -36,21 +36,25 @@ import net.sf.jasperreports.renderers.Renderable;
 import net.sf.jasperreports.renderers.SimpleDataRenderer;
 import net.sf.jasperreports.renderers.SimpleRenderToImageAwareDataRenderer;
 import net.sf.jasperreports.renderers.util.RendererUtil;
+import net.sf.jasperreports.repo.RepositoryContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Giulio Toffoli (gtoffoli@tibco.com)
  */
-public abstract class CVElementImageProvider
+public class CVElementImageProvider
 {
 	private static final Log log = LogFactory.getLog(CVElementImageProvider.class);
 
-	private static final CVElementImageProvider defaultProvider = new CVElementPhantomJSImageProvider();
+	private static final CVElementImageProvider INSTANCE = new CVElementImageProvider();
 
-	public static CVElementImageProvider getDefaultProvider()
+	private CVElementImageDataProvider cvElementImageDataProvider = new CVElementDefaultImageDataProvider();
+
+	public static CVElementImageProvider getInstance()
 	{
-		return defaultProvider;
+		return INSTANCE;
 	}
 
 	/**
@@ -69,14 +73,23 @@ public abstract class CVElementImageProvider
 	 *
 	 * The ability to set a null renderer works starting from 6.2.2.
 	 * 
-	 * @param jasperReportsContext
+	 * @param repositoryContext
 	 * @param element
 	 * @return
 	 * @throws JRException
 	 */
 	public JRPrintImage getImage(
-		JasperReportsContext jasperReportsContext, 
+		RepositoryContext repositoryContext, 
 		JRGenericPrintElement element) throws JRException
+	{
+		JRPrintImage printImage = createPrintImage(element);
+		Renderable renderable = createRenderable(element, repositoryContext);
+		printImage.setRenderer(renderable);
+
+		return printImage;
+	}
+
+	public JRPrintImage createPrintImage(JRGenericPrintElement element)
 	{
 		JRBasePrintImage printImage = new JRBasePrintImage(element.getDefaultStyleProvider());
 
@@ -96,21 +109,29 @@ public abstract class CVElementImageProvider
 
 		//printImage.setOnErrorType(OnErrorTypeEnum.BLANK);
 
+		return printImage;
+	}
+
+	public Renderable createRenderable(
+			JRGenericPrintElement element,
+			RepositoryContext repositoryContext) throws JRException
+	{
 		Renderable cacheRenderer = null;
-		
+
 		if (element.getParameterValue(CVPrintElement.CONFIGURATION) != null)
 		{
+			JasperReportsContext jasperReportsContext = repositoryContext.getJasperReportsContext();
 			JRPropertiesUtil propUtil = JRPropertiesUtil.getInstance(jasperReportsContext);
-		
+
 			boolean renderAsPng = CVUtils.isRenderAsPng(element);
 			String cacheKey = !renderAsPng ? CVPrintElement.PARAMETER_SVG_CACHE_RENDERER : CVPrintElement.PARAMETER_PNG_CACHE_RENDERER;
-			
+
 			cacheRenderer = (Renderable) element.getParameterValue(cacheKey);
 			if (cacheRenderer == null)
 			{
 				try
 				{
-					byte[] imageData = getImageData(jasperReportsContext, element);
+					byte[] imageData = cvElementImageDataProvider.getImageData(repositoryContext, element);
 
 					if (renderAsPng)
 					{
@@ -126,31 +147,27 @@ public abstract class CVElementImageProvider
 						renderer.setAntiAlias(propUtil.getBooleanProperty(element, CVConstants.CV_PNG_ANTIALIAS, CVConstants.CV_PNG_ANTIALIAS_DEFAULT_VALUE));
 						cacheRenderer = renderer;
 					}
-    					
+
 				}
 				catch (Exception e)
 				{
 					if (log.isErrorEnabled())
 					{
-						log.error("Generating image for Custom Visualization element " + element.hashCode() + " failed.", e);
+						log.error("Generating image for Custom Visualization element " + CVUtils.getElementId(element) + " failed.", e);
 					}
 
 					cacheRenderer = RendererUtil.getInstance(jasperReportsContext).handleImageError(e,
 							element.getParameterValue(CVPrintElement.PARAMETER_ON_ERROR_TYPE) == null
-								? CVPrintElement.DEFAULT_ON_ERROR_TYPE
-								: OnErrorTypeEnum.getByName((String) element.getParameterValue(CVPrintElement.PARAMETER_ON_ERROR_TYPE))
-							);
+									? CVPrintElement.DEFAULT_ON_ERROR_TYPE
+									: OnErrorTypeEnum.getByName((String) element.getParameterValue(CVPrintElement.PARAMETER_ON_ERROR_TYPE))
+					);
 				}
 
 				element.setParameterValue(cacheKey, cacheRenderer);
 			}
 		}
 
-		printImage.setRenderer(cacheRenderer);
-
-		return printImage;
+		return cacheRenderer;
 	}
-
-	public abstract byte[] getImageData(JasperReportsContext jasperReportsContext, JRGenericPrintElement element) throws Exception;
 
 }

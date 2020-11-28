@@ -124,7 +124,7 @@
 						<xySeries>
 							<seriesExpression><![CDATA["Double Freight"]]></seriesExpression>
 							<xValueExpression><![CDATA[$F{OrderID}]]></xValueExpression>
-							<yValueExpression><![CDATA[new Double($F{Freight}.doubleValue() * 2d)]]></yValueExpression>
+							<yValueExpression><![CDATA[$F{Freight} * 2d]]></yValueExpression>
 						</xySeries>
 						<xySeries>
 							<seriesExpression><![CDATA["Normal Freight"]]></seriesExpression>
@@ -138,7 +138,7 @@
 						<xySeries>
 							<seriesExpression><![CDATA["Half Freight"]]></seriesExpression>
 							<xValueExpression><![CDATA[$F{OrderID}]]></xValueExpression>
-							<yValueExpression><![CDATA[new Double($F{Freight}.doubleValue() / 2d)]]></yValueExpression>
+							<yValueExpression><![CDATA[$F{Freight} / 2d]]></yValueExpression>
 						</xySeries>
 					</xyDataset>
 					<scatterPlot>
@@ -230,7 +230,7 @@
 				<textFieldExpression><![CDATA[$F{OrderID}]]></textFieldExpression>
 				<anchorNameExpression><![CDATA[$F{OrderID}.toString()]]></anchorNameExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="40" y="0" width="110" height="11" uuid="7e988a73-736e-4f85-8627-886451b1303f"/>
 				<textFieldExpression><![CDATA[$F{ShipName} + ", " + $F{ShipCity}]]></textFieldExpression>
 			</textField>

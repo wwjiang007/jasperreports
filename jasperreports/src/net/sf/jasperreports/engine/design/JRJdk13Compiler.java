@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,6 +27,7 @@ package net.sf.jasperreports.engine.design;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
@@ -81,13 +82,13 @@ public class JRJdk13Compiler extends JRAbstractMultiClassCompiler
 		try 
 		{
 			Class<?> clazz = JRClassLoader.loadClassForRealName("com.sun.tools.javac.Main");
-			Object compiler = clazz.newInstance();
+			Object compiler = clazz.getDeclaredConstructor().newInstance();
 			
 			try 
 			{
 				Method compileMethod = clazz.getMethod("compile", new Class[] {String[].class, PrintWriter.class});
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				int result = ((Integer)compileMethod.invoke(compiler, new Object[] {source, new PrintWriter(baos)})).intValue();
+				int result = (Integer)compileMethod.invoke(compiler, new Object[] {source, new PrintWriter(baos)});
 				
 				if (result != MODERN_COMPILER_SUCCESS)
 				{
@@ -105,14 +106,15 @@ public class JRJdk13Compiler extends JRAbstractMultiClassCompiler
 			{
 				Method compileMethod = clazz.getMethod("compile", new Class[] {String[].class});
 
-				int result = ((Integer)compileMethod.invoke(compiler, new Object[] {source})).intValue();
+				int result = (Integer)compileMethod.invoke(compiler, new Object[] {source});
 				if (result != MODERN_COMPILER_SUCCESS)
 				{
 					errors = "See error messages above.";
 				}
 			}
 		}
-		catch (Exception e)
+		catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException 
+			| IllegalAccessException | InstantiationException e)
 		{
 			StringBuilder files = new StringBuilder();
 			for (int i = 0; i < sourceFiles.length; ++i)

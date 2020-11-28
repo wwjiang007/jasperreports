@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -27,8 +27,6 @@ import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.JRGroup;
 import net.sf.jasperreports.engine.base.JRBaseVariable;
-import net.sf.jasperreports.engine.design.events.JRChangeEventsSupport;
-import net.sf.jasperreports.engine.design.events.JRPropertyChangeSupport;
 import net.sf.jasperreports.engine.type.CalculationEnum;
 import net.sf.jasperreports.engine.type.IncrementTypeEnum;
 import net.sf.jasperreports.engine.type.ResetTypeEnum;
@@ -37,7 +35,7 @@ import net.sf.jasperreports.engine.type.ResetTypeEnum;
 /**
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  */
-public class JRDesignVariable extends JRBaseVariable implements JRChangeEventsSupport
+public class JRDesignVariable extends JRBaseVariable
 {
 
 
@@ -202,24 +200,7 @@ public class JRDesignVariable extends JRBaseVariable implements JRChangeEventsSu
 	public Object clone()
 	{
 		JRDesignVariable clone = (JRDesignVariable)super.clone();
-		clone.eventSupport = null;
 		return clone;
-	}
-
-	private transient JRPropertyChangeSupport eventSupport;
-	
-	@Override
-	public JRPropertyChangeSupport getEventSupport()
-	{
-		synchronized (this)
-		{
-			if (eventSupport == null)
-			{
-				eventSupport = new JRPropertyChangeSupport(this);
-			}
-		}
-		
-		return eventSupport;
 	}
 
 }

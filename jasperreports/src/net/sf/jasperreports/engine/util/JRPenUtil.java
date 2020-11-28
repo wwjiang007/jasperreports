@@ -1,6 +1,6 @@
 /*
  * JasperReports - Free Java Reporting Library.
- * Copyright (C) 2001 - 2018 TIBCO Software Inc. All rights reserved.
+ * Copyright (C) 2001 - 2019 TIBCO Software Inc. All rights reserved.
  * http://www.jaspersoft.com
  *
  * Unless you have purchased a commercial license agreement from Jaspersoft,
@@ -48,37 +48,37 @@ public final class JRPenUtil
 			{
 				case THIN :
 				{
-					linePen.setLineWidth(0.5f);
+					linePen.setLineWidth((Float)0.5f);
 					linePen.setLineStyle(LineStyleEnum.SOLID);
 					break;
 				}
 				case ONE_POINT :
 				{
-					linePen.setLineWidth(1f);
+					linePen.setLineWidth((Float)1f);
 					linePen.setLineStyle(LineStyleEnum.SOLID);
 					break;
 				}
 				case TWO_POINT :
 				{
-					linePen.setLineWidth(2f);
+					linePen.setLineWidth((Float)2f);
 					linePen.setLineStyle(LineStyleEnum.SOLID);
 					break;
 				}
 				case FOUR_POINT :
 				{
-					linePen.setLineWidth(4f);
+					linePen.setLineWidth((Float)4f);
 					linePen.setLineStyle(LineStyleEnum.SOLID);
 					break;
 				}
 				case DOTTED :
 				{
-					linePen.setLineWidth(1f);
+					linePen.setLineWidth((Float)1f);
 					linePen.setLineStyle(LineStyleEnum.DASHED);
 					break;
 				}
 				case NONE :
 				{
-					linePen.setLineWidth(0f);
+					linePen.setLineWidth((Float)0f);
 					linePen.setLineStyle(LineStyleEnum.SOLID);
 					break;
 				}
@@ -91,7 +91,7 @@ public final class JRPenUtil
 	 */
 	public static Stroke getStroke(JRPen pen, int lineCap)
 	{
-		float lineWidth = pen.getLineWidth().floatValue();
+		float lineWidth = pen.getLineWidth();
 		
 		if (lineWidth > 0f)
 		{
